@@ -73,7 +73,7 @@ html,body{margin:0;min-width:0;color:#182b27;background:#b7c7bc}
  .radar-plot.desktop{display:none}
  .radar-plot.mobile{display:block;width:calc(100% + 2.5rem);max-width:400px;aspect-ratio:360/400;margin-left:-1.25rem}
  .radar-plot.mobile svg{position:absolute;width:42%;height:auto;left:29%;top:27%}
- .radar-plot.mobile .radar-label{box-sizing:border-box;width:80px;max-width:110px;font-size:12px;line-height:1.15;padding:1px 2px;transform:translateY(-50%)}
+ .radar-plot.mobile .radar-label{box-sizing:border-box;background:none;width:80px;max-width:110px;font-size:12px;line-height:1.15;padding:1px 2px;transform:translateY(-50%)}
  .radar-plot.mobile .radar-label.start{text-align:left}
  .radar-plot.mobile .radar-label.end{margin-left:-80px;text-align:right}
  .radar-plot.mobile .radar-label.middle{width:110px;margin-left:-55px;text-align:center}
