@@ -29,6 +29,9 @@ jobs:
       # The same build Cloudflare runs: the content checks, astro build, the
       # copy check and the JavaScript budget. Any of them failing fails here.
       - run: npm ci
+      # Each build check must fail on a bad fixture, not only pass on the
+      # real content: a check that cannot fail checks nothing.
+      - run: node tests/checks.mjs
       - run: npm run build
       # The browsers are the ones the pinned playwright package names, with
       # the system libraries they need.

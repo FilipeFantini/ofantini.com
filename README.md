@@ -60,8 +60,15 @@ ordinary links still work. Smaller screens use normal page scrolling. Reduced
 motion disables window animations. Text uses solid surfaces and the browser tests
 check contrast, keyboard access and horizontal overflow.
 
+## Working on this repository
+
+A merge to `main` publishes the site. Every change goes through a pull request
+with four required checks; the rules for agents and humans are in
+[`AGENTS.md`](AGENTS.md), and the reasons in
+[`docs/adr/0001-how-a-change-reaches-main.md`](docs/adr/0001-how-a-change-reaches-main.md).
+
 ## License
 
-Code is licensed under MIT. Original editorial content in `src/content/` is
-licensed under CC BY 4.0. Source excerpts and linked projects keep their own
+Code is licensed under MIT ([`LICENSE`](LICENSE)). Original editorial content in
+`src/content/` is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Source excerpts and linked projects keep their own
 licenses.
