@@ -50,7 +50,7 @@ ADR-0028's objection was that Access fails open. ADR-0030 adds a check that clos
 
 ## How it has worked
 
-Public port 22 was closed, leaving zero inbound ports on IPv4 and IPv6. The runbook's check probes the public ports from outside the tailnet with a control probe that must succeed, so a closed result means something. Over the tailnet, 22 and 6443 answer and 10250 does not.
+Public port 22 was closed, leaving zero inbound ports on IPv4 and IPv6. The runbook's check probes the public ports from outside the tailnet with a control probe that must succeed, so a closed result means something.
 
 [Source: roadmap, M1](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L111-L114) · [Source: architecture.md, runbook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L966-L978)
 
