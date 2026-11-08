@@ -1,0 +1,11 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart LR
+    A[dlt load] e1@--> F[Parquet files on R2]
+    F e2@--> D[DuckDB and dbt build]
+    D e3@--> G[silver and gold Parquet files on R2]
+    P[(Postgres catalog: which files form which table)]
+    A -.-> P
+    D -.-> P
+    e1@{ animate: true }
+    e2@{ animate: true }
+    e3@{ animate: true }
