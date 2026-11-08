@@ -1,0 +1,6 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart TD
+    A[Measure services] --> B[Set a memory budget]
+    B --> C{Does planned work fit?}
+    C -->|No| D[Move to a larger node]
+    D --> E[Measure again]

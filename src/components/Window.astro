@@ -1,0 +1,15 @@
+---
+interface Props { url: string; title: string; up?: string; kind?: string }
+const { url, title, up, kind = '' } = Astro.props;
+const id = `t-${url.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'home'}`;
+---
+<section class:list={['win', kind]} data-url={url} aria-labelledby={id}>
+  <div class="bar">
+    {up && <a class="back" data-back href={up} aria-label="Back"><span class="sr-only">Back</span></a>}
+    {up && <a class="home" href="/" aria-label="Home"><span class="sr-only">Home</span></a>}
+    <span class="t" id={id}>{title}</span>
+    <a class="max" href={url} aria-label={`Maximize ${title}`}><span class="sr-only">Maximize</span></a>
+    <a class="close" href="/" aria-label={`Close ${title}`}><span class="sr-only">Close</span></a>
+  </div>
+  <div class="body" tabindex="0" role="region" aria-label={`${title} content`}><slot /></div>
+</section>

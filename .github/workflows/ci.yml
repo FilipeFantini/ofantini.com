@@ -1,0 +1,82 @@
+# Checks every pull request and every push to main. Cloudflare Pages builds
+# and serves the site on its own; this only checks it, on GitHub's machines,
+# free for a public repository (docs/adr/0001-how-a-change-reaches-main.md).
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# Checkouts do not keep the job token in .git/config: these jobs only read
+# the tree they just fetched.
+
+jobs:
+  site:
+    name: build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      # The same build Cloudflare runs: the content checks, astro build, the
+      # copy check and the JavaScript budget. Any of them failing fails here.
+      - run: npm ci
+      # Each build check must fail on a bad fixture, not only pass on the
+      # real content: a check that cannot fail checks nothing.
+      - run: node tests/checks.mjs
+      - run: npm run build
+      # The browsers are the ones the pinned playwright package names, with
+      # the system libraries they need.
+      - run: npx playwright install --with-deps chromium firefox webkit
+      # The preview keeps running in the background for the steps below; the
+      # job ends it. It fails here if it does not answer within 30 seconds.
+      - name: Start the preview on port 5000
+        run: |
+          npm run preview -- --port 5000 > preview.log 2>&1 &
+          for _ in $(seq 1 30); do
+            if curl -sf http://localhost:5000/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat preview.log
+          exit 1
+      - run: node tests/navigation.mjs
+      - run: node tests/radar.mjs
+      - run: node tests/desktop.mjs
+      - run: node tests/accessibility.mjs
+      - run: node tests/contract.mjs
+
+  secrets:
+    name: secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # The whole history, not only the tip: a secret committed and then
+      # deleted is still in the history, and so still leaked. On a pull
+      # request the checkout is the merge commit, so the branch's commits are
+      # scanned too.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # The release binary, pinned by version and checked against its SHA-256
+      # from gitleaks' checksums file. The official action would add one more
+      # third-party action to trust for the same scan.
+      - run: |
+          set -euo pipefail
+          version=8.30.1
+          sha256=551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+          archive="gitleaks_${version}_linux_x64.tar.gz"
+          curl -fsSLO "https://github.com/gitleaks/gitleaks/releases/download/v${version}/${archive}"
+          echo "${sha256}  ${archive}" | sha256sum --check --strict
+          tar -xzf "${archive}" gitleaks
+      # Every default rule, no exceptions. --redact keeps a found secret out
+      # of the job log, which anyone can open. A finding fails the job.
+      - run: ./gitleaks git --redact --no-banner --verbose .

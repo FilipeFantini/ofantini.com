@@ -1,0 +1,17 @@
+# The paths whose change needs the operator's approval on GitHub: the gates
+# themselves and the instructions agents follow
+# (docs/adr/0001-how-a-change-reaches-main.md).
+#
+# The `guardrail approval` workflow reads this list: a pull request that
+# touches one of these waits for the operator's approval of the `guardrail`
+# environment. The workflow reads a subset of the CODEOWNERS format and fails
+# on the rest: a leading slash on every path, a trailing slash for a folder,
+# no wildcards, no negations, and an owner on every line.
+
+# The gates: CI and this list.
+/.github/                         @FilipeFantini
+
+# The instructions agents and the reviewer follow.
+/AGENTS.md                        @FilipeFantini
+/CLAUDE.md                        @FilipeFantini
+/.claude/                         @FilipeFantini

@@ -1,0 +1,24 @@
+{
+  "name": "ofantini.com",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "node scripts/check-figures.mjs && node scripts/check-skills.mjs && node scripts/check-projects.mjs && node scripts/check-diagrams.mjs && ASTRO_TELEMETRY_DISABLED=1 astro build && node scripts/check-copy.mjs && node scripts/check-js-budget.mjs",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "diagrams": "node scripts/render-diagrams.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@fontsource-variable/archivo": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "astro": "7.4.7"
+  },
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "devDependencies": {
+    "axe-core": "4.10.3",
+    "playwright": "1.65.0"
+  }
+}
