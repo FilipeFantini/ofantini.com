@@ -1,4 +1,8 @@
 import { defineConfig } from 'astro/config';
-import rehypeSources from './src/lib/rehype-sources.mjs';
+import { satteri } from '@astrojs/markdown-satteri';
+import { articleHeadingIds, articleSources } from './src/lib/article-markdown.mjs';
 
-export default defineConfig({ output: 'static', markdown: { rehypePlugins: [rehypeSources] } });
+export default defineConfig({
+  output: 'static',
+  markdown: { processor: satteri({ hastPlugins: [articleHeadingIds, articleSources] }) },
+});
