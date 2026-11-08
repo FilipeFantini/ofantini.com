@@ -8,7 +8,9 @@ lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0013", "0029", "0032", "0035", "0036", "0037", "0038"]
 ---
 
-Agents write most of the code in this repository, and the operator does not read code. That raises a plain question: why trust a change? Our answer was not to trust the agent. We built gates that sit outside it, and then made sure the agent's own credentials cannot open them.
+Agents write code in this repository, and the operator does not read it, by design: the operator approves on a plain-language summary and the reviewer's verdict, not on the code. That raises a plain question: why trust a change? Our answer was not to trust the agent. We built gates that sit outside it, and then made sure the agent's own credentials cannot open them.
+
+[Source: ADR-0035, decision 5](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0035-agents-use-the-operators-scoped-token.md#L142-L153) · [Source: ADR-0036](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0036-the-reviewer-as-a-required-check.md#L5-L8)
 
 ## What we built
 
@@ -20,15 +22,15 @@ Agents write most of the code in this repository, and the operator does not read
 
 [Source: ADR-0032](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0032-agents-in-credential-free-containers.md#L44-L50) · [Source: ADR-0032, decisions 2 and 3](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0032-agents-in-credential-free-containers.md#L107-L114)
 
-**A scoped token.** To finish their own work, agents got one credential: a fine-grained GitHub token of the operator's, scoped to this repository, expiring in at most 90 days, with read and write on contents and pull requests and read on metadata. Administration, Deployments, Environments, Secrets and Workflows are all "No access". Writing to `main` is writing to the cluster, because Argo CD applies `main`, so the gates must hold even though the agent acts as the operator.
+**A scoped token.** To finish their own work, agents got one credential: a fine-grained GitHub token of the operator's, scoped to this repository, expiring in at most 90 days, with read and write on contents and pull requests and read on metadata. Administration, Deployments, Environments, Secrets and Workflows are all "No access". The token sits in the runner's connector, not in the container, so the agent uses the tools without reading it. Writing to `main` is writing to the cluster, because Argo CD applies `main`, so the gates must hold even though the agent acts as the operator.
 
 [Source: ADR-0035](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0035-agents-use-the-operators-scoped-token.md#L31-L47) · [Source: ADR-0035, decision 1](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0035-agents-use-the-operators-scoped-token.md#L80-L93)
 
-**The guardrail environment.** A list of guarded paths, kept in `CODEOWNERS`, names what reaches the cluster, judges a change or states the rules. A pull request that touches one waits on a GitHub environment called `guardrail`, whose required reviewer is the operator. Approving needs the Deployments permission, which the agents' token lacks, and GitHub's MCP server offers no tool for it.
+**The guardrail environment.** As first built, a list of guarded paths, kept in `CODEOWNERS`, names what reaches the cluster, judges a change or states the rules. A pull request that touches one waits on a GitHub environment called `guardrail`, whose required reviewer is the operator. Approving needs the Deployments permission, which the agents' token lacks, and GitHub's MCP server offers no tool for it.
 
 [Source: ADR-0035, decisions 3 and 4](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0035-agents-use-the-operators-scoped-token.md#L100-L140)
 
-**The reviewer as a required check.** A workflow runs a reviewer agent on every pull request. It runs on `pull_request_target`, so its prompt and role come from `main`, and a pull request cannot weaken the review that judges it. The reviewer gets `Read`, `Grep` and `Glob`: no shell, no network.
+**The reviewer as a required check.** As first built, a workflow runs a reviewer agent on every pull request. It runs on `pull_request_target`, so its prompt and role come from `main`, and a pull request cannot weaken the review that judges it. The reviewer gets `Read`, `Grep` and `Glob`: no shell, no network.
 
 [Source: ADR-0036, decisions 1 and 2](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0036-the-reviewer-as-a-required-check.md#L58-L79)
 
@@ -58,7 +60,7 @@ The roadmap and the ADRs record no count of the pull requests agents merged or o
 
 ## Gotchas
 
-**An escape became a gate.** ADR-0013's first rule is that every defect found after merge adds the check that would have caught it. The first instance: an implementer agent discarded its own uncommitted work with `git checkout -- .`. Deny rules for destructive git commands followed, and they bind every Claude Code session, since the harness cannot scope them to one agent.
+**An escape became a gate.** ADR-0013's first rule is that every defect found after merge adds the check that would have caught it. One instance: an implementer agent discarded its own uncommitted work with `git checkout -- .`. Deny rules for destructive git commands followed, and they bind every Claude Code session, since the harness cannot scope them to one agent.
 
 [Source: ADR-0013, rule 1](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0013-agent-driven-development-guardrails.md#L82-L85) · [Source: roadmap, Track G](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L369-L373)
 

@@ -38,7 +38,7 @@ For installing Argo CD, the ADR compared raw upstream manifests with Kustomize p
 
 [Source: ADR-0009](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0009-argocd-bootstrap-and-self-management.md#L29-L37)
 
-For images, three alternatives lost. Running the code from the official `uv` image on every run needs no registry, but what runs is assembled at run time instead of built and tested once, and it is kept as the exit plan if GHCR (GitHub's container registry) stops being free. A registry inside the cluster with in-cluster builds adds two components and build spikes on a node with about 1 GB of margin. A public package would expose the code.
+For images, three alternatives lost. Running the code from the official `uv` image on every run needs no registry, but what runs is assembled at run time instead of built and tested once, and it is kept as the exit plan if GHCR (GitHub's container registry) stops being free. A registry inside the cluster with in-cluster builds adds two components and build spikes on a node with about 1 GB of margin. A public package would expose the code while the repository was private.
 
 [Source: ADR-0015](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0015-images-on-ghcr.md#L35-L50)
 

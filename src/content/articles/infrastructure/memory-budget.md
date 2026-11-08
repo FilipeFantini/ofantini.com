@@ -36,7 +36,7 @@ Then we measured the planned stack on the node. The projection came to about 2.7
 
 [Source: ADR-0011](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0011-memory-viability-on-4gb.md#L67-L100)
 
-When the overhead turned out larger, the ceiling came down to match. ADR-0016 rejected three alternatives: keep 2.6 GB and trust the node, lower to the full measured room of 2.3 GB with no margin, or move to 8 GB at once. The operator's rule was to move when a component does not fit, not in anticipation. Dagster, the orchestrator, did not fit. The ADR for the move says it departs from "observed" because the projected gap, about 380 MiB, was too large to tune away. The price was roughly double the monthly cost, and Milestone 3 (M3, the Dagster step) was blocked on a vendor's capacity, not on work.
+When the overhead turned out larger, the ceiling came down to match. ADR-0016 rejected three alternatives: keep 2.6 GB and trust the node, lower to the full measured room of 2.3 GB with no margin, or move to 8 GB at once. The operator's rule was to move when a component does not fit, not in anticipation. Dagster, the orchestrator, was projected not to fit. The ADR for the move says it departs from "observed" because the projected gap, about 380 MiB, was too large to tune away. The price was roughly double the monthly cost, and Milestone 3 (M3, the Dagster step) was blocked on a vendor's capacity, not on work.
 
 [Source: ADR-0016](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0016-ci-ceiling-2-2-gb.md#L30-L62) · [Source: ADR-0020](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0020-move-to-the-8-gb-node.md#L8-L62)
 
@@ -46,11 +46,11 @@ On the new 8 GB node, measured on 2026-10-28 with k3s up for about two hours and
 
 [Source: ADR-0024](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0024-ci-ceiling-on-the-8-gb-node.md#L19-L64)
 
-The chart shows the declared requests against the ceiling at five points. The "M3 plan" bar is a projection, about 2,630 MiB with Dagster at the 600 MiB its spike measured. The line steps up when the node changes.
+The chart shows the declared requests against the ceiling at five points. The "M3 plan" bar is a projection, about 2,630 MiB with Dagster at the 600 MiB its spike measured. The line steps up when the node changes. The bars are not all counted the same way: the first (2026-10-17) is the old count, which took only the largest ephemeral job, while 2,034 and 2,630 are the later sum of every ephemeral job at once, and no restated figure exists for the first. The 8 GB bars use the sum too.
 
-![Bar chart of declared memory requests against the CI ceiling: the M3 plan on the 4 GB node passes a 2,253 MiB ceiling, while 5,070 MiB on the 8 GB node sits under 5,632 MiB](/diagrams/infrastructure-memory-budget.svg)
+![Bar chart of declared memory requests against the CI ceiling: the M3 plan on the 4 GB node exceeds a 2,253 MiB ceiling, while 5,070 MiB on the 8 GB node sits under 5,632 MiB](/diagrams/infrastructure-memory-budget.svg)
 
-[Source: ADR-0016](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0016-ci-ceiling-2-2-gb.md#L53-L62) · [Source: ADR-0016, note of 2026-10-19](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0016-ci-ceiling-2-2-gb.md#L84-L90) · [Source: ADR-0024](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0024-ci-ceiling-on-the-8-gb-node.md#L69-L72)
+[Source: ADR-0016](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0016-ci-ceiling-2-2-gb.md#L50-L62) · [Source: ADR-0016, note of 2026-10-19](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0016-ci-ceiling-2-2-gb.md#L84-L90) · [Source: ADR-0024](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0024-ci-ceiling-on-the-8-gb-node.md#L69-L72)
 
 [Source: architecture.md, section 11](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L568-L573) and [the ceiling of the time](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L630-L632)
 
@@ -66,7 +66,7 @@ At the pinned commit the total was 5,070 MiB: Dagster in two environments and th
 
 **The fix caused its own problem.** `GOMEMLIMIT=600MiB` held k3s at about 720 to 735 MiB over the first half hour. After a second Postgres cluster and a network policy arrived, k3s held 719 to 753 MiB against that limit, ran about five garbage collections per second and used about 1.9 of the node's 2 vCPUs, while all the pods together used 27m. The ADR had named this trade-off, CPU for memory, and it still happened. Raising the limit to 900MiB brought CPU to 144m. It was found by chance in a post-deploy check, which the ADR records as an escape under its guardrails.
 
-[Source: ADR-0011](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0011-memory-viability-on-4gb.md#L116-L118) and [the note of 2026-10-17](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0011-memory-viability-on-4gb.md#L135-L147)
+[Source: ADR-0011](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0011-memory-viability-on-4gb.md#L41-L47) · [Source: ADR-0011](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0011-memory-viability-on-4gb.md#L116-L118) and [the note of 2026-10-17](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0011-memory-viability-on-4gb.md#L135-L147)
 
 **The gate allowed more than the node could hold.** The 2.6 GB ceiling came from an overhead of about 1.1 GB. By 2026-10-17 it measured about 1.5 GB, so 3.8 minus 1.5 left about 2.3 GB while the check still allowed 2.6. ADR-0016 calls that false confidence.
 
