@@ -24,23 +24,17 @@ Key renewal is off. By default the controller adds a new key every 30 days, and 
 
 **A snapshot.** The repository began private. Before publishing, a review scanned the working tree, every commit on every branch, GitHub's pull-request refs, pull-request text and the Actions logs. It found no secret. It did find identifiers of the operator and the network that a public repository would expose for good. The repository was therefore published from a snapshot: the private one was renamed, kept private and archived, and a new public repository took the original name with a history that starts at one commit.
 
-[Source: ADR-0017](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L9-L20)
-
-[Source: ADR-0017, decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L59-L65)
+[Source: ADR-0017](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L9-L20) · [Source: ADR-0017, decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L59-L65)
 
 ![Flow of publication: the private repository is archived, and its main becomes a single-commit snapshot that starts the new public repository, which is scanned for secrets on every pull request](/diagrams/security-public-repo-2.svg)
 
 **A scan of the whole history.** CI runs gitleaks, a secret scanner, over the whole history on every pull request and every push to `main`. The history, not only the latest commit, because a secret committed and then deleted is still in the history, and so still leaked. The scanner binary is pinned by version and checked against its SHA-256, and `--redact` keeps a finding out of the job log, which anyone with read access can open.
 
-[Source: ci.yml](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L5-L8)
-
-[Source: ci.yml, secret scan](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L66-L91)
+[Source: ci.yml](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L5-L8) · [Source: ci.yml, secret scan](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L66-L91)
 
 **A rule.** `AGENTS.md`, the rulebook for the agents and humans working in the repository, says to keep anything that identifies the operator or addresses the infrastructure out of it, and to use placeholders instead. It names e-mail, user names, keys, tailnet names and IP addresses. The GitHub account name, the license holder and the domain are the accepted exceptions, and commits use the GitHub noreply address.
 
-[Source: AGENTS.md](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/AGENTS.md#L1-L8)
-
-[Source: AGENTS.md, section 3](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/AGENTS.md#L54-L61)
+[Source: AGENTS.md](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/AGENTS.md#L1-L8) · [Source: AGENTS.md, section 3](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/AGENTS.md#L54-L61)
 
 ## Why this choice
 
@@ -54,17 +48,13 @@ For publication, ADR-0017 rejected three alternatives. Flipping the repository t
 
 The costs are written down. Public history starts at the snapshot, so earlier commits and reviews exist only in the private archive. Images built before publication carry tags naming commits that exist only there. The cluster's sealing key is a single point of loss, and without automatic renewal the same key protects every secret until it is rotated by hand, so a leaked key exposes everything sealed so far.
 
-[Source: ADR-0017, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L128-L135)
-
-[Source: ADR-0010, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0010-sealed-secrets.md#L69-L73)
+[Source: ADR-0017, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L128-L135) · [Source: ADR-0010, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0010-sealed-secrets.md#L69-L73)
 
 ## How it has worked
 
 The restore procedure, which puts the sealing key back before the root Application is applied, was exercised on 2026-10-28. The result was one key Secret, five `SealedSecret`s reporting `SYNCED True`, and the same certificate fingerprint on both nodes.
 
-[Source: architecture.md, Sealed Secrets](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1141-L1144)
-
-[Source: architecture.md, Sealed Secrets](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1172-L1173)
+[Source: architecture.md, Sealed Secrets](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1141-L1144) · [Source: architecture.md, Sealed Secrets](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1172-L1173)
 
 The cutover to the public repository was also run, on 2026-10-27. The ADR's plan predicted a short comparison error in Argo CD, and the ADR was corrected afterwards: it never paused.
 

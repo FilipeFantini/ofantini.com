@@ -44,9 +44,7 @@ For images, three alternatives lost. Running the code from the official `uv` ima
 
 The digest model also answers a question: how does staging go first while Argo CD watches only `main`? The environments differ in which digest they pin, not in which branch they follow. The accepted cost is that a code change takes three pull requests, two of them digest bumps. Automating the staging bump is deferred until the manual bumps become routine.
 
-[Source: ADR-0015](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0015-images-on-ghcr.md#L63-L72)
-
-[Source: ADR-0015, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0015-images-on-ghcr.md#L99-L107)
+[Source: ADR-0015](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0015-images-on-ghcr.md#L63-L72) · [Source: ADR-0015, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0015-images-on-ghcr.md#L99-L107)
 
 ## How it has worked
 
@@ -66,11 +64,7 @@ On 2026-10-28, on an empty cluster, all nine Applications were `Synced` and `Hea
 
 **The first design had a repository credential, and a later decision removed it.** ADR-0009 gave Argo CD a read-only SSH deploy key, with the reasoning that the credential Argo CD needs to read the repository cannot itself come from the repository. Then the repository went public, and ADR-0017 superseded that decision. Argo CD now clones it anonymously over HTTPS, so there is no key to create, rotate or lose on a rebuild. The trade-off is GitHub's limits for anonymous reads, which a poll every few minutes stays far below.
 
-[Source: ADR-0009](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0009-argocd-bootstrap-and-self-management.md#L58-L62)
-
-[Source: ADR-0017](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L1-L5)
-
-[Source: architecture.md, Install Argo CD](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1031-L1037)
+[Source: ADR-0009](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0009-argocd-bootstrap-and-self-management.md#L58-L62) · [Source: ADR-0017](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L1-L5) · [Source: architecture.md, Install Argo CD](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1031-L1037)
 
 **On an empty cluster the Applications race.** `root` creates them all at once with no sync order, so `postgres-prod` tried to create a database `Cluster` before the operator that defines that type had installed. It failed twice and succeeded on the third try, 32 seconds after `root` was applied. Argo CD's default retry covered it, and the retry is not set in our manifests. A sync that still fails after five tries stays failed until the next commit.
 
@@ -78,9 +72,7 @@ On 2026-10-28, on an empty cluster, all nine Applications were `Synced` and `Hea
 
 **The promotion order began as a convention.** ADR-0015 called the rule that prod only receives digests staging pinned a convention until a check asserted it. Three days after the decision, `tools/promotion_check.py` made it a CI check: it fails a change whose prod manifests pin an image by tag only, or by a digest staging had not pinned in any earlier commit. It asserts "pinned on `main` first", not "ran successfully", because CI never reaches the cluster. The operator confirms the run before opening the prod pull request.
 
-[Source: ADR-0015, note of 2026-10-19](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0015-images-on-ghcr.md#L126-L131)
-
-[Source: architecture.md, Environments](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L342-L350)
+[Source: ADR-0015, note of 2026-10-19](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0015-images-on-ghcr.md#L126-L131) · [Source: architecture.md, Environments](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L342-L350)
 
 **Some of the platform was not under Git at first.** k3s installs components of its own, and Traefik, which served nothing, still used 120 MiB. ADR-0021 disabled it and moved local-path and metrics-server under Argo CD, leaving CoreDNS as the one workload outside Git. The switch itself had a step the plan missed: the Traefik uninstall hung on a finalizer that only the disabled load balancer could remove, until it was cleared by hand.
 
