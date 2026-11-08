@@ -13,6 +13,7 @@ const cases = [
   { script: 'check-projects', good: [], bad: [[`${fixtures}/invalid-directory/articles`, `${fixtures}/invalid-reference/projects`], /not in the directory of its track modeling/] },
   { script: 'check-projects', good: [], bad: [[`${fixtures}/invalid-order/articles`, `${fixtures}/invalid-reference/projects`], /Duplicate order 1 in track etl of project lagom/] },
   { script: 'check-diagrams', good: [], bad: [[`${fixtures}/diagrams/source`, `${fixtures}/diagrams/output`], /Stale diagram/] },
+  { script: 'check-diagrams', good: [], bad: [[`${fixtures}/diagrams-motion/source`, `${fixtures}/diagrams-motion/output`], /no reduced-motion rule/] },
   // Without arguments check-copy also scans dist, which needs a build.
   { script: 'check-copy', good: ['src/content'], bad: [[`${fixtures}/invalid-copy`], /Forbidden copy in/] },
 ];
