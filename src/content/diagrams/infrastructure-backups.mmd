@@ -1,0 +1,10 @@
+timeline
+    title How the backup decision changed
+    2026-10-27 : Backup deferred until Postgres holds state no source can rebuild
+    2026-10-28 : Node rebuilt from Git and re-loaded from USGS in 20 min 31 s
+               : The trigger is met and the Barman Cloud plugin to R2 is chosen
+               : Staging restore ready in 68 s
+               : Prod enabled before the retention check
+    2026-11-05 : Retention deleted the first expired backup
+               : WAL archived hourly and prod keeps 14 days
+    2026-11-07 : Old node deleted by the checklist

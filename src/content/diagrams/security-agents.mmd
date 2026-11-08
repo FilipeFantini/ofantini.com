@@ -1,0 +1,20 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart LR
+    A["Agent opens a pull request with its scoped token"] e1@--> B["Seven CI checks run the code, no secret in reach"]
+    A e2@--> C["agent review: a read-only reviewer reads the diff"]
+    A e3@--> D{"Does it touch a guarded path?"}
+    D -->|"no"| G["guardrail approval passes"]
+    D -->|"yes"| W["guardrail approval waits"]
+    T["The agent's token tries to approve"] -.->|"refused by GitHub"| W
+    O["The operator approves the guardrail environment"] e4@--> W
+    W --> G
+    B e5@--> M["Merge, only when every required check is green"]
+    C e6@--> M
+    G e7@--> M
+    e1@{ animate: true }
+    e2@{ animate: true }
+    e3@{ animate: true }
+    e4@{ animate: true }
+    e5@{ animate: true }
+    e6@{ animate: true }
+    e7@{ animate: true }

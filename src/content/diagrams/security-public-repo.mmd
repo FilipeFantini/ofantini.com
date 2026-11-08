@@ -1,0 +1,11 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart LR
+    OP["Operator: kubeseal encrypts with the public key"] e1@--> SS["SealedSecret committed to the public repository"]
+    SS e2@--> AC["Argo CD applies it to the cluster"]
+    AC e3@--> CT["Controller decrypts with the private key"]
+    CT e4@--> S["Ordinary Secret in its own namespace only"]
+    K["Private key backed up off the cluster"] -.->|"restored first on a rebuild"| CT
+    e1@{ animate: true }
+    e2@{ animate: true }
+    e3@{ animate: true }
+    e4@{ animate: true }
