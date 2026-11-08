@@ -9,6 +9,9 @@ const cases = [
   { script: 'check-skills', good: [], bad: [[`${fixtures}/invalid-skills-range.json`], /Invalid skill area or score/] },
   { script: 'check-skills', good: [], bad: [[`${fixtures}/invalid-skills-decimal.json`], /Invalid skill area or score/] },
   { script: 'check-projects', good: [], bad: [[`${fixtures}/invalid-reference/articles`, `${fixtures}/invalid-reference/projects`], /Unknown project missing-project/] },
+  { script: 'check-projects', good: [], bad: [[`${fixtures}/invalid-track/articles`, `${fixtures}/invalid-reference/projects`], /Unknown track nonexistent of project lagom/] },
+  { script: 'check-projects', good: [], bad: [[`${fixtures}/invalid-directory/articles`, `${fixtures}/invalid-reference/projects`], /not in the directory of its track modeling/] },
+  { script: 'check-projects', good: [], bad: [[`${fixtures}/invalid-order/articles`, `${fixtures}/invalid-reference/projects`], /Duplicate order 1 in track etl of project lagom/] },
   { script: 'check-diagrams', good: [], bad: [[`${fixtures}/diagrams/source`, `${fixtures}/diagrams/output`], /Stale diagram/] },
   // Without arguments check-copy also scans dist, which needs a build.
   { script: 'check-copy', good: ['src/content'], bad: [[`${fixtures}/invalid-copy`], /Forbidden copy in/] },

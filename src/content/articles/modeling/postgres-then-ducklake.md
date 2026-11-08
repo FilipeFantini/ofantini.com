@@ -1,7 +1,9 @@
 ---
 title: Postgres first, then DuckLake
+summary: "Why Lagom began with Postgres for every warehouse layer, and the proposed move to DuckLake."
 project: lagom
 track: modeling
+order: 1
 lagom_commit: 3d6039735d0ffca19553c1669d506f34da241a68
 adrs: ["0008", "0023"]
 ---

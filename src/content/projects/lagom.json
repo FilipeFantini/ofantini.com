@@ -1,1 +1,12 @@
-{"title":"Lagom"}
+{
+  "title": "Lagom",
+  "summary": "A small data platform that grows by composition, built and run in the open: each new source is one more pipeline on the same shared foundation.",
+  "tracks": [
+    { "id": "infrastructure", "name": "Infrastructure", "description": "A small node, a deliberate budget." },
+    { "id": "etl", "name": "ETL", "description": "Following earthquake events into the platform." },
+    { "id": "modeling", "name": "Modeling", "description": "How data becomes useful tables." },
+    { "id": "orchestration", "name": "Orchestration", "description": "Coordinating the work." },
+    { "id": "security", "name": "Security", "description": "Boundaries for agents and credentials." },
+    { "id": "visualization", "name": "Data visualization", "description": "Showing what the tables say." }
+  ]
+}

@@ -1,7 +1,9 @@
 ---
 title: One Dagster per environment
+summary: "How Dagster schedules the pipelines, shows what happened and reports when a run fails."
 project: lagom
 track: orchestration
+order: 1
 lagom_commit: 3d6039735d0ffca19553c1669d506f34da241a68
 adrs: ["0026"]
 ---

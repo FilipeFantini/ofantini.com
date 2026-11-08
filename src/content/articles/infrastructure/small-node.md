@@ -1,7 +1,9 @@
 ---
 title: When the small node stopped fitting
+summary: "A small server can run a serious data platform if it leaves room for the jobs as well as the services that wait for them."
 project: lagom
-track: infra
+track: infrastructure
+order: 1
 lagom_commit: 3d6039735d0ffca19553c1669d506f34da241a68
 adrs: ["0011", "0020"]
 ---

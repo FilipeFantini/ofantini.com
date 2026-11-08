@@ -1,7 +1,9 @@
 ---
 title: Agents in credential-free containers
+summary: "Why the commands an agent runs get no credentials, and how a reviewed change is published by a separate connector."
 project: lagom
 track: security
+order: 1
 lagom_commit: 3d6039735d0ffca19553c1669d506f34da241a68
 adrs: ["0032", "0035"]
 ---

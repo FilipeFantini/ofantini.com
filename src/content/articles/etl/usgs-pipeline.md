@@ -1,7 +1,9 @@
 ---
 title: "The USGS pipeline: from events to useful data"
+summary: "How earthquake records from the public USGS service are collected, checked and reshaped into tables people can query."
 project: lagom
 track: etl
+order: 1
 lagom_commit: 3d6039735d0ffca19553c1669d506f34da241a68
 adrs: ["0026"]
 ---
