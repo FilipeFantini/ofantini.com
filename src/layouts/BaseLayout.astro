@@ -4,15 +4,14 @@ import '@fontsource/ibm-plex-mono/400.css';
 import '../styles/site.css';
 import '../styles/desk.css';
 import Window from '../components/Window.astro';
-interface Props { title: string; windowTitle: string; up?: string; kind?: string; description?: string }
-const { title, windowTitle, up, kind, description } = Astro.props;
+interface Props { title: string; windowTitle: string; up?: string; kind?: string }
+const { title, windowTitle, up, kind } = Astro.props;
 const url = Astro.url.pathname;
 ---
 <!doctype html>
 <html lang="en"><head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{title} | ofantini.com</title>
-  {description && <meta name="description" content={description} />}
 </head><body>
   <header class="site-header"><a href="/">ofantini<span class="dot">.</span>com</a><span>All things data and more</span></header>
   <main class="desk">

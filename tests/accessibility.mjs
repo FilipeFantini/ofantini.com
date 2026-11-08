@@ -17,7 +17,8 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     for (const viewport of [{ width: 375, height: 812 }, { width: 1280, height: 800 }]) {
       const page = await browser.newPage({ viewport });
       for (const route of routes) {
-        await page.goto(new URL(route, base).href);
+        const response = await page.goto(new URL(route, base).href);
+        assert.ok(response?.ok(), `${name} ${viewport.width} ${route}: HTTP ${response?.status()}`);
         await page.evaluate(() => document.fonts.ready);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
         if (overflow) failures.push(`${name} ${viewport.width} ${route}: horizontal overflow`);

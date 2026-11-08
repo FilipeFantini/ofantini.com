@@ -1,7 +1,8 @@
 # ofantini.com
 
 A static personal site built with Astro. Its home introduces Filipe Fantini. The
-`me.txt` page describes his data work, infrastructure hobby and outdoor interests.
+about page, opened from the `me.txt` desktop icon at `/about/`, describes his data work,
+infrastructure hobby and outdoor interests, with a skills radar.
 Projects lists Lagom, and Articles collects five short chapters about it. The Lagom
 hub explains the small and medium data thesis and links each chapter to the project.
 The ETL chapter records one USGS production run; its figures are pinned to a Lagom
@@ -26,7 +27,9 @@ article project references, diagram hashes, copy and the 5 KiB gzip budget for J
 Run `node tests/navigation.mjs`, `node tests/radar.mjs`, `node tests/desktop.mjs`,
 `node tests/accessibility.mjs` and `node tests/contract.mjs` against the preview.
 They use Chromium, Firefox and WebKit on port 5000 unless `SITE_TEST_URL` is set.
-All tests assume that `npm run build` has run.
+All tests assume that `npm run build` has run. On macOS, AirPlay Receiver can hold port
+5000; the preview then starts on the next free port, so set `SITE_TEST_URL` to the
+address it prints. Install the browsers once with `npx playwright install chromium firefox webkit`.
 
 ## Content and diagrams
 
