@@ -27,9 +27,13 @@ article project references, diagram hashes, copy and the 5 KiB gzip budget for J
 Run `node tests/navigation.mjs`, `node tests/radar.mjs`, `node tests/desktop.mjs`,
 `node tests/accessibility.mjs` and `node tests/contract.mjs` against the preview.
 They use Chromium, Firefox and WebKit on port 5000 unless `SITE_TEST_URL` is set.
-All tests assume that `npm run build` has run. On macOS, AirPlay Receiver can hold port
+The browser tests assume that `npm run build` has run. On macOS, AirPlay Receiver can hold port
 5000; the preview then starts on the next free port, so set `SITE_TEST_URL` to the
 address it prints. Install the browsers once with `npx playwright install chromium firefox webkit`.
+
+`node tests/checks.mjs` needs neither a build nor a preview. It runs each build check
+against the real content (must pass) and against a bad fixture in `tests/fixtures/`
+(must fail and name the defect). `check-js-budget` takes no path, so it is not covered there.
 
 ## Content and diagrams
 
