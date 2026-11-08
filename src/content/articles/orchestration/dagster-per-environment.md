@@ -10,7 +10,7 @@ adrs: ["0007", "0014", "0015", "0026"]
 
 A pipeline needs someone to schedule it, show what happened and keep its history. The harder question is where a change is tried before it can hurt real data. If the first place a new job runs is production, the rehearsal never happened. This is how Lagom schedules its pipeline with Dagster, and how a change gets from a laptop to production without skipping staging.
 
-## What we built
+## What we built: one Dagster per environment
 
 **Dagster** is the orchestrator: it holds the schedule, starts runs and records each run's history. Lagom runs one per environment, each in its own namespace, built from the `dagster/dagster` chart (version 1.13.27). Each has a webserver, a daemon and one code location, and its runs are launched as Kubernetes Jobs in the same namespace. Its history lives in a database called `dagster` in that environment's Postgres, which is backed up with the rest of that Postgres Cluster.
 
@@ -30,7 +30,7 @@ Three Pods stay up. The webserver is the UI. The daemon evaluates schedules and 
 
 [Source: ADR-0015](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0015-images-on-ghcr.md#L54-L72) · [Source: architecture, environments](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L342-L350)
 
-## Why this choice
+## Why this choice: isolation has a price
 
 **Staging that shares a database with prod is theatre.** That sentence shaped ADR-0007: a pipeline that passes against prod data in a neighbouring namespace proves nothing. Staging therefore has its own Postgres, a quota, a network rule denying staging to prod, and separate secrets. ADR-0007 also decided that staging would run no Dagster, because the orchestrator was the heavy component on a 4 GB node. It listed the cost itself: a badly defined asset would surface first in prod.
 
@@ -44,7 +44,7 @@ The development setup was also a choice among rejected options. A local Postgres
 
 [Source: ADR-0014](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0014-develop-against-staging.md#L30-L40)
 
-## How it has worked
+## How it has worked: staging's first weeks
 
 Staging's Dagster has run since 2026-10-28 and prod's since 2026-11-05, staging first. In staging's first week, 372 of 373 pipeline runs succeeded. The median run took 43 s and the longest 136 s. The one failure was the database-driver pitfall described under Gotchas.
 
@@ -54,7 +54,7 @@ Staging also corrected the memory plan. ADR-0026 had budgeted a run at about 250
 
 [Source: ADR-0026, note](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0026-dagster-one-instance-per-environment.md#L116-L131)
 
-## Gotchas
+## Gotchas: first-day failures and limits
 
 - **Three first-day failures in staging, on 2026-10-28.** The image had an `ENTRYPOINT`, so the container ran `dagster dagster api grpc` and failed with `No such command 'dagster'`. Then psycopg 3 was missing, so the first schedule tick failed with `ModuleNotFoundError`. Then, with psycopg 3 installed, the first run failed in Dagster's run storage with `syntax error at or near "$1"`, because psycopg 3 sends parameters separately. One value in the chart's configuration selects psycopg2 without rebuilding the image. All three were found in staging, not prod. [Source: runbook, Dagster](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1807-L1824)
 - **Prod's daemon and webserver restarted once on the first sync.** They started before CloudNativePG had created the `dagster` database, retried, exited and came up on the restart. A restart count of 1 is this; one that keeps rising is not. [Source: runbook, Dagster](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1826-L1831)

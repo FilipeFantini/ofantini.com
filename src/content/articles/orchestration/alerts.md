@@ -12,7 +12,7 @@ On 2026-10-27 the USGS pipeline failed in both environments for about 90 minutes
 
 [Source: ADR-0018](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0018-pipeline-heartbeat.md#L9-L21)
 
-## What we built
+## What we built: a heartbeat, then sensors
 
 The node accepts no inbound connection, so a monitor that probes a URL from outside has nothing to probe. The answer turns the question around: the pipeline reports in, and silence is the alarm.
 
@@ -32,7 +32,7 @@ The ping had to follow success only. In the CronJob's Pod, the load and the tran
 
 [Source: ADR-0033, decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0033-dagster-alerts-through-healthchecks.md#L73-L87) · [Source: ADR-0033, decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0033-dagster-alerts-through-healthchecks.md#L106-L111)
 
-## Why this choice
+## Why this choice: two failures, two signals
 
 The two failures are different. A failed run can be reported at once, with its error. When the daemon, the node or the cluster is down, nothing inside the cluster can report anything. Native alerting answers the first and is silent on the second; a heartbeat answers the second, only after the schedule and grace have passed, and says nothing about why.
 
@@ -50,7 +50,7 @@ The trade-off is accepted in writing. A third party sits in the alert path: if H
 
 [Source: ADR-0018, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0018-pipeline-heartbeat.md#L101-L108)
 
-## How it has worked
+## How it has worked: the cutover
 
 The heartbeat was verified on 2026-10-27: staging on demand reported `heartbeat sent: HTTP 200`, and prod's 12:00 run showed `ingest`, `transform` and `heartbeat` all exiting 0, in 18 s. The free plan allows 20 checks and keeps 100 log entries per job, which is about 50 hours of runs at one ping every 30 minutes. Two checks are used.
 
@@ -64,7 +64,7 @@ The grace period is a 20-minute estimate from only two samples. Staging's runs o
 
 [Source: runbook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1325-L1331)
 
-## Gotchas
+## Gotchas: risks accepted on purpose
 
 - **The old ping could hide a new failure.** While a CronJob still ran, it pinged the same check, and its success would have cleared a Dagster `/fail`. Deleting the CronJobs was therefore part of the cutover. Argo CD's Postgres Applications never prune, so the deletion was done by hand right after the sync. [Source: runbook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1377-L1384)
 - **Every run Pod holds the ping URL.** Whoever has it can silence the alarm. The chart copies the code server's whole environment into each run Pod with no way to leave one variable out. The operator accepted this on 2026-11-07, because run Pods already hold the catalog owner's password and the R2 write token. [Source: ADR-0033](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0033-dagster-alerts-through-healthchecks.md#L88-L99)

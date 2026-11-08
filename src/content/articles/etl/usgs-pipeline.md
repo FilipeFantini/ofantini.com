@@ -12,7 +12,7 @@ An earthquake record is not final when it is published. The USGS keeps revising 
 
 [Source: USGS service README](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/services/usgs/README.md#L41-L49) · [Source: roadmap, M2](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L139-L152)
 
-## What we built
+## What we built: from feed to tables
 
 The source is the USGS earthquake web service: GeoJSON over HTTP, with no key and no login.
 
@@ -44,7 +44,7 @@ The destination is **DuckLake**: Parquet files plus a catalog that records which
 
 [Source: ADR-0026](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0026-dagster-one-instance-per-environment.md#L47-L69) · [Source: definitions.py](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/platform/orchestration/lagom_orchestration/definitions.py#L47-L50)
 
-## Why this choice
+## Why this choice: dlt, merge and DuckLake
 
 The first design used Redpanda Connect for everything. It is good at message pipelines but weak at batch APIs in five ways: pagination, cursor state across runs, schema inference, flattening nested JSON, and backfills. Each would have become a hand-built workaround. Airbyte solves extraction but needs Temporal, a worker and its own database, so it was excluded on memory.
 
@@ -58,7 +58,7 @@ One thing is not decided. USGS runs on DuckLake today, but ADR-0023, which propo
 
 [Source: ADR-0023](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0023-sme-stack-duckdb-on-ducklake.md#L3-L4) · [Source: roadmap, M3](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L238-L242)
 
-## How it has worked
+## How it has worked: first loads and first week
 
 The first real load, into the development database on Postgres on 2026-10-17, brought 10,168 events (30 days) in 15 s.
 
@@ -72,7 +72,7 @@ In that first week the median run took 43 s and the longest 136 s. In the run of
 
 [Source: runbook, Dagster](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1748-L1754) · [Source: resource budget](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L605)
 
-## Gotchas
+## Gotchas: the feed's surprises
 
 - **Only the last 30 days.** The query sends no start time, and the API then returns only events whose origin is in the last 30 days, whatever the cursor says. Checked with the count endpoint on 2026-10-28: 9,474 events updated since 2026-10-01 without a start time, 12,318 with one. The operator accepted two consequences: a revision published after an event is 30 days old is never loaded, and a re-load brings back 30 days at most. [Source: USGS service README](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/services/usgs/README.md#L51-L60)
 - **The same field is `4` or `4.1`.** dlt types a column from the first value it sees, so the fractional fields are declared `double` in the YAML. A field whose type changes then fails the run instead of adding a second column. [Source: USGS service README](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/services/usgs/README.md#L62-L71)

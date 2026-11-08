@@ -12,7 +12,7 @@ A change to a data model can be valid SQL and still give wrong numbers. For a wh
 
 [Source: ci.yml, before](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L160-L167)
 
-## What we built
+## What we built: a build on made-up rows
 
 One job in the CI workflow, called `warehouse`, runs on GitHub's machines, so it costs the node nothing. It lints the SQL and parses the dbt project. A later step runs the real thing: `dbt build` on the `lake` target, the target Dagster runs in staging and prod, over a small hand-made bronze table.
 
@@ -28,7 +28,7 @@ The 12 rows are chosen so that each rule is reached: two revisions of one event,
 
 [Source: warehouse README, CI](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/platform/warehouse/README.md#L60-L63) · [Source: fixture](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/platform/warehouse/ci/bronze_usgs_events.sql#L1-L9)
 
-## Why this choice
+## Why this choice: the lake target
 
 No ADR records this decision, so the reasons come from the workflow's comments and the warehouse README. The `lake` target is what Dagster runs, so a test on it is a test of what ships. The orchestration project's lockfile is the environment because that is where dbt-duckdb lives and what the image runs. A temporary directory stands in for R2 and Postgres, so the check needs no secret and cannot touch an environment.
 
@@ -38,15 +38,15 @@ The trade-off is that a fixture only proves what its rows exercise. The README s
 
 [Source: warehouse README, CI](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/platform/warehouse/README.md#L62-L63)
 
-## How it has worked
+## How it has worked: red first, then green
 
-The check went green on 2026-11-07 with `PASS=33`, and the commit that turned it green also ticked "`dbt test` in CI" on the roadmap. The pull request was built in a deliberate order. Its first commit carried a fixture row with a null magnitude, meant to show the step failing, and its message says "deliberately red". The step itself arrived in a later commit. A third commit gave that row a magnitude of 8.2. Its message records both outcomes locally: `PASS=33` with the row fixed, and with the null back, `not_null_fct_earthquakes_magnitude` fails and dbt exits 1.
+The check went green on 2026-11-07 with `PASS=33`, and the commit that turned it green also ticked "`dbt test` in CI" on the roadmap. The pull request was built in a deliberate order. Its first commit carried a fixture row with a null magnitude, meant to show the step failing, and its message says "deliberately red". The step itself arrived in a later commit. A third commit gave that row a magnitude of 8.2. Its message records both outcomes locally: `PASS=33` with the row fixed, and with the null back, the not-null test on the magnitude of `fct_earthquakes` fails and dbt exits 1.
 
 [Source: roadmap, M3](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L280-L284) · [Source: commit 8cec740](https://github.com/FilipeFantini/lagom/commit/8cec740cd3de90acb15ff5af463567031673a16d) · [Source: commit d2d3523](https://github.com/FilipeFantini/lagom/commit/d2d3523f9e933e57feea2114241be68b2619bc09) · [Source: commit 9088716](https://github.com/FilipeFantini/lagom/commit/9088716d72816e159568f06343e7ed287793bb65)
 
 The commit messages do not say whether CI itself turned red on that first commit, only that it was meant to.
 
-## Gotchas
+## Gotchas: what the fixture cannot see
 
 - **What it cannot see.** The `gold_reader_privileges` test needs a Postgres role, and the project enables it on the Postgres target only, so CI skips it. Freshness is not run either. [Source: warehouse README, CI](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/platform/warehouse/README.md#L65-L67)
 - **Real data can still surprise it.** A column that dlt adds, renames or retypes reaches the fixture only when someone edits it, so the first proof of such a change is the next run in staging. [Source: warehouse README, CI](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/platform/warehouse/README.md#L67-L71)

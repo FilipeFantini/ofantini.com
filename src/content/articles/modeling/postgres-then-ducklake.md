@@ -12,7 +12,7 @@ Where should a small data platform keep its tables, and what should do the sums?
 
 [Source: roadmap, trigger table](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L27-L28)
 
-## What we built
+## What we built: two storage designs
 
 A warehouse here has three layers. **Bronze** is the raw data, typed. **Silver** is cleaned and conformed. **Gold** is modelled for the people who read it.
 
@@ -30,7 +30,7 @@ The reason for R2 is that the data outlives the node. Compute becomes stateless,
 
 [Source: ADR-0023](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0023-sme-stack-duckdb-on-ducklake.md#L49-L56)
 
-## Why this choice
+## Why this choice: waiting, then proposing
 
 **Why Postgres first.** ADR-0008 asked what the lake would do now, and the answer was: nothing Postgres cannot. There was one source, with a volume measured in megabytes. An earlier ADR had rejected "Postgres alone" because a row store suffers on heavy aggregation, but ADR-0008 observed that this is true at volume and there was no volume. The rejected alternatives were a lakehouse on R2 now (a vendor, a payment method, a credential per environment, uncapped operation billing) and one on the node's own disk. The operator did want a lakehouse, and chose to wait for a real reason.
 
@@ -50,7 +50,7 @@ The trade-offs it accepts are written down: DuckLake is young (six months since 
 
 [Source: ADR-0023, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0023-sme-stack-duckdb-on-ducklake.md#L100-L112)
 
-## How it has worked
+## How it has worked: the spike is still open
 
 At the pinned commit ADR-0023 is still Proposed, to be accepted or revised with the numbers of the spike. The spike must show four things: the USGS pipeline passing on DuckLake, Evidence reading it, small files handled with R2 operations inside the free tier, and peak memory and `dbt build` time compared with Postgres. In the roadmap its item is unchecked. If any check fails, the ADR is revised, not accepted.
 
@@ -60,7 +60,7 @@ What did happen is operational. A local run on 2026-10-28 built the models with 
 
 [Source: ADR-0026](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0026-dagster-one-instance-per-environment.md#L19-L22) · [Source: roadmap, M3](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L252-L256) · [Source: roadmap, M3](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L263-L265)
 
-## Gotchas
+## Gotchas: the warehouse moved first
 
 - **The warehouse moved before the decision.** On 2026-11-07 the Postgres CronJobs were retired in the change that turned Dagster's alarm on, without waiting for the spike. From then gold lives in DuckLake while ADR-0023 is still Proposed, and the Postgres warehouse stopped updating. The reversal is written: re-target the dbt models to Postgres and load the data back from the Parquet files or from USGS. The Postgres Clusters stay, because they hold Dagster's metastore and DuckLake's catalog. [Source: ADR-0033](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0033-dagster-alerts-through-healthchecks.md#L106-L111) · [Source: ADR-0033, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0033-dagster-alerts-through-healthchecks.md#L121-L130)
 - **The Postgres comparison is still owed.** With the CronJobs gone, the Postgres side of the memory and time comparison is to be measured once, by hand, from a re-load, if ADR-0023 still asks for it. [Source: ADR-0033](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0033-dagster-alerts-through-healthchecks.md#L22-L29)
@@ -69,7 +69,7 @@ What did happen is operational. A local run on 2026-10-28 built the models with 
 - **The catalog URI can leak a password.** When attaching the lake fails, DuckDB repeats the catalog URI, password included (checked on duckdb 1.5.6), so the alarm strips such text before it is sent. [Source: ADR-0033](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0033-dagster-alerts-through-healthchecks.md#L146-L150)
 - **A claim that stayed unverified.** ADR-0004 recorded that Iceberg is understood to store absolute file paths, which would make moving a table a metadata rewrite, and said both formats' behaviour was unverified. ADR-0004 is still Proposed, with no test result recorded in it, while ADR-0023 would put DuckLake in Iceberg's place for this stack if it is accepted. [Source: ADR-0004](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0004-table-format.md#L3-L4) · [Source: ADR-0004, notes](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0004-table-format.md#L85-L89) · [Source: ADR-0023](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0023-sme-stack-duckdb-on-ducklake.md#L7-L10)
 
-## What comes next
+## What comes next: the spike decides
 
 The spike's four checks decide whether ADR-0023 is accepted or revised. If it is revised, its reversal applies and the warehouse returns to Postgres.
 
