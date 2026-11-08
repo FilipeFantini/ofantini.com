@@ -14,6 +14,8 @@ dlt retrieves events from the USGS API and loads them into DuckLake. DuckLake ke
 
 ![Flowchart showing the earthquake data pipeline](/diagrams/etl.svg)
 
+[Source: USGS service](https://github.com/FilipeFantini/lagom/blob/3d6039735d0ffca19553c1669d506f34da241a68/services/usgs/README.md#L3-L11) · [Source: ADR-0026](https://github.com/FilipeFantini/lagom/blob/3d6039735d0ffca19553c1669d506f34da241a68/docs/adr/0026-dagster-one-instance-per-environment.md#L61-L66)
+
 ## A recorded run
 
 The first production run loaded 10,042 events covering 30 days and reported PASS=33. These are results of that run, not a promise about future volumes or performance.

@@ -18,6 +18,6 @@ Staging is the rehearsal space; production is where the real pipeline runs. Each
 
 One shared instance would use less resident memory, but it would cross the boundary between environments. The accepted design spends more resources to keep that boundary clear.
 
-[Source: ADR-0026](https://github.com/FilipeFantini/lagom/blob/3d6039735d0ffca19553c1669d506f34da241a68/docs/adr/0026-dagster-one-instance-per-environment.md#L30-L52)
+[Source: ADR-0026](https://github.com/FilipeFantini/lagom/blob/3d6039735d0ffca19553c1669d506f34da241a68/docs/adr/0026-dagster-one-instance-per-environment.md#L30-L66)
 
 Dagster coordinates dlt and dbt in each environment; it does not replace their roles. Collection, transformation and scheduling remain distinct pieces.
