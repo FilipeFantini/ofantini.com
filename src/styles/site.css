@@ -3,3 +3,4 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.18em}nav{fo
 
 .map{transform:none}.station:hover{transform:none}.station-name,.station-description{background:#eee3c9}.article-content svg{height:auto}
 .article-content p.sources{font:.78rem/1.6 'IBM Plex Mono',monospace;margin:-1.25rem 0 2rem;letter-spacing:.01em}
+.article-content code{overflow-wrap:anywhere}
