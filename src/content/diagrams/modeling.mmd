@@ -1,6 +1,0 @@
-%%{init: {"flowchart": {"htmlLabels": false}}}%%
-flowchart TD
-    A[Sources] --> B[Parquet files on R2]
-    C[Postgres catalog] --> D[DuckLake tables]
-    B --> D
-    D --> E[DuckDB and dbt]

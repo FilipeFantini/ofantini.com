@@ -1,0 +1,14 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart TD
+    A[Merge to main] e1@--> B[CI builds the image, tagged with the commit]
+    B e2@--> C[Pull request pins its digest in staging]
+    C e3@--> D[Staging Dagster runs it]
+    D e4@--> E[Pull request pins the same digest in prod]
+    K{{CI promotion check: did staging pin this digest first?}} -.-> E
+    E e5@--> F[Prod Dagster runs it]
+    L[Developer's laptop: code only] -.-> M[(lagom_dev database in staging's Postgres)]
+    e1@{ animate: true }
+    e2@{ animate: true }
+    e3@{ animate: true }
+    e4@{ animate: true }
+    e5@{ animate: true }

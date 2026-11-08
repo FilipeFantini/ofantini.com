@@ -1,0 +1,16 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart TD
+    A[Pull request] e1@--> B[CI job: lint and parse]
+    B e2@--> C[Load 12 hand-made bronze rows]
+    C e3@--> D[(Temporary DuckLake on the runner's disk)]
+    D e4@--> E[dbt build on the lake target]
+    E e5@--> F[Models, contracts, unit tests, data tests, reconciliations]
+    F e6@--> G{All pass?}
+    G -->|yes| H[Check is green]
+    G -->|no| I[Check is red]
+    e1@{ animate: true }
+    e2@{ animate: true }
+    e3@{ animate: true }
+    e4@{ animate: true }
+    e5@{ animate: true }
+    e6@{ animate: true }
