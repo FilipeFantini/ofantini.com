@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant B as Browser
+    participant E as Cloudflare edge and Access
+    participant C as cloudflared in the cluster
+    participant D as Dagster webserver
+    C->>E: opens outbound connections and keeps them open
+    B->>E: asks for a tool's path over HTTPS
+    E-->>B: no login cookie, so the login page
+    B->>E: one-time code received by e-mail
+    E->>C: request sent down an open connection, signed token in a header
+    C->>C: checks the token against Access's public keys
+    C->>D: forwards the path unchanged over plain HTTP inside the cluster
+    D-->>C: response
+    C-->>E: response
+    E-->>B: response
