@@ -1,0 +1,14 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart LR
+    P1["Pull request 1: the code"] e1@--> CI["CI builds the image, tagged with the commit SHA"]
+    CI e2@--> DG["Digest printed in the run summary"]
+    DG e3@--> P2["Pull request 2: staging pins the digest"]
+    P2 e4@--> ST["Staging runs it"]
+    ST --> P3["Pull request 3: prod pins the same digest"]
+    P3 --> G{"Did staging pin this digest on main first?"}
+    G -->|"yes"| PR["Prod runs it"]
+    G -->|"no"| F["promotion check fails the change"]
+    e1@{ animate: true }
+    e2@{ animate: true }
+    e3@{ animate: true }
+    e4@{ animate: true }
