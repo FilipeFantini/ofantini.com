@@ -50,6 +50,8 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         assert.equal(await page.locator(`.article-trail a[href="${track}"]`).count(), 1, `${route}: track breadcrumb`);
         assert.equal(await page.locator('.win .t').textContent().then(text => /^Lagom \/ .+ \/ \d\d$/.test(text)), true, `${route}: window title`);
         assert.equal(await page.locator('.article-pin a[href^="https://github.com/FilipeFantini/lagom/tree/"]').count(), 1, `${route}: pinned commit`);
+        assert.ok(await page.locator('.article-content p.sources a[href^="https://github.com/FilipeFantini/lagom/blob/"]').count() > 0, `${route}: source lines marked`);
+        assert.equal(await page.locator('.article-content p:not(.sources) > a:first-child:only-child[href*="/lagom/blob/"]').count(), 0, `${route}: no unmarked source line`);
       }
     }
     await page.goto(new URL('/projects/lagom/', base).href);
