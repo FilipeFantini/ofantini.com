@@ -85,7 +85,9 @@ commit both files. An article embeds a diagram as `![alt text](/diagrams/<name>.
 Mermaid animated edges (`A e1@--> B` with `e1@{ animate: true }`) work through CSS that
 Mermaid embeds in the SVG; `npm run diagrams` adds a `prefers-reduced-motion` rule that
 stops every animation, and the build fails for an SVG that has animation CSS without
-it. This command downloads the pinned Mermaid CLI temporarily and
+it. `scripts/mermaid.json` sets the font to `arial, sans-serif`, because an SVG shown
+through `<img>` gets no page fonts and the default font would be embedded in every SVG
+(about 200 KB). This command downloads the pinned Mermaid CLI temporarily and
 uses a local browser. The site build only checks the source hash in each SVG, so
 Cloudflare Pages does not need a browser for diagrams.
 
