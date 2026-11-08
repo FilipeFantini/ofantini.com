@@ -44,9 +44,9 @@ protection, any of them could push to `main` and publish at once.
    `.claude/agents/reviewer.md` on Sonnet, from `main` through
    `pull_request_target`, read-only, blocking only blocker and major findings.
    One difference: Lagom skips the model for a change to Markdown only; here
-   only Markdown outside `src/` is skipped. Markdown under `src/` is rendered
-   into the site, raw HTML included, so an article is a publication and is
-   reviewed like code.
+   only Markdown outside `src/` and `public/` is skipped. Markdown under
+   `src/` is rendered into the site, raw HTML included, and `public/` is
+   served as it is, so an article is a publication and is reviewed like code.
 4. **`guardrail approval`** is Lagom's gate (its ADR-0035): a pull request
    that touches a path in `.github/CODEOWNERS` waits for the operator's
    approval of the `guardrail` environment, whose required reviewer is the
@@ -68,11 +68,15 @@ reviewed, and a change to the gates waits for the operator.
 - **The first pull request is not judged by its own gates.** `agent review`
   and `guardrail approval` run from `main`, which has neither until that pull
   request merges. It is reviewed by a reviewer subagent before merge and
-  approved by the operator in conversation; the ruleset is applied right
-  after.
+  approved by the operator in conversation.
+- **The setup has an order, done before any further pull request.** First the
+  `guardrail` environment, with the operator as required reviewer and admin
+  bypass off: GitHub creates a missing environment on first use with no
+  reviewer, and the gate would then pass a guarded change at once. Then the
+  secret, then the ruleset.
 - **`agent review` needs the secret `CLAUDE_CODE_OAUTH_TOKEN`** in this
   repository. Without it the check fails, which blocks every change but
-  Markdown outside `src/`: it fails closed.
+  Markdown outside `src/` and `public/`: it fails closed.
 - **Each article spends one review** of the operator's Claude subscription.
 - **Cloudflare preview deployments would bypass all of this.** By default
   Pages publishes every branch at a public `pages.dev` address before any

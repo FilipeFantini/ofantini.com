@@ -112,9 +112,9 @@ problem; no unrelated refactoring.
    - `agent review` — the role in
      [`.claude/agents/reviewer.md`](.claude/agents/reviewer.md), run in CI;
      it blocks only blocker and major findings. A change to Markdown outside
-     `src/` and the agents' instructions passes without a model review;
-     Markdown under `src/` is rendered into the site, so an article is
-     reviewed;
+     `src/`, `public/` and the agents' instructions passes without a model
+     review; Markdown under `src/` is rendered into the site and `public/` is
+     served as it is, so an article is reviewed;
    - `guardrail approval` — passes at once unless the change touches a path
      in [`.github/CODEOWNERS`](.github/CODEOWNERS); then it waits for the
      operator.

@@ -17,11 +17,11 @@
 # the next push, so it stays blocked: closed, at no cost. Editing the
 # description does not re-run the review.
 #
-# A change to Markdown only, outside src/ and the agents' instructions, is not
-# sent to the model: it is not published, and every review spends the
-# operator's Claude subscription. The check still reports, and passes.
-# Markdown under src/ is rendered into the site, raw HTML included, so an
-# article is reviewed like code.
+# A change to Markdown only, outside src/, public/ and the agents'
+# instructions, is not sent to the model: it is not published, and every
+# review spends the operator's Claude subscription. The check still reports,
+# and passes. Markdown under src/ is rendered into the site, raw HTML
+# included, and public/ is served as it is, so both are reviewed like code.
 name: agent review
 
 on:
@@ -63,8 +63,8 @@ jobs:
             exit 1
           fi
 
-      # Markdown only, outside src/, .claude/, AGENTS.md and CLAUDE.md: no
-      # review.
+      # Markdown only, outside src/, public/, .claude/, AGENTS.md and
+      # CLAUDE.md: no review.
       # GitHub lists at most 3000 files; a shorter list than the pull
       # request's count is never treated as Markdown only.
       - id: scope
@@ -82,7 +82,7 @@ jobs:
           markdown_only=false
           if [ -n "$EXPECTED" ] && [ "$listed" -ge "$EXPECTED" ] \
             && ! grep -qv '\.md$' paths.txt \
-            && ! grep -qE '^(src/|\.claude/|AGENTS\.md$|CLAUDE\.md$)' paths.txt; then
+            && ! grep -qE '^(src/|public/|\.claude/|AGENTS\.md$|CLAUDE\.md$)' paths.txt; then
             markdown_only=true
           fi
           echo "listed $listed of $EXPECTED files; markdown only: $markdown_only"
