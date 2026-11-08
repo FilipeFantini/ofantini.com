@@ -1,0 +1,108 @@
+---
+interface Props {
+  areas: { label: string; score: number }[];
+  mobile?: boolean;
+}
+
+const { areas, mobile = false } = Astro.props;
+
+// Desktop keeps a wide canvas. Mobile uses a square chart inset in a taller
+// frame so area names can sit on the vertices without overlapping.
+const width = mobile ? 180 : 720;
+const height = mobile ? 180 : 420;
+const frameW = mobile ? 360 : width;
+const frameH = mobile ? 400 : height;
+const cx = width / 2;
+const cy = height / 2;
+const radius = mobile ? 78 : 140;
+const labelRadius = 180;
+
+// Label anchors in the mobile frame (360x400). Side labels grow away from
+// the chart, leaving its vertices visible down to a 320px-wide phone.
+const mobileLabels: [number, number, 'start' | 'end' | 'middle'][] = [
+  [180, 75, 'middle'], // Team leadership
+  [256, 145, 'start'], // Reporting & BI
+  [256, 200, 'start'], // Analytics
+  [256, 245, 'start'], // Data modeling
+  [180, 340, 'middle'], // Data engineering
+  [140, 280, 'end'], // Cloud & infrastructure
+  [104, 200, 'end'], // Governance & quality
+  [104, 145, 'end'], // AI & agents
+];
+
+const point = (index: number, distance: number) => {
+  const angle = -Math.PI / 2 + (index * 2 * Math.PI) / areas.length;
+  return [cx + Math.cos(angle) * distance, cy + Math.sin(angle) * distance] as const;
+};
+
+const ring = (level: number) =>
+  areas.map((_, index) => point(index, (radius * level) / 7).join(',')).join(' ');
+
+const shape = areas
+  .map(({ score }, index) => point(index, (radius * score) / 7).join(','))
+  .join(' ');
+
+const lines = (label: string) => {
+  const [left, right] = label.split(' & ');
+  if (right) return [`${left} &`, right];
+  if (mobile && label.includes(' ')) {
+    const parts = label.split(' ');
+    const mid = Math.ceil(parts.length / 2);
+    return [parts.slice(0, mid).join(' '), parts.slice(mid).join(' ')];
+  }
+  return [label];
+};
+
+const desktopAnchor = (x: number) => (x < 320 ? 'end' : x > 400 ? 'start' : 'middle');
+---
+<div class:list={['radar-plot', mobile ? 'mobile' : 'desktop']} aria-hidden="true">
+  <svg viewBox={`0 0 ${width} ${height}`} focusable="false">
+    {[1, 2, 3, 4, 5, 6, 7].map((level) => (
+      <polygon class="grid" points={ring(level)} />
+    ))}
+    {areas.map((_, index) => {
+      const [x, y] = point(index, radius);
+      return <line class="axis" x1={cx} y1={cy} x2={x} y2={y} />;
+    })}
+    <polygon class="data" points={shape} />
+    {areas.map(({ score }, index) => {
+      const [x, y] = point(index, (radius * score) / 7);
+      return <circle class="points" cx={x} cy={y} r={mobile ? 2.5 : 3} />;
+    })}
+  </svg>
+  {areas.map(({ label }, index) => {
+    const labelLines = lines(label);
+    if (mobile) {
+      const [x, y, anchor] = mobileLabels[index];
+      return (
+        <span
+          class:list={['radar-label', anchor]}
+          data-area={index}
+          style={`left:${(x / frameW) * 100}%;top:${(y / frameH) * 100}%`}
+        >
+          {labelLines.map((line, lineIndex) => (
+            <>
+              {line}
+              {lineIndex < labelLines.length - 1 && <br />}
+            </>
+          ))}
+        </span>
+      );
+    }
+    const [x, y] = point(index, labelRadius);
+    const anchor = desktopAnchor(x);
+    return (
+      <span
+        class:list={['radar-label', anchor]}
+        style={`left:${(x / width) * 100}%;top:${(y / height) * 100}%`}
+      >
+        {labelLines.map((line, lineIndex) => (
+          <>
+            {line}
+            {lineIndex < labelLines.length - 1 && <br />}
+          </>
+        ))}
+      </span>
+    );
+  })}
+</div>

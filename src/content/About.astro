@@ -1,0 +1,22 @@
+---
+import RadarPlot from '../components/RadarPlot.astro';
+import skillData from '../data/skills.json';
+
+const skills = skillData.areas;
+---
+<div class="content">
+  <div class="copy">
+    <p class="label">About me</p>
+    <h1>From data to decisions.</h1>
+    <p>I lead data teams and build systems for ingestion, modelling, governance and analysis. I am interested in making trusted data useful to people.</p>
+    <p>Infrastructure is also my hobby. I enjoy running my own servers and learning parts of the stack I don't touch at work. Lagom grew out of that.</p>
+    <p>When I'm not at a keyboard, I'm usually outside doing some sport. I'll write about that here too, soon.</p>
+    <p class="tools">SQL · Python · dbt · Spark · <span style="white-space: nowrap">Power BI</span> · Fabric · Azure · MCP · <span style="white-space: nowrap">Snowflake</span></p>
+  </div>
+  <div class="chart">
+    <h2>Skills at a glance</h2>
+    <RadarPlot areas={skills} />
+    <RadarPlot areas={skills} mobile />
+    <ul class="sr-only">{skills.map(({ label, score }) => <li>{label}: {score} out of 7</li>)}</ul>
+  </div>
+</div>

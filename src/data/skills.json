@@ -1,0 +1,13 @@
+{
+  "scale": { "min": 0, "max": 7 },
+  "areas": [
+    { "label": "Team leadership", "score": 5 },
+    { "label": "Reporting & BI", "score": 7 },
+    { "label": "Analytics", "score": 7 },
+    { "label": "Data modeling", "score": 5 },
+    { "label": "Data engineering", "score": 5 },
+    { "label": "Cloud & infrastructure", "score": 4 },
+    { "label": "Governance & quality", "score": 5 },
+    { "label": "AI & agents", "score": 4 }
+  ]
+}

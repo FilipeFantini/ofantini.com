@@ -1,0 +1,20 @@
+---
+const chapters = [
+  { href: '/projects/lagom/infrastructure/', name: 'Infrastructure', description: 'A small node, a deliberate budget.', color: 'infra' },
+  { href: '/projects/lagom/etl/', name: 'ETL', description: 'Following earthquake events into the platform.', color: 'infra' },
+  { href: '/projects/lagom/modeling/', name: 'Modeling', description: 'How data becomes useful tables.', color: 'infra' },
+  { href: '/projects/lagom/orchestration/', name: 'Orchestration', description: 'Coordinating the work.', color: 'infra' },
+  { href: '/projects/lagom/security/', name: 'Security', description: 'Boundaries for agents and credentials.', color: 'infra' },
+  { name: 'Data visualization', description: 'In works.', color: 'analysis' },
+];
+---
+<section class="intro" aria-labelledby="title">
+        <p class="eyebrow"><span class="roundel" aria-hidden="true"></span> Project field notes <span class="divider">/</span> Lagom</p>
+        <h1 id="title">A small platform<br /><em>that grows one line at a time.</em></h1>
+        <div class="intro-bottom"><p>Lagom is Swedish for “not too little, not too much, just enough”. Not every company needs a big data platform. Many can get value from tools sized for small or medium data. Lagom explores that idea in the open, with a small platform that can grow as needed. Each new source adds a pipeline to the same shared foundation. <a href="https://github.com/FilipeFantini/lagom#lagom">Source: Lagom README</a>.</p><span class="direction" aria-hidden="true"><small>Follow the lines</small></span></div>
+      </section>
+      <section class="network" aria-labelledby="network-title">
+        <div class="network-heading"><div><p class="eyebrow">The project, in chapters</p><h2 id="network-title">One network.<br /><em>Many ways in.</em></h2></div><p>Each published chapter links to an article about a part of Lagom. Data visualization is in works.</p></div>
+        <div class="map-wrap"><ol class="map" aria-label="Lagom chapters">{chapters.map((chapter) => <li class:list={['station', chapter.color]}><span class="station-mark" aria-hidden="true"></span><span class="station-name">{chapter.href ? <a href={chapter.href}>{chapter.name}</a> : chapter.name}</span><span class="station-description">{chapter.description}</span></li>)}</ol></div>
+        <p class="map-note">A living project <span aria-hidden="true">✳</span> Chapters are being prepared.</p>
+      </section>

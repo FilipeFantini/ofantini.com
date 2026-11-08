@@ -1,0 +1,7 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart TD
+    A[USGS API] --> B[dlt]
+    B --> C[DuckLake on R2]
+    C --> D[dbt models and tests]
+    E[Dagster] --> B
+    E --> D

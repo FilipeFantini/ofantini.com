@@ -1,0 +1,10 @@
+---
+const articles = [
+  ['Infrastructure', '/projects/lagom/infrastructure/'],
+  ['ETL', '/projects/lagom/etl/'],
+  ['Modeling', '/projects/lagom/modeling/'],
+  ['Orchestration', '/projects/lagom/orchestration/'],
+  ['Security', '/projects/lagom/security/']
+];
+---
+<section class="intro"><p class="eyebrow">Articles from the work</p><h1>Articles</h1><div class="intro-bottom"><div><p>These articles follow the decisions and work behind <a href="/projects/lagom/">Lagom</a>, an open-source data platform.</p><ul>{articles.map(([name, href]) => <li><a href={href}>{name}</a></li>)}</ul></div></div></section>

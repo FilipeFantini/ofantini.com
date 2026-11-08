@@ -1,0 +1,19 @@
+---
+import BaseLayout from './BaseLayout.astro';
+const { frontmatter } = Astro.props;
+const tracks = ['infrastructure','etl','modeling','orchestration','security'];
+const slug = Astro.url.pathname.split('/').filter(Boolean).at(-1) || 'infrastructure';
+const index = tracks.indexOf(slug);
+const next = index >= 0 && index < tracks.length - 1 ? tracks[index + 1] : null;
+const label = slug === 'etl' ? 'ETL' : slug.charAt(0).toUpperCase() + slug.slice(1);
+---
+<BaseLayout title={frontmatter.title} windowTitle={`Lagom / ${label} / 01`} up="/projects/lagom/" kind="article-window">
+  <article class="article">
+    <nav class="article-trail" aria-label="Article path"><a href="/projects/lagom/">Lagom</a> › <a href={`/projects/lagom/${slug}/`}>{label}</a> › 01</nav>
+    <div class="article-label">LAGOM / {label.toUpperCase()} <span>FIELD NOTES</span></div>
+    <p class="eyebrow">A decision in context</p>
+    <h1>{frontmatter.title}</h1>
+    <div class="article-content"><slot /></div>
+    <nav class="article-links" aria-label="Article navigation"><a href="/projects/lagom/">Back to Lagom</a>{next && <a href={`/projects/lagom/${next}/`}>Next Lagom chapter →</a>}</nav>
+  </article>
+</BaseLayout>
