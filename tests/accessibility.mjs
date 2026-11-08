@@ -22,6 +22,11 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         await page.evaluate(() => document.fonts.ready);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
         if (overflow) failures.push(`${name} ${viewport.width} ${route}: horizontal overflow`);
+        // On a desktop window the page body scrolls inside a clipped box. axe reports a
+        // heading cut by the box edge as "incomplete" (background overlapped by the
+        // desk), which depends on where the text happens to fall. Show the whole body
+        // so every element is judged on its own colours, not on its scroll position.
+        await page.addStyleTag({ content: '.win,.win .body{height:auto!important;max-height:none!important;overflow:visible!important}' });
         await page.addScriptTag({ path: 'node_modules/axe-core/axe.min.js' });
         const result = await page.evaluate(async () => {
           const report = await axe.run(document, { runOnly: ['color-contrast', 'scrollable-region-focusable'] });

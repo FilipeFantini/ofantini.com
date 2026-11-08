@@ -1,0 +1,13 @@
+---
+import ArticleList from '../components/ArticleList.astro';
+import type { LagomTrack } from '../lib/lagom';
+interface Props { track: LagomTrack }
+const { track } = Astro.props;
+---
+<section class="intro">
+  <nav class="article-trail" aria-label="Track path"><a href="/projects/lagom/">Lagom</a> › {track.name}</nav>
+  <p class="eyebrow"><span class="roundel" aria-hidden="true"></span> Lagom <span class="divider">/</span> Track</p>
+  <h1>{track.name}</h1>
+  <div class="intro-bottom"><p>{track.description}</p></div>
+</section>
+<section class="listing"><ArticleList articles={track.articles} summaries /></section>

@@ -26,7 +26,8 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       assert.ok(await page.getByRole('link', { name: /ofantini\s*\.\s*com/i }).count(), `${route}: wordmark`);
     }
     await page.goto(new URL('/articles/', base).href);
-    await page.getByRole('link', { name: 'Infrastructure', exact: true }).click();
+    await page.getByRole('link', { name: 'When the small node stopped fitting', exact: true }).click();
+    await page.locator('.win[data-url="/projects/lagom/infrastructure/small-node/"]').waitFor();
     await page.locator('[data-back]').click();
     await page.waitForURL('**/articles/');
     const noJs = await browser.newPage({ javaScriptEnabled: false });
