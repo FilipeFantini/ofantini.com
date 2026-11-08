@@ -35,6 +35,30 @@ address it prints. Install the browsers once with `npx playwright install chromi
 against the real content (must pass) and against a bad fixture in `tests/fixtures/`
 (must fail and name the defect). `check-js-budget` takes no path, so it is not covered there.
 
+## Deployment
+
+Cloudflare Pages builds and serves the site through its own Git integration,
+not through GitHub Actions (Lagom's ADR-0039, Decision 5). When a commit lands on
+`main`, Cloudflare clones the repository, runs the build, and publishes `dist/`
+to its network. Nothing else runs: the site is static files.
+
+| Setting | Value |
+|---|---|
+| Pages project | `ofantini`, also served at `ofantini.pages.dev` |
+| Production branch | `main` |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Environment variable | `NODE_VERSION` = `22` |
+| Preview branches | none: a branch is never published |
+| Custom domain | `ofantini.com`, a proxied CNAME to `ofantini.pages.dev`, created by Pages |
+| GitHub access | the Cloudflare app, installed on this repository only |
+
+Previews stay off because Pages would otherwise publish every branch at a public
+address before any check ([ADR-0001](docs/adr/0001-how-a-change-reaches-main.md)).
+A failed Cloudflare build leaves the previous deployment online. To roll back,
+revert the commit on `main` through a pull request; the project's Deployments
+tab in Cloudflare can also roll back to an earlier deployment at once.
+
 ## Content and diagrams
 
 Keep public professional information abstract: no employer, dates, location,
