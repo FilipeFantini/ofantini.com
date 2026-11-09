@@ -1,6 +1,6 @@
 ---
 title: "Testing every dbt change on twelve made-up rows"
-summary: "How each pull request builds and tests my warehouse models on a throwaway DuckLake, why the first version was red on purpose, and what it still cannot see."
+summary: "How each pull request builds and tests the warehouse models on a throwaway DuckLake, why the first version was red on purpose, and what it still cannot see."
 project: lagom
 track: modeling
 order: 2
@@ -12,9 +12,9 @@ A change to a data model can be valid SQL and still give wrong numbers. For a wh
 
 [Source: the workflow before this change](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L160-L167)
 
-## What I built
+## What was built
 
-One job in the CI workflow (continuous integration, the checks that run on every pull request), called `warehouse`, runs on GitHub's machines, so it costs my own node nothing. It lints the SQL and parses the dbt project. A later step runs the real thing: `dbt build` on the `lake` target, the target Dagster runs in staging and prod, over a small hand-made bronze table.
+One job in the CI workflow (continuous integration, the checks that run on every pull request), called `warehouse`, runs on GitHub's machines, so it costs the node nothing. It lints the SQL and parses the dbt project. A later step runs the real thing: `dbt build` on the `lake` target, the target Dagster runs in staging and prod, over a small hand-made bronze table.
 
 [Source: the workflow](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L1-L2) · [Source: the workflow](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L149-L195)
 
@@ -30,7 +30,7 @@ The 12 rows are chosen so that each rule is reached: two revisions of one event,
 
 ## Why this way
 
-I never wrote this decision up on its own, so the reasons here come from the workflow's comments and the warehouse README. The `lake` target is what Dagster runs, so a test on it is a test of what ships. The orchestration project's lockfile is the environment because that is where dbt-duckdb lives and what the image runs. A temporary directory stands in for R2 and Postgres, so the check needs no secret and cannot touch a real environment. That fits the point of the platform: a safety net that runs on GitHub's machines, with no server of mine to keep alive.
+I never wrote this decision up on its own, so the reasons here come from the workflow's comments and the warehouse README. The `lake` target is what Dagster runs, so a test on it is a test of what ships. The orchestration project's lockfile is the environment because that is where dbt-duckdb lives and what the image runs. A temporary directory stands in for R2 and Postgres, so the check needs no secret and cannot touch a real environment. That fits the point of the platform: a safety net that runs on GitHub's machines, with no server to keep alive.
 
 [Source: the workflow](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L175-L184) · [Source: warehouse README, CI](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/platform/warehouse/README.md#L52-L59)
 

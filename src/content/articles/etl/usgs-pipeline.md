@@ -1,6 +1,6 @@
 ---
 title: "Loading an earthquake feed without counting a quake twice"
-summary: "How I pull the USGS earthquake feed into tested tables, why I keep every revision of every event, and what the first production runs showed."
+summary: "How the USGS earthquake feed is pulled into tested tables, why every revision of every event is kept, and what the first production runs showed."
 project: lagom
 track: etl
 order: 1
@@ -12,7 +12,7 @@ An earthquake record isn't final when it's published. The USGS keeps revising ma
 
 [Source: USGS service README](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/services/usgs/README.md#L41-L49) · [Source: roadmap](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L139-L152)
 
-## What I built
+## What was built
 
 The source is the USGS earthquake web service: GeoJSON over HTTP, with no key and no login.
 
@@ -32,7 +32,7 @@ The load is a **merge on `(id, properties__updated)`**. Bronze, the raw layer, k
 
 [Source: USGS service README](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/services/usgs/README.md#L41-L49)
 
-The destination is **DuckLake**: Parquet files plus a catalog that records which files form which table at which snapshot. Think of the files as books on shelves and the catalog as the card index. The catalog sits in Postgres, one database per environment, and the files sit in that environment's R2 bucket (Cloudflare's object storage). An environment here is staging, my rehearsal copy, or production.
+The destination is **DuckLake**: Parquet files plus a catalog that records which files form which table at which snapshot. Think of the files as books on shelves and the catalog as the card index. The catalog sits in Postgres, one database per environment, and the files sit in that environment's R2 bucket (Cloudflare's object storage). An environment here is staging, the rehearsal copy, or production.
 
 [Source: the storage decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0023-sme-stack-duckdb-on-ducklake.md#L41-L47) · [Source: the Dagster decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0026-dagster-one-instance-per-environment.md#L61-L66)
 
@@ -54,7 +54,7 @@ The merge key is a trade-off too. `append` would duplicate rows on every re-run,
 
 [Source: USGS service README](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/services/usgs/README.md#L41-L49)
 
-One thing is still open. USGS runs on DuckLake today, but my proposal to use DuckLake for the whole warehouse is still marked Proposed, and the roadmap item for the trial that would settle it is unchecked.
+One thing is still open. USGS runs on DuckLake today, but the proposal to use DuckLake for the whole warehouse is still marked Proposed, and the roadmap item for the trial that would settle it is unchecked.
 
 [Source: the storage decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0023-sme-stack-duckdb-on-ducklake.md#L3-L4) · [Source: roadmap](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L238-L242)
 

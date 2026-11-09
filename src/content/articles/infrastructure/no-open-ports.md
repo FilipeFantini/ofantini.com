@@ -1,6 +1,6 @@
 ---
 title: "A server with no open ports that I can still reach"
-summary: "How my node accepts no inbound connection at all, yet I administer it over a private network and open web tools in a browser behind a login."
+summary: "How the node accepts no inbound connection at all, yet is administered over a private network, with web tools open in a browser behind a login."
 project: lagom
 track: infrastructure
 order: 3
@@ -8,15 +8,15 @@ lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0021", "0028", "0030"]
 ---
 
-A server that listens for the internet has a door, and every door needs a lock, a guard and someone watching. I wanted a node with no door at all: no inbound port open, on IPv4 or IPv6. I still have to administer it, and I still want to open web tools, such as the orchestrator's interface, from any browser.
+A server that listens for the internet has a door, and every door needs a lock, a guard and someone watching. I wanted a node with no door at all: no inbound port open, on IPv4 or IPv6. It still has to be administered, and the web tools, such as the orchestrator's interface, should still open from any browser.
 
-## What I built
+## What was built
 
-Access is split into channels, each less privileged than the one before. Two matter here. Tailscale, a private network between my devices and the node, grants raw access to the database and the whole cluster. Cloudflare Access grants a tool in the browser behind a login, with nothing to install.
+Access is split into channels, each less privileged than the one before. Two matter here. Tailscale, a private network between the operator's devices and the node, grants raw access to the database and the whole cluster. Cloudflare Access grants a tool in the browser behind a login, with nothing to install.
 
 [Source: access channels](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L403-L411)
 
-**The private network.** Tailscale is a WireGuard mesh (encrypted tunnels between devices) with access rules by identity and no open ports. The node is tagged as a machine of a role, not a person, and the rules name roles: operators reach the node's SSH and the Kubernetes API, and nothing else, not even the kubelet (the agent that runs pods). The node can open no connection to anyone's device, so a compromised node cannot reach my machine. The policy carries `tests`, assertions the admin console checks on every save, and a policy that breaks them is rejected.
+**The private network.** Tailscale is a WireGuard mesh (encrypted tunnels between devices) with access rules by identity and no open ports. The node is tagged as a machine of a role, not a person, and the rules name roles: operators reach the node's SSH and the Kubernetes API, and nothing else, not even the kubelet (the agent that runs pods). The node can open no connection to anyone's device, so a compromised node cannot reach the operator's machine. The policy carries `tests`, assertions the admin console checks on every save, and a policy that breaks them is rejected.
 
 [Source: access channels](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L430-L434) · [Source: runbook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L943-L949)
 
@@ -24,7 +24,7 @@ The cloud firewall stays attached with no inbound rules, which denies all inboun
 
 [Source: runbook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L951-L958)
 
-**The tunnel.** For browser tools, a small Pod called `cloudflared` dials out to Cloudflare and keeps the connections open. Requests come back down them. Think of a phone line I call out on, which then carries incoming calls. An Access application is Cloudflare's doorman: it shows a login page and lets through only the e-mail addresses in its policy. The login is a one-time code sent to that address. After login, Access signs a token, a JWT, and adds it to every request; `cloudflared` refuses a request whose token is missing or not signed for this application.
+**The tunnel.** For browser tools, a small Pod called `cloudflared` dials out to Cloudflare and keeps the connections open. Requests come back down them. Think of a phone line that is dialled out first and then carries incoming calls. An Access application is Cloudflare's doorman: it shows a login page and lets through only the e-mail addresses in its policy. The login is a one-time code sent to that address. After login, Access signs a token, a JWT, and adds it to every request; `cloudflared` refuses a request whose token is missing or not signed for this application.
 
 [Source: runbook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1407-L1412)
 
@@ -36,15 +36,15 @@ The diagram follows the six steps of the tunnel decision, from the outbound conn
 
 ## Why this way
 
-The tools have no login of their own: whoever reaches Dagster's open-source UI can start, cancel and delete runs, so reaching it is the access control. That shaped my first answer: `tailscale serve` on the node. Tailscale was already running there, it needed 0 MiB of new requests and no new credential. I set aside a Tailscale Kubernetes operator: not measured, but I put its requests at about 128 MiB or more, which would not fit the roughly 100 MiB left under the memory ceiling, and it becomes the better option once several services need their own names. I also rejected Cloudflare Tunnel with Access as the wrong channel, since my channel was Tailscale, and because it "fails open": a misconfigured Access application would mean a public Dagster with no login.
+The tools have no login of their own: whoever reaches Dagster's open-source UI can start, cancel and delete runs, so reaching it is the access control. That shaped the first answer: `tailscale serve` on the node. Tailscale was already running there, it needed 0 MiB of new requests and no new credential. A Tailscale Kubernetes operator was set aside: not measured, but I put its requests at about 128 MiB or more, which would not fit the roughly 100 MiB left under the memory ceiling, and it becomes the better option once several services need their own names. Cloudflare Tunnel with Access was rejected as the wrong channel, since the channel was Tailscale, and because it "fails open": a misconfigured Access application would mean a public Dagster with no login.
 
 [Source: the Tailscale decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0028-dagster-ui-over-the-tailnet.md#L22-L24) · [Source: the Tailscale decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0028-dagster-ui-over-the-tailnet.md#L48-L102)
 
-Then I saw it running and changed my mind. A port in the URL is not how the platform should present its tools, other orchestrators will follow, and the tools should be reachable from anywhere, behind a login. I also rejected running my own login proxy, because it would need port 443 open to the internet, which ends "zero inbound ports".
+Then I saw it running and changed my mind. A port in the URL is not how the platform should present its tools, other orchestrators will follow, and the tools should be reachable from anywhere, behind a login. Running a home-made login proxy was out too, because it would need port 443 open to the internet, which ends "zero inbound ports".
 
 [Source: the tunnel decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0030-operator-uis-behind-cloudflare-access.md#L6-L10) · [Source: the tunnel decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0030-operator-uis-behind-cloudflare-access.md#L72-L77)
 
-My earlier objection was that Access fails open. The new design adds a check that closes that gap: because `cloudflared` checks the signed token itself, a deleted or bypassed Access application leaves the tools failing closed. The tools also share one hostname, with one path per tool, kept apart from the one that serves the public site: a DNS name points at one destination, so putting the tools on the site's own hostname would route the site through the node and take it down with the cluster.
+The earlier objection was that Access fails open. The new design adds a check that closes that gap: because `cloudflared` checks the signed token itself, a deleted or bypassed Access application leaves the tools failing closed. The tools also share one hostname, with one path per tool, kept apart from the one that serves the public site: a DNS name points at one destination, so putting the tools on the site's own hostname would route the site through the node and take it down with the cluster.
 
 [Source: the tunnel decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0030-operator-uis-behind-cloudflare-access.md#L88-L98) · [Source: the tunnel decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0030-operator-uis-behind-cloudflare-access.md#L134-L142)
 
@@ -54,21 +54,21 @@ Public port 22 was closed, leaving zero inbound ports on IPv4 and IPv6. The runb
 
 [Source: roadmap](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L111-L114) · [Source: runbook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L966-L978)
 
-On 2026-11-07 the tunnel went live. `cloudflared` registered four connections to Cloudflare's edge. Without a login, each tool path and the root answered 302 to the Access login page. I logged in from a private window with the e-mail code. An address outside the policy saw "code sent" and received nothing, which is Access's intended behaviour. `cloudflared` used 24 MiB at start and 31 MiB a few minutes later, idle, against its 48 MiB request.
+On 2026-11-07 the tunnel went live. `cloudflared` registered four connections to Cloudflare's edge. Without a login, each tool path and the root answered 302 to the Access login page. The login was done from a private window with the e-mail code. An address outside the policy saw "code sent" and received nothing, which is Access's intended behaviour. `cloudflared` used 24 MiB at start and 31 MiB a few minutes later, idle, against its 48 MiB request.
 
 [Source: the tunnel decision, note of 2026-11-07](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0030-operator-uis-behind-cloudflare-access.md#L263-L277)
 
 ## Gotchas
 
-**The first answer lasted one day.** On 2026-11-05, I set up `tailscale serve` and measured it: `tailscaled`'s memory went from 60,708 to 60,824 KiB, about 0.1 MiB. From my machine the URL timed out, as expected, because the access rules had not yet granted the port, which also showed the default deny at work. Then I chose the tunnel. I turned serve off the same day and never changed the rules. Removing an Application from Git does not remove its objects, so I had to delete the Service by hand.
+**The first answer lasted one day.** On 2026-11-05, `tailscale serve` was set up and measured: `tailscaled`'s memory went from 60,708 to 60,824 KiB, about 0.1 MiB. From the administrator's machine the URL timed out, as expected, because the access rules had not yet granted the port, which also showed the default deny at work. Then I chose the tunnel. Serve was turned off the same day, and the rules never changed. Removing an Application from Git does not remove its objects, so the Service had to be deleted by hand.
 
 [Source: the Tailscale decision, notes](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0028-dagster-ui-over-the-tailnet.md#L239-L252)
 
-**The firewall was doing more than it seemed.** k3s listens on every interface. The runbook says never to delete or detach the empty firewall: it is the only thing keeping the API, the kubelet and anything a future LoadBalancer Service publishes off the internet. That was not hypothetical. Traefik, which served nothing, was published on ports 80 and 443 of the node's public address by k3s's built-in load balancer, and only the firewall kept them closed. I disabled both, so the firewall is now a second layer for those ports, not the only one.
+**The firewall was doing more than it seemed.** k3s listens on every interface. The runbook says never to delete or detach the empty firewall: it is the only thing keeping the API, the kubelet and anything a future LoadBalancer Service publishes off the internet. That was not hypothetical. Traefik, which served nothing, was published on ports 80 and 443 of the node's public address by k3s's built-in load balancer, and only the firewall kept them closed. Both were disabled, so the firewall is now a second layer for those ports, not the only one.
 
 [Source: runbook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L951-L957) · [Source: the k3s components decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0021-k3s-packaged-components-under-git.md#L19-L22) · [Source: its consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0021-k3s-packaged-components-under-git.md#L66-L69)
 
-**One safeguard is not verified end to end.** Seeing `cloudflared` refuse a request would mean turning Access off. What I checked instead is that the rules parse and that the `access` block applies to every rule.
+**One safeguard is not verified end to end.** Seeing `cloudflared` refuse a request would mean turning Access off. What was checked instead is that the rules parse and that the `access` block applies to every rule.
 
 [Source: runbook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1544-L1547)
 
@@ -82,6 +82,6 @@ On 2026-11-07 the tunnel went live. `cloudflared` registered four connections to
 
 ## What's next
 
-Partners' reports will use the same path, each with its own Access policy. Terraform is to take over the resources outside the cluster by a trigger, the next node created or rebuilt, which I deferred on 2026-10-28.
+Partners' reports will use the same path, each with its own Access policy. Terraform is to take over the resources outside the cluster by a trigger, the next node created or rebuilt, which was deferred on 2026-10-28.
 
 [Source: roadmap](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L30-L32)

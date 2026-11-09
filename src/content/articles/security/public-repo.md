@@ -1,6 +1,6 @@
 ---
 title: "The boring checklist I wish I'd had: a public repo with no secrets in it"
-summary: "A starter checklist for anyone who never worked as a software engineer: what to do before the first commit, before going public and on every pull request, and how I did each item cheaply on one machine."
+summary: "A starter checklist for anyone who never worked as a software engineer: what to do before the first commit, before going public and on every pull request, and how each item was done cheaply on one machine."
 project: lagom
 track: security
 order: 1
@@ -8,9 +8,9 @@ lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0010", "0017"]
 ---
 
-Everything the cluster runs comes from Git, and the repository is public, so anyone can read it. Keeping secrets out of a public repository is something every engineer already knows. I come from data, not from software engineering, and nobody handed me the short list of what to do about it. This is that list, as I would have wanted it on day one, followed by how I did each item cheaply on one machine and what went wrong.
+Everything the cluster runs comes from Git, and the repository is public, so anyone can read it. Keeping secrets out of a public repository is something every engineer already knows. I come from data, not from software engineering, and nobody handed me the short list of what to do about it. This is that list, as it would have helped on day one, followed by how each item was done cheaply on one machine and what went wrong.
 
-## What I built
+## What was built
 
 Here is the checklist. A repository is the folder where Git keeps every version of every file, so what you commit once stays findable. Database passwords and tokens still have to be configured somewhere, which is why the first group has more than "don't".
 
@@ -35,11 +35,11 @@ None of this is clever. The interesting part is how each item was done, and the 
 
 ![Flow of a secret: kubeseal encrypts it with the public key, the sealed file is committed, Argo CD applies it, the controller decrypts it with the private key into an ordinary Secret; the private key is backed up off the cluster and restored first on a rebuild](/diagrams/security-public-repo.svg)
 
-Key renewal is off. By default the controller adds a new key every 30 days, and each new key must be backed up off the cluster. A missed backup makes every secret sealed with that key unrecoverable after a rebuild. So I back up the private key once, to a password manager, and restore it before anything else on a rebuild.
+Key renewal is off. By default the controller adds a new key every 30 days, and each new key must be backed up off the cluster. A missed backup makes every secret sealed with that key unrecoverable after a rebuild. So the private key is backed up once, to a password manager, and restored before anything else on a rebuild.
 
 [Source: the sealed secrets decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0010-sealed-secrets.md#L49-L56)
 
-**A snapshot** (before going public). The repository began private. Before publishing, a review scanned the working tree, every commit on every branch, GitHub's pull-request refs, pull-request text and the Actions logs. It found no secret. It did find identifiers of mine and of my network that a public repository would expose for good. So I published from a snapshot: I renamed the private repository, kept it private and archived it, and a new public repository took the original name with a history that starts at one commit.
+**A snapshot** (before going public). The repository began private. Before publishing, a review scanned the working tree, every commit on every branch, GitHub's pull-request refs, pull-request text and the Actions logs. It found no secret. It did find identifiers of the operator and of the network that a public repository would expose for good. So publication came from a snapshot: the private repository was renamed, kept private and archived, and a new public repository took the original name with a history that starts at one commit.
 
 [Source: the public repository decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L9-L20) · [Source: its decision section](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L59-L65)
 
@@ -49,17 +49,17 @@ Key renewal is off. By default the controller adds a new key every 30 days, and 
 
 [Source: the CI workflow](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L5-L8) · [Source: the secret scan job](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L66-L91)
 
-**A rule** (the first item before the first commit). `AGENTS.md`, the rulebook for the agents and humans working in the repository, says to keep anything that identifies me or addresses the infrastructure out of it, and to use placeholders instead. It names e-mail, user names, keys, tailnet names and IP addresses. The GitHub account name, the license holder and the domain are the accepted exceptions, and commits use the GitHub noreply address.
+**A rule** (the first item before the first commit). `AGENTS.md`, the rulebook for the agents and humans working in the repository, says to keep anything that identifies the operator or addresses the infrastructure out of it, and to use placeholders instead. It names e-mail, user names, keys, tailnet names and IP addresses. The GitHub account name, the license holder and the domain are the accepted exceptions, and commits use the GitHub noreply address.
 
 [Source: the rulebook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/AGENTS.md#L1-L8) · [Source: the rulebook, non-negotiables](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/AGENTS.md#L54-L61)
 
 ## Why this way
 
-For secrets, I compared two other routes. SOPS with age encrypts values inside ordinary YAML, but Argo CD (the program in the cluster that keeps it matching the repository) cannot read those files natively. It needs a plugin in its repo-server and the private key mounted into it, more moving parts in the component everything else depends on. An external store such as Vault or the 1Password Operator keeps secrets out of Git entirely, but Vault alone exceeds the sealed-secrets controller's memory by an order of magnitude, and the 1Password Operator ties the cluster to a paid service.
+For secrets, two other routes were compared. SOPS with age encrypts values inside ordinary YAML, but Argo CD (the program in the cluster that keeps it matching the repository) cannot read those files natively. It needs a plugin in its repo-server and the private key mounted into it, more moving parts in the component everything else depends on. An external store such as Vault or the 1Password Operator keeps secrets out of Git entirely, but Vault alone exceeds the sealed-secrets controller's memory by an order of magnitude, and the 1Password Operator ties the cluster to a paid service.
 
 [Source: the sealed secrets decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0010-sealed-secrets.md#L24-L34)
 
-For publication, I rejected three alternatives. Flipping the repository to public is one click, and it turns every identifier into permanent history. Rewriting history with `git filter-repo` depends on GitHub Support to purge pull-request refs, leaves pull-request pages pointing at vanished commits, and breaks image tags, which are commit SHAs: the same losses as a fresh start with more steps. A pseudonymous account would also hide my name, but I rejected it, since the GitHub account is the project's public identity.
+For publication, three alternatives lost. Flipping the repository to public is one click, and it turns every identifier into permanent history. Rewriting history with `git filter-repo` depends on GitHub Support to purge pull-request refs, leaves pull-request pages pointing at vanished commits, and breaks image tags, which are commit SHAs: the same losses as a fresh start with more steps. A pseudonymous account would also hide my name, but I rejected it, since the GitHub account is the project's public identity.
 
 [Source: the public repository decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L41-L55)
 
@@ -73,13 +73,13 @@ The restore procedure, which puts the sealing key back before the root Applicati
 
 [Source: sealed secrets](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1141-L1144) · [Source: sealed secrets](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1172-L1173)
 
-I also ran the cutover to the public repository, on 2026-10-27. My plan predicted a short comparison error in Argo CD, and I corrected the notes afterwards: it never paused.
+The cutover to the public repository ran on 2026-10-27. My plan predicted a short comparison error in Argo CD, and I corrected the notes afterwards: it never paused.
 
 [Source: the public repository decision, notes](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L168-L183)
 
 ## Gotchas
 
-**The review found no secret, and still found plenty to hide.** The e-mail address, the network's DNS name and address, the node's public address in the text of two pull requests, an SSH public key. None grants access on its own, and my notes say the controls do not depend on them being secret. I chose to expose as little as possible anyway. That is the rule's origin.
+**The review found no secret, and still found plenty to hide.** The e-mail address, the network's DNS name and address, the node's public address in the text of two pull requests, an SSH public key. None grants access on its own, and the notes say the controls do not depend on them being secret. I chose to expose as little as possible anyway. That is the rule's origin.
 
 [Source: the public repository decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L13-L23)
 
@@ -87,11 +87,11 @@ I also ran the cutover to the public repository, on 2026-10-27. My plan predicte
 
 [Source: the public repository decision, notes](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L168-L177)
 
-**A planned step was dropped on purpose.** The plan replaced the node's public address. I skipped it: the old address appears only in the private archive's pull-request text, the node accepts no inbound connection on it, and the swap would power the node off. I wrote down when to revisit: if the archive's text is ever exposed, or if the firewall gains an inbound rule.
+**A planned step was dropped on purpose.** The plan replaced the node's public address. It was skipped: the old address appears only in the private archive's pull-request text, the node accepts no inbound connection on it, and the swap would power the node off. The trigger to revisit is written down: if the archive's text is ever exposed, or if the firewall gains an inbound rule.
 
 [Source: the public repository decision, notes](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L184-L194)
 
-**The scan has one exception, kept narrow.** Sealed ciphertext is high-entropy, so the generic rule flags it. The config allows only that rule, and matches on the line, not the path. A path entry makes gitleaks skip the whole file, so a plaintext password in a file named like a sealed one would pass unseen. A specific rule, such as a GitHub token, still reports on the same line. The config is also on the list of paths whose change waits for my approval, so a change to the scan does too.
+**The scan has one exception, kept narrow.** Sealed ciphertext is high-entropy, so the generic rule flags it. The config allows only that rule, and matches on the line, not the path. A path entry makes gitleaks skip the whole file, so a plaintext password in a file named like a sealed one would pass unseen. A specific rule, such as a GitHub token, still reports on the same line. The config is also on the list of paths whose change waits for the operator's approval, so a change to the scan does too.
 
 [Source: the scan config](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.gitleaks.toml#L6-L21) · [Source: the list of guarded paths](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/CODEOWNERS#L7-L9) · [Source: the list](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/CODEOWNERS#L17-L21)
 
