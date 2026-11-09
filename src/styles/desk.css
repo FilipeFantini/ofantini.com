@@ -56,7 +56,7 @@ html,body{margin:0;min-width:0;color:#182b27;background:#b7c7bc}
 
 .icons b::before{content:attr(data-icon)}.win .bar .back::before{content:"←"}.win .bar .home::before{content:"⌂"}.win .bar .max::before{content:"□"}.win .bar .close::before{content:"×"}.roundel::before{content:"L"}.direction::before{content:"↓";margin-right:.25rem}
 
-.article-content img{display:block;max-width:100%;height:auto;background:#fff;border:1px solid #20352f;margin:2rem 0}
+.article-content img{display:block;max-width:100%;height:auto;background:#f8f1dd;border:1px solid #20352f;margin:2rem 0}
 
 @media(max-width:700px){.map:before{display:none}}
 

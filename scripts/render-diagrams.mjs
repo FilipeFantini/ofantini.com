@@ -15,7 +15,7 @@ for (const file of (await readdir('src/content/diagrams')).filter(name => name.e
   const slug = file.slice(0, -4);
   const sourcePath = join('src/content/diagrams', file);
   const outputPath = join('public/diagrams', `${slug}.svg`);
-  const result = spawnSync('npx', ['--yes', '--package=@mermaid-js/mermaid-cli@12.2.0', 'mmdc', '-i', sourcePath, '-o', outputPath, '-c', 'scripts/mermaid.json', '--svgId', `lagom-${slug}`], { stdio: 'inherit' });
+  const result = spawnSync('npx', ['--yes', '--package=@mermaid-js/mermaid-cli@12.2.0', 'mmdc', '-i', sourcePath, '-o', outputPath, '-c', 'scripts/mermaid.json', '-b', 'transparent', '--svgId', `lagom-${slug}`], { stdio: 'inherit' });
   if (result.status !== 0) throw new Error(`Failed to render ${sourcePath}`);
   const digest = createHash('sha256').update(await readFile(sourcePath)).digest('hex');
   const svg = await readFile(outputPath, 'utf8');
