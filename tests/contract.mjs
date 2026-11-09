@@ -30,6 +30,7 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     for (const route of all) {
       await page.goto(new URL(route, base).href);
       assert.equal(await page.locator('.wins > .win[data-url]').count(), 1, `${route}: one window`);
+      assert.equal(await page.locator('head link[rel="icon"][href="/favicon.svg"]').count(), 1, `${route}: favicon`);
       assert.equal(await page.locator('.win script').count(), 0, `${route}: no script in window`);
       assert.equal(await page.locator('.site-header a[href="/"]').count(), 1, `${route}: home wordmark`);
       assert.equal(await page.locator('.site-header a[href="/"] .dot').count(), 1, `${route}: red wordmark dot`);
