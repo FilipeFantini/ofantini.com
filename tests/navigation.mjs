@@ -26,7 +26,7 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       assert.ok(await page.getByRole('link', { name: /ofantini\s*\.\s*com/i }).count(), `${route}: wordmark`);
     }
     await page.goto(new URL('/articles/', base).href);
-    await page.getByRole('link', { name: 'Fitting a data platform in 4 GB, then moving to 8 GB', exact: true }).click();
+    await page.locator('.win a[href="/projects/lagom/infrastructure/memory-budget/"]').first().click();
     await page.locator('.win[data-url="/projects/lagom/infrastructure/memory-budget/"]').waitFor();
     await page.locator('[data-back]').click();
     await page.waitForURL('**/articles/');
