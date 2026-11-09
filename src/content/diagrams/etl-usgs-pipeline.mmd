@@ -1,0 +1,15 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart LR
+    A[USGS web service] e1@--> B[dlt: fetch, merge, load]
+    B e2@--> C[bronze: Parquet files on R2]
+    C e3@--> D[dbt build: models and tests]
+    D e4@--> E[silver and gold: Parquet files on R2]
+    P[(Catalog in Postgres)]
+    B -.-> P
+    D -.-> P
+    S[Dagster schedule, every 30 minutes] -.-> B
+    S -.-> D
+    e1@{ animate: true }
+    e2@{ animate: true }
+    e3@{ animate: true }
+    e4@{ animate: true }

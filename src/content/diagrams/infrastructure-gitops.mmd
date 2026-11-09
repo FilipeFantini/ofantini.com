@@ -1,0 +1,11 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart LR
+    A["Pull request merged"] e1@--> B["main branch on GitHub"]
+    B e2@-->|"polled every 120 s plus up to 60 s"| C["Argo CD"]
+    C e3@-->|"applies the difference"| D["Cluster"]
+    D e4@--> E["Workload picks up the change"]
+    H["Change made by hand in the cluster"] -.->|"reverted by selfHeal"| C
+    e1@{ animate: true }
+    e2@{ animate: true }
+    e3@{ animate: true }
+    e4@{ animate: true }

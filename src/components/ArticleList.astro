@@ -1,0 +1,8 @@
+---
+import type { TrackArticle } from '../lib/lagom';
+interface Props { articles: TrackArticle[]; summaries?: boolean }
+const { articles, summaries = false } = Astro.props;
+---
+{articles.length === 0
+  ? <p class="in-works">In works</p>
+  : <ul class="articles">{articles.map(({ entry, href }) => <li><span class="num">{String(entry.data.order).padStart(2, '0')}</span><a href={href}>{entry.data.title}</a>{summaries && <p>{entry.data.summary}</p>}</li>)}</ul>}

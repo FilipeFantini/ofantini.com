@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant D as Dagster in the cluster
+    participant H as Healthchecks.io
+    participant O as Operator
+    D->>H: ping after each successful run, every 30 minutes
+    Note over D: the node stops, nothing is sent
+    Note over H: no ping within the schedule plus the grace period
+    H->>O: e-mail: the check is down
+    Note over D: the node is back and a run fails
+    D->>H: call /fail with the job, the run ID and the error
+    H->>O: e-mail at once
+    D->>H: the next successful run pings
+    Note over H: the check is up again

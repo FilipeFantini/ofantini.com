@@ -1,0 +1,8 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart TD
+    A["Private repository with the full history"] -->|"renamed, kept private, archived"| AR["Private archive"]
+    A -->|"main at publication, plus one change"| N["Single-commit snapshot"]
+    N e1@--> P["New public repository under the original name"]
+    P e2@--> G["Secret scan of the whole history on every pull request"]
+    e1@{ animate: true }
+    e2@{ animate: true }

@@ -1,14 +1,14 @@
 ---
-import { getCollection, render, type CollectionEntry } from 'astro:content';
-import Article from '../../../../layouts/Article.astro';
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Content from '../../../../content/Track.astro';
+import { loadLagom } from '../../../../lib/lagom';
 
+// A track without articles has no page; the hub shows it as "In works".
 export async function getStaticPaths() {
-  const entries = await getCollection('articles');
-  return entries.map(entry => ({ params: { track: entry.id }, props: { entry } }));
+  const { tracks } = await loadLagom();
+  return tracks.filter(track => track.articles.length > 0).map(track => ({ params: { track: track.id }, props: { track } }));
 }
 
-interface Props { entry: CollectionEntry<'articles'> }
-const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { track } = Astro.props;
 ---
-<Article frontmatter={entry.data}><Content /></Article>
+<BaseLayout title={track.name} windowTitle={`projects / lagom / ${track.id}`} up="/projects/lagom/"><Content track={track} /></BaseLayout>

@@ -56,7 +56,7 @@ html,body{margin:0;min-width:0;color:#182b27;background:#b7c7bc}
 
 .icons b::before{content:attr(data-icon)}.win .bar .back::before{content:"←"}.win .bar .home::before{content:"⌂"}.win .bar .max::before{content:"□"}.win .bar .close::before{content:"×"}.roundel::before{content:"L"}.direction::before{content:"↓";margin-right:.25rem}
 
-.article-content img{display:block;max-width:100%;height:auto;background:#fff;border:1px solid #20352f;margin:2rem 0}
+.article-content img{display:block;max-width:100%;height:auto;background:#f8f1dd;border:1px solid #20352f;margin:2rem 0}
 
 @media(max-width:700px){.map:before{display:none}}
 
@@ -79,3 +79,13 @@ html,body{margin:0;min-width:0;color:#182b27;background:#b7c7bc}
  .radar-plot.mobile .radar-label.middle{width:110px;margin-left:-55px;text-align:center}
  .radar-plot.mobile .radar-label.end[data-area='5']{width:110px;margin-left:-110px}
 }
+
+.listing{padding:clamp(1.25rem,3vw,3rem)}
+.listing h2{font-size:clamp(1.8rem,3vw,2.6rem);line-height:1.05;margin:0 0 .75rem}
+.listing>p{font-size:1.125rem;line-height:1.6;max-width:65ch}
+.listing h3{font:.8rem 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin:2rem 0 .75rem;padding-top:.75rem;border-top:1px solid #20352f}
+.articles{list-style:none;margin:0;padding:0}.articles li{margin:0 0 1rem;max-width:65ch;line-height:1.5}.articles .num{font:.75rem 'IBM Plex Mono',monospace;margin-right:.6rem}.articles p{font-size:.95rem;margin:.2rem 0 0}
+.in-works{font:.8rem 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.06em}
+.station-count{font:.72rem 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.06em;background:#eee3c9}
+.article-trail{margin-bottom:1rem}.article-pin{font:.8rem/1.5 'IBM Plex Mono',monospace;margin:-1rem 0 2rem}
+.article-links{display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;margin-top:3rem}

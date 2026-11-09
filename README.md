@@ -3,10 +3,11 @@
 A static personal site built with Astro. Its home introduces Filipe Fantini. The
 about page, opened from the `me.txt` desktop icon at `/about/`, describes his data work,
 infrastructure hobby and outdoor interests, with a skills radar.
-Projects lists Lagom, and Articles collects five short chapters about it. The Lagom
-hub explains the small and medium data thesis and links each chapter to the project.
-The ETL chapter records one USGS production run; its figures are pinned to a Lagom
-commit in `src/data/figures.json`.
+Projects presents Lagom with its tracks and articles, and Articles lists every article
+by project and track. The Lagom hub explains the small and medium data thesis and maps
+its tracks; each track has a page, and each article its own page under it. The ETL
+article records one USGS production run; its figures are pinned to a Lagom commit in
+`src/data/figures.json`.
 
 ## Build and preview
 
@@ -63,13 +64,30 @@ tab in Cloudflare can also roll back to an earlier deployment at once.
 
 Keep public professional information abstract: no employer, dates, location,
 contact details or institutions. Write clear English without em or en dashes.
-Articles carry a project reference, track, Lagom commit and ADR identifiers in
-their frontmatter. The Astro content schema validates project references, and the build check exits
-with an error if an article names a project that does not exist. Figures must cite lines in a fixed Lagom commit.
+The project and its tracks live in `src/content/projects/lagom.json`: a title, a
+summary and the track list, in the order shown on the site. A track with no articles
+shows as "In works" and has no page.
+
+To add an article, create `src/content/articles/<track>/<slug>.md`, where `<track>` is
+a track id of the project and `<slug>` becomes the last part of its URL. Its frontmatter
+is `title`, `summary` (one sentence, shown in lists), `project: lagom`, `track`, `order`
+(a positive integer, its position within the track, unique per track), `lagom_commit`
+(40 hex characters; the page links to it) and `adrs`. Nothing else needs editing: the
+hub, the track page, Projects and Articles are generated from the collections. The
+Astro content schema validates the fields, and the build check exits with an error if
+an article names a project or track that does not exist, sits outside its track's
+directory, or shares an `order` with another article of its track. Figures must cite
+lines in a fixed Lagom commit.
 
 Mermaid sources live in `src/content/diagrams/`; their SVG images live in
 `public/diagrams/`. When a diagram changes, run `npm run diagrams` locally and
-commit both files. This command downloads the pinned Mermaid CLI temporarily and
+commit both files. An article embeds a diagram as `![alt text](/diagrams/<name>.svg)`.
+Mermaid animated edges (`A e1@--> B` with `e1@{ animate: true }`) work through CSS that
+Mermaid embeds in the SVG; `npm run diagrams` adds a `prefers-reduced-motion` rule that
+stops every animation, and the build fails for an SVG that has animation CSS without
+it. `scripts/mermaid.json` sets the font to `arial, sans-serif`, because an SVG shown
+through `<img>` gets no page fonts and the default font would be embedded in every SVG
+(about 200 KB). This command downloads the pinned Mermaid CLI temporarily and
 uses a local browser. The site build only checks the source hash in each SVG, so
 Cloudflare Pages does not need a browser for diagrams.
 

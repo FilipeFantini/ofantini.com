@@ -1,12 +1,7 @@
 ---
-const chapters = [
-  { href: '/projects/lagom/infrastructure/', name: 'Infrastructure', description: 'A small node, a deliberate budget.', color: 'infra' },
-  { href: '/projects/lagom/etl/', name: 'ETL', description: 'Following earthquake events into the platform.', color: 'infra' },
-  { href: '/projects/lagom/modeling/', name: 'Modeling', description: 'How data becomes useful tables.', color: 'infra' },
-  { href: '/projects/lagom/orchestration/', name: 'Orchestration', description: 'Coordinating the work.', color: 'infra' },
-  { href: '/projects/lagom/security/', name: 'Security', description: 'Boundaries for agents and credentials.', color: 'infra' },
-  { name: 'Data visualization', description: 'In works.', color: 'analysis' },
-];
+import { loadLagom } from '../lib/lagom';
+const { tracks } = await loadLagom();
+const published = tracks.filter(track => track.articles.length > 0).length;
 ---
 <section class="intro" aria-labelledby="title">
         <p class="eyebrow"><span class="roundel" aria-hidden="true"></span> Project field notes <span class="divider">/</span> Lagom</p>
@@ -14,7 +9,7 @@ const chapters = [
         <div class="intro-bottom"><p>Lagom is Swedish for “not too little, not too much, just enough”. Not every company needs a big data platform. Most data fits on one machine, and tools that are light on memory can do real analytics on it. Lagom explores that idea in the open, with a small platform that can grow as needed. Each new source adds a pipeline to the same shared foundation. Sources: <a href="https://github.com/FilipeFantini/lagom/blob/3d6039735d0ffca19553c1669d506f34da241a68/README.md#L5-L17">Lagom README</a> and <a href="https://github.com/FilipeFantini/lagom/blob/3d6039735d0ffca19553c1669d506f34da241a68/README.md#L85-L96">its layout</a>.</p><span class="direction" aria-hidden="true"><small>Follow the lines</small></span></div>
       </section>
       <section class="network" aria-labelledby="network-title">
-        <div class="network-heading"><div><p class="eyebrow">The project, in chapters</p><h2 id="network-title">One network.<br /><em>Many ways in.</em></h2></div><p>Each published chapter links to an article about a part of Lagom. Data visualization is in works.</p></div>
-        <div class="map-wrap"><ol class="map" aria-label="Lagom chapters">{chapters.map((chapter) => <li class:list={['station', chapter.color]}><span class="station-mark" aria-hidden="true"></span><span class="station-name">{chapter.href ? <a href={chapter.href}>{chapter.name}</a> : chapter.name}</span><span class="station-description">{chapter.description}</span></li>)}</ol></div>
-        <p class="map-note">A living project <span aria-hidden="true">✳</span> Chapters are being prepared.</p>
+        <div class="network-heading"><div><p class="eyebrow">The project, in tracks</p><h2 id="network-title">One network.<br /><em>Many ways in.</em></h2></div><p>Each track links to its articles about a part of Lagom. A track without articles is in works.</p></div>
+        <div class="map-wrap"><ol class="map" aria-label="Lagom tracks">{tracks.map(track => <li class:list={['station', track.articles.length ? 'infra' : 'analysis']}><span class="station-mark" aria-hidden="true"></span><span class="station-name">{track.articles.length ? <a href={track.href}>{track.name}</a> : track.name}</span><span class="station-description">{track.description}</span><span class="station-count">{track.articles.length ? `${track.articles.length} ${track.articles.length === 1 ? 'article' : 'articles'}` : 'In works'}</span></li>)}</ol></div>
+        <p class="map-note">A living project <span aria-hidden="true">✳</span> {published} of {tracks.length} tracks have articles.</p>
       </section>
