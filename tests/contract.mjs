@@ -1,5 +1,5 @@
 import { chromium, firefox, webkit } from 'playwright';
-import { readdir } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
 
@@ -13,6 +13,10 @@ async function routes(dir, route = '/') {
 }
 
 const all = await routes('dist');
+// Pages serves dist/404.html with status 404 for unknown addresses; without it,
+// every unknown address would answer with the home page and status 200.
+const notFound = await readFile('dist/404.html', 'utf8');
+assert.ok(notFound.includes('Nothing here.') && notFound.includes('href="/"'), '404 page with a link home');
 const tracks = all.filter(route => /^\/projects\/lagom\/[^/]+\/$/.test(route));
 const articles = all.filter(route => /^\/projects\/lagom\/[^/]+\/[^/]+\/$/.test(route));
 const sources = (await readdir('src/content/articles', { recursive: true })).filter(file => file.endsWith('.md'));

@@ -1,0 +1,13 @@
+---
+// Cloudflare Pages serves dist/404.html, with status 404, for any address
+// the build did not produce. Without it, Pages answers every unknown address
+// with the home page and status 200, which hides broken links.
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Not found" windowTitle="404" up="/" kind="about-panel">
+  <section class="intro" aria-labelledby="title">
+    <p class="eyebrow">Error 404</p>
+    <h1 id="title">Nothing here.</h1>
+    <div class="intro-bottom"><p>This address is not on the site. Maybe it moved, or the link is wrong. Try the <a href="/projects/">projects</a>, the <a href="/articles/">articles</a>, or go back <a href="/">home</a>.</p></div>
+  </section>
+</BaseLayout>
