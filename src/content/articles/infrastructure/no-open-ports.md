@@ -12,11 +12,11 @@ A server that listens for the internet has a door, and every door needs a lock, 
 
 ## What was built
 
-Access is split into channels, each less privileged than the one before. Two matter here. Tailscale, a private network between the operator's devices and the node, grants raw access to the database and the whole cluster. Cloudflare Access grants a tool in the browser behind a login, with nothing to install.
+Access is split into channels, each less privileged than the one before. Two matter here. Tailscale, a private network between my devices and the node, grants raw access to the database and the whole cluster. Cloudflare Access grants a tool in the browser behind a login, with nothing to install.
 
 [Source: access channels](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L403-L411)
 
-**The private network.** Tailscale is a WireGuard mesh (encrypted tunnels between devices) with access rules by identity and no open ports. The node is tagged as a machine of a role, not a person, and the rules name roles: operators reach the node's SSH and the Kubernetes API, and nothing else, not even the kubelet (the agent that runs pods). The node can open no connection to anyone's device, so a compromised node cannot reach the operator's machine. The policy carries `tests`, assertions the admin console checks on every save, and a policy that breaks them is rejected.
+**The private network.** Tailscale is a WireGuard mesh (encrypted tunnels between devices) with access rules by identity and no open ports. The node is tagged as a machine of a role, not a person, and the rules name roles: operators reach the node's SSH and the Kubernetes API, and nothing else, not even the kubelet (the agent that runs pods). The node can open no connection to anyone's device, so a compromised node cannot reach my machine. The policy carries `tests`, assertions the admin console checks on every save, and a policy that breaks them is rejected.
 
 [Source: access channels](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L430-L434) · [Source: runbook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L943-L949)
 
@@ -72,7 +72,7 @@ On 2026-11-07 the tunnel went live. `cloudflared` registered four connections to
 
 [Source: runbook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1544-L1547)
 
-**Costs accepted on purpose.** Cloudflare terminates TLS, so it sees the traffic: run metadata and logs, which may include sample rows of public data. The Access application, its policy and the DNS record live outside Git, like the Tailscale rules. The hostname is public in DNS and says that operator tools exist, though nothing is reachable through it without the login. A change to the tunnel's rules needs a manual annotation bump to restart it, and nothing checks that yet.
+**Costs accepted on purpose.** Cloudflare terminates TLS, so it sees the traffic: run metadata and logs, which may include sample rows of public data. The Access application, its policy and the DNS record live outside Git, like the Tailscale rules. The hostname is public in DNS and says that admin tools exist, though nothing is reachable through it without the login. A change to the tunnel's rules needs a manual annotation bump to restart it, and nothing checks that yet.
 
 [Source: the tunnel decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0030-operator-uis-behind-cloudflare-access.md#L200-L225)
 

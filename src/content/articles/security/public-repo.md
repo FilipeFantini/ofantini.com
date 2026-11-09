@@ -39,7 +39,7 @@ Key renewal is off. By default the controller adds a new key every 30 days, and 
 
 [Source: the sealed secrets decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0010-sealed-secrets.md#L49-L56)
 
-**A snapshot** (before going public). The repository began private. Before publishing, a review scanned the working tree, every commit on every branch, GitHub's pull-request refs, pull-request text and the Actions logs. It found no secret. It did find identifiers of the operator and of the network that a public repository would expose for good. So publication came from a snapshot: the private repository was renamed, kept private and archived, and a new public repository took the original name with a history that starts at one commit.
+**A snapshot** (before going public). The repository began private. Before publishing, a review scanned the working tree, every commit on every branch, GitHub's pull-request refs, pull-request text and the Actions logs. It found no secret. It did find identifiers of me and of the network that a public repository would expose for good. So publication came from a snapshot: the private repository was renamed, kept private and archived, and a new public repository took the original name with a history that starts at one commit.
 
 [Source: the public repository decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L9-L20) · [Source: its decision section](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L59-L65)
 
@@ -49,7 +49,7 @@ Key renewal is off. By default the controller adds a new key every 30 days, and 
 
 [Source: the CI workflow](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L5-L8) · [Source: the secret scan job](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L66-L91)
 
-**A rule** (the first item before the first commit). `AGENTS.md`, the rulebook for the agents and humans working in the repository, says to keep anything that identifies the operator or addresses the infrastructure out of it, and to use placeholders instead. It names e-mail, user names, keys, tailnet names and IP addresses. The GitHub account name, the license holder and the domain are the accepted exceptions, and commits use the GitHub noreply address.
+**A rule** (the first item before the first commit). `AGENTS.md`, the rulebook for the agents and humans working in the repository, says to keep anything that identifies me or addresses the infrastructure out of it, and to use placeholders instead. It names e-mail, user names, keys, tailnet names and IP addresses. The GitHub account name, the license holder and the domain are the accepted exceptions, and commits use the GitHub noreply address.
 
 [Source: the rulebook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/AGENTS.md#L1-L8) · [Source: the rulebook, non-negotiables](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/AGENTS.md#L54-L61)
 
@@ -91,7 +91,7 @@ The cutover to the public repository ran on 2026-10-27. My plan predicted a shor
 
 [Source: the public repository decision, notes](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L184-L194)
 
-**The scan has one exception, kept narrow.** Sealed ciphertext is high-entropy, so the generic rule flags it. The config allows only that rule, and matches on the line, not the path. A path entry makes gitleaks skip the whole file, so a plaintext password in a file named like a sealed one would pass unseen. A specific rule, such as a GitHub token, still reports on the same line. The config is also on the list of paths whose change waits for the operator's approval, so a change to the scan does too.
+**The scan has one exception, kept narrow.** Sealed ciphertext is high-entropy, so the generic rule flags it. The config allows only that rule, and matches on the line, not the path. A path entry makes gitleaks skip the whole file, so a plaintext password in a file named like a sealed one would pass unseen. A specific rule, such as a GitHub token, still reports on the same line. The config is also on the list of paths whose change waits for my approval, so a change to the scan does too.
 
 [Source: the scan config](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.gitleaks.toml#L6-L21) · [Source: the list of guarded paths](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/CODEOWNERS#L7-L9) · [Source: the list](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/CODEOWNERS#L17-L21)
 

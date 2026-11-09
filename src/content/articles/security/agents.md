@@ -18,11 +18,11 @@ Agents write code in my repository, and I don't read it, by design: approval res
 
 [Source: the multi-harness decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0029-agents-on-more-than-one-harness.md#L21-L30) · [Source: the multi-harness decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0029-agents-on-more-than-one-harness.md#L85-L90)
 
-**Containers without credentials.** An agent runner runs several agents at once. Each agent's commands run in a container that holds no credential: no kubeconfig, SSH key, GitHub token or provider key. The agent clones the public repository inside it, and no folder of the checkout is lent. A container on the operator's Mac was measured on 2026-11-07 reaching the cluster's API port and SSH port, so the boundary is the missing credentials, not the network.
+**Containers without credentials.** An agent runner runs several agents at once. Each agent's commands run in a container that holds no credential: no kubeconfig, SSH key, GitHub token or provider key. The agent clones the public repository inside it, and no folder of the checkout is lent. A container on my Mac was measured on 2026-11-07 reaching the cluster's API port and SSH port, so the boundary is the missing credentials, not the network.
 
 [Source: the container decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0032-agents-in-credential-free-containers.md#L44-L50) · [Source: the container decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0032-agents-in-credential-free-containers.md#L107-L114)
 
-**A scoped token.** To finish their own work, agents got one credential: the operator's fine-grained GitHub token, scoped to this repository, expiring in at most 90 days, with read and write on contents and pull requests and read on metadata. Administration, Deployments, Environments, Secrets and Workflows are all "No access". The token sits in the runner's connector, not in the container, so the agent uses the tools without reading it. Writing to `main` is writing to the cluster, because Argo CD (the program that applies `main` to the cluster) deploys whatever is there, so the gates must hold even though the agent acts as me.
+**A scoped token.** To finish their own work, agents got one credential: my fine-grained GitHub token, scoped to this repository, expiring in at most 90 days, with read and write on contents and pull requests and read on metadata. Administration, Deployments, Environments, Secrets and Workflows are all "No access". The token sits in the runner's connector, not in the container, so the agent uses the tools without reading it. Writing to `main` is writing to the cluster, because Argo CD (the program that applies `main` to the cluster) deploys whatever is there, so the gates must hold even though the agent acts as me.
 
 [Source: the token decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0035-agents-use-the-operators-scoped-token.md#L31-L47) · [Source: the token decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0035-agents-use-the-operators-scoped-token.md#L80-L93)
 
@@ -34,7 +34,7 @@ Agents write code in my repository, and I don't read it, by design: approval res
 
 [Source: the reviewer decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0036-the-reviewer-as-a-required-check.md#L58-L79)
 
-![Path of a pull request through the gates: CI checks, the agent review and the guardrail approval run in parallel; a guarded change waits for the operator, and the agent's own token is refused when it tries to approve; merge needs every required check green](/diagrams/security-agents.svg)
+![Path of a pull request through the gates: CI checks, the agent review and the guardrail approval run in parallel; a guarded change waits for me, and the agent's own token is refused when it tries to approve; merge needs every required check green](/diagrams/security-agents.svg)
 
 ## Why this way
 
