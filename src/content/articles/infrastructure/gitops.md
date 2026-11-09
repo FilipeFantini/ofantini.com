@@ -8,7 +8,7 @@ lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0009", "0015", "0017", "0021"]
 ---
 
-If anyone can change a server by hand, nobody can say what it runs. I wanted the opposite: every change to the cluster is a reviewed commit, and the cluster corrects anything that drifts from the commits. This is how that works, where it stops, and how a new version of my code gets from a pull request into production.
+If anyone can change a server by hand, nobody can say what it runs. Keeping infrastructure in version control is standard practice. What I wanted on top of it is a cluster that corrects anything that drifts from the commits, so every change is a reviewed commit. This is how that works, where it stops, and how a new version of my code gets from a pull request into production.
 
 ## What I built
 

@@ -8,7 +8,7 @@ lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0007", "0014", "0015", "0026"]
 ---
 
-A pipeline needs someone to schedule it, show what happened and keep its history. The harder question is where a change is tried before it can hurt real data. If the first place a new job runs is production, the rehearsal never happened. This is how Lagom, my open-source data platform for one small machine, schedules its pipeline with Dagster, and how a change gets from my laptop to production without skipping staging.
+A pipeline needs someone to schedule it, show what happened and keep its history. The harder question is where a change is tried before it can hurt real data. Trying it in staging first is standard practice; what I wanted to see is whether two full environments fit on one small machine. This is how Lagom, my open-source data platform for one small machine, schedules its pipeline with Dagster, and how a change gets from my laptop to production without skipping staging.
 
 ## What I built
 

@@ -8,7 +8,7 @@ lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0018"]
 ---
 
-A change to a data model can be valid SQL and still give wrong numbers. For a while the checks on a pull request (a proposed change) in Lagom, my small open-source data platform, could tell that the models parsed, but not that they produced the right tables. I wanted that proof to come before the merge, without credentials, without real data and without a database server.
+A change to a data model can be valid SQL and still give wrong numbers. For a while the checks on a pull request (a proposed change) in Lagom, my small open-source data platform, could tell that the models parsed, but not that they produced the right tables. Running tests on every change is standard practice. What I wanted to find out was how cheaply it could be done: the proof before the merge, without credentials, without real data and without a database server.
 
 [Source: the workflow before this change](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L160-L167)
 

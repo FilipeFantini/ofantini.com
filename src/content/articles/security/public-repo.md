@@ -1,6 +1,6 @@
 ---
-title: "My whole platform is in a public repository, and there are no secrets in it"
-summary: "How a platform's configuration, credentials included, lives in a public repository: sealed secrets, a single-commit snapshot, a secret scan in CI, and a rule about what never goes in."
+title: "The boring checklist I wish I'd had: a public repo with no secrets in it"
+summary: "A starter checklist for anyone who never worked as a software engineer: what to do before the first commit, before going public and on every pull request, and how I did each item cheaply on one machine."
 project: lagom
 track: security
 order: 1
@@ -8,11 +8,28 @@ lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0010", "0017"]
 ---
 
-Everything the cluster runs comes from Git, and the repository is public, so anyone can read it. Database passwords and tokens still have to be configured somewhere. This is how they stay out of the repository while still being deployed from it, how I published the repository, and what keeps a mistake from slipping in later.
+Everything the cluster runs comes from Git, and the repository is public, so anyone can read it. Keeping secrets out of a public repository is something every engineer already knows. I come from data, not from software engineering, and nobody handed me the short list of what to do about it. This is that list, as I would have wanted it on day one, followed by how I did each item cheaply on one machine and what went wrong.
 
 ## What I built
 
-**Sealed secrets.** Sealed Secrets is a small controller in the cluster. It generates a key pair. Anyone with the `kubeseal` tool can encrypt a Secret with the public key, and the result, a `SealedSecret`, is safe to commit. Only the controller holds the private key, and it turns each `SealedSecret` into an ordinary Secret inside the cluster. A sealed secret is bound to its name and namespace by default, so copying it into another namespace makes it unreadable there.
+Here is the checklist. A repository is the folder where Git keeps every version of every file, so what you commit once stays findable. Database passwords and tokens still have to be configured somewhere, which is why the first group has more than "don't".
+
+**Before the first commit**
+- Write down what never goes in: passwords, tokens, keys, and anything that identifies you or addresses your infrastructure. A rule on paper is what you check against later.
+- Decide how secrets will still reach the system. If the answer is "I'll paste them in by hand", the repository stops being the single source of what runs.
+- Back up the key that decrypts them, and practise restoring it. A secret you cannot decrypt is as lost as one that leaked.
+
+**Before going public**
+- Scan everything, not only the files you see: every commit on every branch, pull-request text, logs. A secret committed and then deleted is still in the history.
+- If you find things you would rather not expose, publish a fresh copy instead of flipping the repository to public. Publication cannot be undone.
+
+**Every pull request**
+- Scan the whole history automatically, and keep the scan's exceptions as narrow as you can.
+- Put changes to the scan itself behind a person's approval.
+
+None of this is clever. The interesting part is how each item was done, and the gotchas, so here are the four pieces behind that list.
+
+**Sealed secrets** (the second and third items before the first commit). Sealed Secrets is a small controller in the cluster. It generates a key pair. Anyone with the `kubeseal` tool can encrypt a Secret with the public key, and the result, a `SealedSecret`, is safe to commit. Only the controller holds the private key, and it turns each `SealedSecret` into an ordinary Secret inside the cluster. A sealed secret is bound to its name and namespace by default, so copying it into another namespace makes it unreadable there.
 
 [Source: the sealed secrets decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0010-sealed-secrets.md#L42-L47)
 
@@ -22,17 +39,17 @@ Key renewal is off. By default the controller adds a new key every 30 days, and 
 
 [Source: the sealed secrets decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0010-sealed-secrets.md#L49-L56)
 
-**A snapshot.** The repository began private. Before publishing, a review scanned the working tree, every commit on every branch, GitHub's pull-request refs, pull-request text and the Actions logs. It found no secret. It did find identifiers of mine and of my network that a public repository would expose for good. So I published from a snapshot: I renamed the private repository, kept it private and archived it, and a new public repository took the original name with a history that starts at one commit.
+**A snapshot** (before going public). The repository began private. Before publishing, a review scanned the working tree, every commit on every branch, GitHub's pull-request refs, pull-request text and the Actions logs. It found no secret. It did find identifiers of mine and of my network that a public repository would expose for good. So I published from a snapshot: I renamed the private repository, kept it private and archived it, and a new public repository took the original name with a history that starts at one commit.
 
 [Source: the public repository decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L9-L20) · [Source: its decision section](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0017-public-repository-from-a-snapshot.md#L59-L65)
 
 ![Flow of publication: the private repository is archived, and its main becomes a single-commit snapshot that starts the new public repository, which is scanned for secrets on every pull request](/diagrams/security-public-repo-2.svg)
 
-**A scan of the whole history.** CI runs gitleaks, a secret scanner, over the whole history on every pull request and every push to `main`. The history, not only the latest commit, because a secret committed and then deleted is still in the history, and so still leaked. The scanner binary is pinned by version and checked against its SHA-256, and `--redact` keeps a finding out of the job log, which anyone with read access can open.
+**A scan of the whole history** (every pull request). CI runs gitleaks, a secret scanner, over the whole history on every pull request and every push to `main`. The history, not only the latest commit, because a secret committed and then deleted is still in the history, and so still leaked. The scanner binary is pinned by version and checked against its SHA-256, and `--redact` keeps a finding out of the job log, which anyone with read access can open.
 
 [Source: the CI workflow](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L5-L8) · [Source: the secret scan job](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L66-L91)
 
-**A rule.** `AGENTS.md`, the rulebook for the agents and humans working in the repository, says to keep anything that identifies me or addresses the infrastructure out of it, and to use placeholders instead. It names e-mail, user names, keys, tailnet names and IP addresses. The GitHub account name, the license holder and the domain are the accepted exceptions, and commits use the GitHub noreply address.
+**A rule** (the first item before the first commit). `AGENTS.md`, the rulebook for the agents and humans working in the repository, says to keep anything that identifies me or addresses the infrastructure out of it, and to use placeholders instead. It names e-mail, user names, keys, tailnet names and IP addresses. The GitHub account name, the license holder and the domain are the accepted exceptions, and commits use the GitHub noreply address.
 
 [Source: the rulebook](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/AGENTS.md#L1-L8) · [Source: the rulebook, non-negotiables](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/AGENTS.md#L54-L61)
 
