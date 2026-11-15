@@ -52,7 +52,7 @@ The render reads a public dataset and writes nothing, yet it runs a tool the pro
 
 [Source: the per-job credentials decision, context](https://github.com/FilipeFantini/lagom/blob/40985495267cd7075ad332d1d130b03bd85d1546/docs/adr/0044-per-job-credentials-and-the-dashboards-publishing-path.md#L24-L38)
 
-The render's Pod gets a read-only Postgres role, `lake_reader`, limited to 3 connections, whose password libpq reads from `PGPASSWORD` instead of the connection string. It gets a read-only token on the lake's bucket and a token limited to the dashboards bucket. `dct` itself runs with a short list of variables, without the bucket's token or the alarm's address.
+The render's Pod gets a read-only Postgres role, limited to 3 connections, whose password libpq reads from `PGPASSWORD` instead of the connection string. It gets a read-only token on the lake's bucket and a token limited to the dashboards bucket. `dct` itself runs with a short list of variables, without the bucket's token or the alarm's address.
 
 [Source: the read-only role](https://github.com/FilipeFantini/lagom/blob/40985495267cd7075ad332d1d130b03bd85d1546/docs/adr/0044-per-job-credentials-and-the-dashboards-publishing-path.md#L119-L125) · [Source: the job's environment](https://github.com/FilipeFantini/lagom/blob/40985495267cd7075ad332d1d130b03bd85d1546/docs/adr/0044-per-job-credentials-and-the-dashboards-publishing-path.md#L196-L211) · [Source: what the tool sees](https://github.com/FilipeFantini/lagom/blob/40985495267cd7075ad332d1d130b03bd85d1546/docs/adr/0044-per-job-credentials-and-the-dashboards-publishing-path.md#L227-L236)
 
