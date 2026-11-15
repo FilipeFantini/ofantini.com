@@ -15,6 +15,18 @@ The board is live at [lagom.ofantini.com](https://lagom.ofantini.com/earthquakes
 <figcaption>The board, live from Lagom: point at a bar or a circle for its figures. <a href="https://lagom.ofantini.com/earthquakes.html">Open the full dashboard</a>, with the table of the largest earthquakes.</figcaption>
 </figure>
 
+## What the board showed on 2026-11-15
+
+The frame above is live, so its numbers move. These are from the page built at 20:01 UTC on 2026-11-15, read from the page itself.
+
+In 30 days the catalog held 9,638 earthquakes, about 320 a day. Two thirds were micro, below magnitude 2 (6,310), and 1,133 reached magnitude 4.0 or more. Nine in ten were shallow, less than 70 km deep (8,665 of them). The largest was a magnitude 7.0 on 2026-10-22, 189 km ENE of Nagqu, China, 18 km deep.
+
+The regions chart and the map tell two different stories. Counted by region, Alaska (about 3,380) and California (about 2,570) lead by far, ahead of Texas and Utah (523 each) and Hawaii (366). That count includes every recorded earthquake, however small, and small earthquakes are recorded mostly where seismic networks are dense, which the USGS catalog is in the United States. The map shows only magnitude 4.0 and above, which networks pick up worldwide, and it follows the plate boundaries around the Pacific instead: Japan, Indonesia, Vanuatu, the Andes.
+
+82% of the earthquakes in the window had been reviewed by a USGS analyst. The rest are automatic solutions, and their magnitude and class can still change, which is why the page shows the latest revision time next to the latest earthquake.
+
+[Source: the magnitude and depth classes](https://github.com/FilipeFantini/lagom/blob/40985495267cd7075ad332d1d130b03bd85d1546/platform/warehouse/README.md#L25-L27)
+
 ## What was needed
 
 A few public dashboards of public data, written as code and reviewed in pull requests, rebuilt after each run and served as static files, with nothing resident on the node. One rule ranks above the rest: a wrong number must fail a build, not ship.
