@@ -55,7 +55,10 @@ Two goals rank above shipping pages:
   are in the [README](README.md#content-and-diagrams). Commit with the GitHub
   noreply address, never a personal one.
 - **No tracking.** No analytics, cookies, external scripts, or requests to a
-  third party at runtime. Fonts and images are served from the site.
+  third party at runtime. Fonts and images are served from the site. The one
+  exception: a page may frame a page of the operator's own projects, from the
+  hosts `scripts/check-frames.mjs` lists, sandboxed to scripts alone
+  ([ADR-0002](docs/adr/0002-frames-of-our-own-projects.md)).
 - **Pin everything.** npm packages at exact versions with the lockfile
   committed; GitHub Actions by commit SHA.
 - **Never weaken a check to get a green result.** Do not delete an assertion,

@@ -4,3 +4,4 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.18em}nav{fo
 .map{transform:none}.station:hover{transform:none}.station-name,.station-description{background:#eee3c9}.article-content svg{height:auto}
 .article-content p.sources{font:.78rem/1.6 'IBM Plex Mono',monospace;margin:-1.25rem 0 2rem;letter-spacing:.01em}
 .article-content code{overflow-wrap:anywhere}
+.article-content .live-board{margin:2.5rem 0 3rem}.article-content .live-board iframe{display:block;width:100%;aspect-ratio:635/1000;border:1px solid #17252b;background:#f2ead6}.article-content .live-board figcaption{font:.78rem/1.6 'IBM Plex Mono',monospace;margin-top:.75rem}

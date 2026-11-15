@@ -21,9 +21,11 @@ npm run preview -- --port 5000
 
 The build writes only static HTML, CSS, JavaScript, fonts and SVG images to `dist/`.
 Astro and every package version are fixed in `package-lock.json`. No analytics,
-cookies, external scripts or browser downloads run in the site. Fonts and diagrams
+cookies, external scripts or browser downloads run in the site. An article may frame a
+page of the operator's own projects, sandboxed to scripts
+([ADR-0002](docs/adr/0002-frames-of-our-own-projects.md)). Fonts and diagrams
 are served from the site itself. The build checks figure links, skill scores,
-article project references, diagram hashes, copy and the 5 KiB gzip budget for JavaScript.
+article project references, diagram hashes, frames, copy and the 5 KiB gzip budget for JavaScript.
 
 Run `node tests/navigation.mjs`, `node tests/radar.mjs`, `node tests/desktop.mjs`,
 `node tests/accessibility.mjs` and `node tests/contract.mjs` against the preview.

@@ -10,6 +10,11 @@ adrs: ["0040", "0042", "0044"]
 
 The board is live at [lagom.ofantini.com](https://lagom.ofantini.com/earthquakes.html): the earthquakes of the last 30 days, rebuilt from the lake after every pipeline run. It is one HTML file with no server behind it, and every number on it was compared with the warehouse before it was published.
 
+<figure class="live-board">
+<iframe src="https://lagom.ofantini.com/earthquakes_short.html" title="The earthquake board, live: the last 30 days of earthquakes, rebuilt after every pipeline run" sandbox="allow-scripts" referrerpolicy="no-referrer" loading="lazy"></iframe>
+<figcaption>The board, live from Lagom: point at a bar or a circle for its figures. <a href="https://lagom.ofantini.com/earthquakes.html">Open the full dashboard</a>, with the table of the largest earthquakes.</figcaption>
+</figure>
+
 ## What was needed
 
 A few public dashboards of public data, written as code and reviewed in pull requests, rebuilt after each run and served as static files, with nothing resident on the node. One rule ranks above the rest: a wrong number must fail a build, not ship.
