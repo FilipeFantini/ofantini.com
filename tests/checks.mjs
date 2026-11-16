@@ -16,6 +16,8 @@ const cases = [
   { script: 'check-diagrams', good: [], bad: [[`${fixtures}/diagrams-motion/source`, `${fixtures}/diagrams-motion/output`], /no reduced-motion rule/] },
   // Without arguments check-copy also scans dist, which needs a build.
   { script: 'check-copy', good: ['src/content'], bad: [[`${fixtures}/invalid-copy`], /Forbidden copy in/] },
+  { script: 'check-frames', good: [], bad: [[`${fixtures}/invalid-frame`], /not one of our projects/] },
+  { script: 'check-frames', good: [], bad: [[`${fixtures}/invalid-frame-sandbox`], /Frame without sandbox="allow-scripts"/] },
 ];
 
 function run(script, args) {

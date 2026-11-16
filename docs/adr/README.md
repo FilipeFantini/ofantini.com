@@ -10,3 +10,4 @@ ADR-0022 and ADR-0039 in particular.
 | ADR | Decision | Status |
 |---|---|---|
 | [0001](0001-how-a-change-reaches-main.md) | How a change reaches `main`: the ruleset, the checks, the review and the operator's approval | Accepted |
+| [0002](0002-frames-of-our-own-projects.md) | A page may frame a page of our own projects, sandboxed to scripts, from listed hosts | Accepted |
