@@ -15,15 +15,19 @@ The board is live at [lagom.ofantini.com](https://lagom.ofantini.com/earthquakes
 <figcaption>The board, live from Lagom: point at a bar or a circle for its figures. <a href="https://lagom.ofantini.com/earthquakes.html">Open the full dashboard</a>, with the table of the largest earthquakes.</figcaption>
 </figure>
 
-## What the board showed on 2026-11-15
+## How to read the board
 
-The frame above is live, so its numbers move. These are from the page built at 20:01 UTC on 2026-11-15, read from the page itself.
+The frame above is live, so its numbers change with every run. What follows holds whatever the numbers are on the day you read it.
 
-In 30 days the catalog held 9,638 earthquakes, about 320 a day. Two thirds were micro, below magnitude 2 (6,310), and 1,133 reached magnitude 4.0 or more. Nine in ten were shallow, less than 70 km deep (8,665 of them). The largest was a magnitude 7.0 on 2026-10-22, 189 km ENE of Nagqu, China, 18 km deep.
+**Small earthquakes vastly outnumber large ones.** The magnitude class chart falls steeply from left to right, and that shape is a property of the Earth, not of the window: for each step down in magnitude there are roughly ten times as many earthquakes. Micro earthquakes, below magnitude 2, are usually most of the bars. Worldwide, strong earthquakes, magnitude 6 to 7, come about a dozen times a month, and a major one, 7 or more, about once a month, so some months have none.
 
-The regions chart and the map tell two different stories. Counted by region, Alaska (about 3,380) and California (about 2,570) lead by far, ahead of Texas and Utah (523 each) and Hawaii (366). That count includes every recorded earthquake, however small, and small earthquakes are recorded mostly where seismic networks are dense, which the USGS catalog is in the United States. The map shows only magnitude 4.0 and above, which networks pick up worldwide, and it follows the plate boundaries around the Pacific instead: Japan, Indonesia, Vanuatu, the Andes.
+**Most earthquakes are shallow.** The depth chart is dominated by the shallow class, above 70 km, where the brittle crust breaks. Intermediate and deep earthquakes happen almost only where one tectonic plate dives under another, so the few deep ones on the board come from places such as the western Pacific and South America.
 
-82% of the earthquakes in the window had been reviewed by a USGS analyst. The rest are automatic solutions, and their magnitude and class can still change, which is why the page shows the latest revision time next to the latest earthquake.
+**The regions chart and the map answer different questions.** The regions chart counts every recorded earthquake, however small, and small earthquakes are recorded mostly where seismic networks are dense. The USGS catalog is densest in the United States, so Alaska and California usually lead that chart. The map shows only magnitude 4.0 and above, which networks pick up anywhere on Earth, and it draws the plate boundaries instead: the ring around the Pacific, from Japan and Indonesia to the Andes. Read the first as where earthquakes are measured, the second as where the Earth moves.
+
+**The daily chart has a steady floor with spikes.** Most days look alike. A spike usually follows a large earthquake, as its aftershocks are recorded over the next days, or a swarm of small ones in one place. The last bar is the current UTC day, so it is always short.
+
+**Recent numbers are provisional.** The share reviewed by USGS analysts is never complete: the newest earthquakes come in as automatic solutions and are reviewed over the following days, and a review can change a magnitude, and with it a class. That is why the page gives the latest revision time beside the latest earthquake.
 
 [Source: the magnitude and depth classes](https://github.com/FilipeFantini/lagom/blob/40985495267cd7075ad332d1d130b03bd85d1546/platform/warehouse/README.md#L25-L27)
 
