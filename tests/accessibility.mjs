@@ -14,7 +14,7 @@ const failures = [];
 for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
   const browser = await engine.launch();
   try {
-    for (const viewport of [{ width: 375, height: 812 }, { width: 1280, height: 800 }]) {
+    for (const viewport of [{ width: 375, height: 812 }, { width: 1040, height: 800 }, { width: 1280, height: 800 }, { width: 1600, height: 900 }]) {
       const page = await browser.newPage({ viewport });
       for (const route of routes) {
         const response = await page.goto(new URL(route, base).href);
@@ -22,6 +22,24 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         await page.evaluate(() => document.fonts.ready);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
         if (overflow) failures.push(`${name} ${viewport.width} ${route}: horizontal overflow`);
+        // A word that does not fit its column runs into the next one without any
+        // overflow of the page: compare each line of text with its neighbour's box.
+        const collisions = await page.evaluate(() => {
+          const names = [...document.querySelectorAll('.station-name')];
+          const out = [];
+          for (let i = 0; i + 1 < names.length; i++) {
+            const next = names[i + 1].getBoundingClientRect();
+            const range = document.createRange();
+            range.selectNodeContents(names[i]);
+            for (const line of range.getClientRects()) {
+              if (line.right > next.left + 1 && line.top < next.bottom && line.bottom > next.top) {
+                out.push(`${names[i].textContent.trim()} runs into ${names[i + 1].textContent.trim()}`);
+              }
+            }
+          }
+          return [...new Set(out)];
+        });
+        if (collisions.length) failures.push(`${name} ${viewport.width} ${route}: ${collisions.join(', ')}`);
         // On a desktop window the page body scrolls inside a clipped box. axe reports a
         // heading cut by the box edge as "incomplete" (background overlapped by the
         // desk), which depends on where the text happens to fall. Show the whole body
@@ -36,7 +54,7 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       }
       await page.close();
     }
-    console.log(`${name}: ${routes.length} pages at 375 and 1280 px checked`);
+    console.log(`${name}: ${routes.length} pages at 375, 1040, 1280 and 1600 px checked`);
   } finally { await browser.close(); }
 }
 for (const failure of failures) console.error(failure);
