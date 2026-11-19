@@ -2,7 +2,7 @@
 
 - **Status:** Accepted, by the operator approving the pull request that adds it
 - **Date:** 2026-11-19
-- **Decided by:** the operator, on 2026-11-19: Lagom is a batch data platform;
+- **Decided by:** the operator, on 2026-11-19: Lagom is a batch data platform ([Lagom ADR-0052](https://github.com/FilipeFantini/lagom/blob/9bb344a46dfcb651eada1408bc8994919d8e95e5/docs/adr/0052-streaming-leaves-the-platform.md));
   the site separates the platform from the data work, and shows every data
   project at a glance.
 
