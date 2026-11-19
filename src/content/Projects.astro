@@ -1,5 +1,6 @@
 ---
 import ArticleList from '../components/ArticleList.astro';
+import TechStack from '../components/TechStack.astro';
 import { loadLagom } from '../lib/lagom';
 const { project, groups, subprojects } = await loadLagom();
 ---
@@ -7,8 +8,9 @@ const { project, groups, subprojects } = await loadLagom();
 <section class="listing project-card">
   <h2><a href="/projects/lagom/">{project.data.title}</a></h2>
   <p>{project.data.summary}</p>
+  <TechStack stack={project.data.platform.stack} label={`${project.data.title} platform technologies`} />
   <h3 class="part">Platform</h3>
   {groups.map(group => <div class="track"><h4>{group.articles.length ? <a href={group.href}>{group.name}</a> : group.name}</h4><ArticleList articles={group.articles} /></div>)}
   <h3 class="part">Data projects</h3>
-  {subprojects.map(subproject => <div class="track"><h4>{subproject.articles.length ? <a href={subproject.href}>{subproject.name}</a> : subproject.name}</h4><ArticleList articles={subproject.articles} /></div>)}
+  {subprojects.map(subproject => <div class="track"><h4>{subproject.articles.length ? <a href={subproject.href}>{subproject.name}</a> : subproject.name}</h4><TechStack stack={subproject.stack} label={`${subproject.name} technologies`} /><ArticleList articles={subproject.articles} /></div>)}
 </section>

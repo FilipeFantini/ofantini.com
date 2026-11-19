@@ -1,11 +1,11 @@
 {
-  "dlt": { "name": "dlt", "icon": "dlthub" },
-  "duckdb": { "name": "DuckDB", "icon": "duckdb" },
-  "dbt": { "name": "dbt", "icon": "dbt" },
-  "dagster": { "name": "Dagster", "icon": "dagster" },
-  "k3s": { "name": "k3s", "icon": "k3s" },
-  "argo-cd": { "name": "Argo CD", "icon": "argo" },
-  "postgresql": { "name": "PostgreSQL", "icon": "postgresql" },
-  "cloudflare": { "name": "Cloudflare", "icon": "cloudflare" },
-  "tailscale": { "name": "Tailscale", "icon": "tailscale" }
+  "dlt": {"name": "dlt", "icon": "dlthub", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/dlthub.svg", "iconLicence": "CC0-1.0"},
+  "duckdb": {"name": "DuckDB", "icon": "duckdb", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/duckdb.svg", "iconLicence": "CC0-1.0"},
+  "dbt": {"name": "dbt", "icon": "dbt", "iconSource": "https://github.com/dbt-labs/dbt-core/blob/c23db31c0d1489bd188a60d046b336487d1a8b66/etc/dbt-core.svg", "iconLicence": "Apache-2.0"},
+  "dagster": {"name": "Dagster", "icon": "dagster", "iconSource": "https://github.com/dagster-io/dagster/blob/0ad8b455fc4f9e4b90b6ef0582cc145b24fe1b1b/js_modules/ui-components/src/icon-svgs/dagster_solid.svg", "iconLicence": "Apache-2.0"},
+  "k3s": {"name": "k3s", "icon": "k3s", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/k3s.svg", "iconLicence": "CC0-1.0"},
+  "argo-cd": {"name": "Argo CD", "icon": "argo", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/argo.svg", "iconLicence": "CC0-1.0"},
+  "postgresql": {"name": "PostgreSQL", "icon": "postgresql", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/postgresql.svg", "iconLicence": "CC0-1.0"},
+  "cloudflare": {"name": "Cloudflare", "icon": "cloudflare", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/cloudflare.svg", "iconLicence": "CC0-1.0"},
+  "tailscale": {"name": "Tailscale", "icon": "tailscale", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/tailscale.svg", "iconLicence": "CC0-1.0"}
 }

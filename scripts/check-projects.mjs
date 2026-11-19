@@ -15,10 +15,14 @@ const iconDir = process.argv[5] || 'src/icons';
 const technologies = JSON.parse(await readFile(technologyFile, 'utf8'));
 const icons = new Set((await readdir(iconDir)).filter(file => file.endsWith('.svg')).map(file => basename(file, '.svg')));
 const usedIcons = new Set();
-for (const [id, { name, icon }] of Object.entries(technologies)) {
+// A logo is a third-party file: each one records where it came from and under
+// which licence, so the registry is also the record of its provenance.
+for (const [id, { name, icon, iconSource, iconLicence }] of Object.entries(technologies)) {
   if (typeof name !== 'string' || !name) throw new Error(`Technology ${id} has no name`);
   if (icon !== undefined) {
     if (!icons.has(icon)) throw new Error(`Technology ${id} names the missing icon ${iconDir}/${icon}.svg`);
+    if (typeof iconSource !== 'string' || !/^https:\/\/github\.com\/[^\s]+\.svg$/.test(iconSource)) throw new Error(`Technology ${id} has no iconSource link to the logo's file`);
+    if (typeof iconLicence !== 'string' || !iconLicence) throw new Error(`Technology ${id} has no iconLicence`);
     usedIcons.add(icon);
   }
 }

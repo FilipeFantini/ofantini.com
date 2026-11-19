@@ -54,7 +54,16 @@ tracks as the first.
    first. A technology it lacks, such as dbt or Dagster, uses the mark from its
    own repository, reduced to one colour without redrawing the shape; with no
    first-party file it is shown by name alone, never with a lookalike. Every
-   logo sits beside its name, which is what screen readers read.
+   logo sits beside its name, which is what screen readers read. One registry,
+   `src/data/technologies.json`, holds each technology's name, logo, and the
+   logo's source and licence, and one component draws every stack from it.
+6. **Diagrams take the same logos as badges.** A Mermaid source names a
+   technology per node in a comment (`%% icon <node> <technology>`), and
+   `npm run diagrams` draws its logo inside the rendered SVG, on the node's
+   corner. Mermaid's own icon support was the alternative; by default it loads icon packs
+   from the network at render time and would not draw the registry's files.
+   The hash that marks a diagram current covers the source and the logos it
+   uses.
 
 ## Consequences
 

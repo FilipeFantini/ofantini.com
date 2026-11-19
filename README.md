@@ -90,9 +90,22 @@ project, group or subproject that does not exist, lacks a kind in a subproject, 
 outside its section's directory, or shares an `order` with another article of its
 section. Figures must cite lines in a fixed Lagom commit.
 
-A stack names technologies from `src/data/technologies.json`. A technology may name a
-logo in `src/icons/`, which the page inlines beside its name in the text colour; the
-build fails on an unknown technology, a missing logo or a logo no technology uses.
+A stack lists technology ids from `src/data/technologies.json`, the one registry of
+technologies: each has a `name` and may have a logo in `src/icons/` (`icon`), with the
+logo's `iconSource` and `iconLicence`. `src/components/TechStack.astro` draws a stack as
+a row of tags, each logo inlined beside its name in the text colour; it opens every
+project and data project presentation (Projects, the Lagom hub, each card and each data
+project page), and a new project only lists ids. The build fails on an unknown
+technology, a missing logo, a logo no technology uses, or a logo without its source or
+licence.
+
+A diagram may show a technology's logo on a node that names it: add a line
+`%% icon <node id> <technology id>` to its Mermaid source, which Mermaid ignores. `npm
+run diagrams` (or `npm run diagrams -- <name>` for one diagram) then draws the logo as a
+small badge on the node's top-left corner, inside the SVG, so the image still makes no
+request (`scripts/diagram-icons.mjs`). Only rectangle and cylinder nodes of a flowchart
+without subgraphs take a badge; anything else fails the render. The hash in each SVG
+covers the source and the logos it uses, so changing a logo makes the diagram stale.
 When an address moves, add a line to `public/_redirects` (`/old/ /new/ 301`, with and
 without the final slash); Cloudflare Pages serves it as a permanent redirect, and
 `tests/contract.mjs` checks that every old address is gone and every new one exists.
@@ -131,13 +144,10 @@ with four required checks; the rules for agents and humans are in
 
 Code is licensed under MIT ([`LICENSE`](LICENSE)). Original editorial content in
 `src/content/` is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Source excerpts and linked projects keep their own
-licenses. The logos in `src/icons/` name the technologies a stack uses. They are trademarks
-of their owners, shown only to name each technology (nominative use), and come from:
-
-| Logos | Source | Licence of the file |
-|---|---|---|
-| `argo`, `cloudflare`, `dlthub`, `duckdb`, `k3s`, `postgresql`, `tailscale` | [Simple Icons](https://simpleicons.org) 16.38.0, copied unchanged | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
-| `dbt` | the mark in [`etc/dbt-core.svg`](https://github.com/dbt-labs/dbt-core/blob/c23db31c0d1489bd188a60d046b336487d1a8b66/etc/dbt-core.svg) of dbt Labs' `dbt-core` repository; only the mark's path is kept, in one colour | [Apache License 2.0](https://github.com/dbt-labs/dbt-core/blob/c23db31c0d1489bd188a60d046b336487d1a8b66/License.md) |
-| `dagster` | [`dagster_solid.svg`](https://github.com/dagster-io/dagster/blob/0ad8b455fc4f9e4b90b6ef0582cc145b24fe1b1b/js_modules/ui-components/src/icon-svgs/dagster_solid.svg) of the `dagster` repository, its one-colour mark; only the fixed size and fill are removed | [Apache License 2.0](https://github.com/dagster-io/dagster/blob/0ad8b455fc4f9e4b90b6ef0582cc145b24fe1b1b/LICENSE) |
-
-The two changed files say so in a comment at their top, as the Apache License asks.
+licenses. The logos in `src/icons/` are trademarks of their owners, shown only to name
+each technology (nominative use). The source file and licence of each are recorded with
+its technology in `src/data/technologies.json`: seven come unchanged from
+[Simple Icons](https://simpleicons.org) 16.38.0 under CC0 1.0, and the dbt and Dagster
+marks come from their projects' own repositories under the Apache License 2.0, reduced to
+one colour without redrawing the shape. Those two files say in a comment at their top
+what was changed, as that licence asks.
