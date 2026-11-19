@@ -1,0 +1,23 @@
+---
+// A row of technologies, each named in text. Where Simple Icons has a logo
+// for it (src/icons/, CC0, see the README), the logo is inlined beside the
+// name: it takes the text colour, needs no request, and is hidden from screen
+// readers, which read the name.
+import technologies from '../data/technologies.json';
+interface Props { stack: string[]; label: string }
+const { stack, label } = Astro.props;
+const icons = import.meta.glob<string>('../icons/*.svg', { query: '?raw', import: 'default', eager: true });
+const known: Record<string, { name: string; icon?: string }> = technologies;
+const items = stack.map(id => {
+  const technology = known[id];
+  if (!technology) throw new Error(`Unknown technology ${id}`);
+  if (!technology.icon) return { name: technology.name };
+  const svg = icons[`../icons/${technology.icon}.svg`];
+  if (!svg) throw new Error(`Missing icon src/icons/${technology.icon}.svg for ${id}`);
+  return {
+    name: technology.name,
+    svg: svg.replace(/<title>[^<]*<\/title>/, '').replace('role="img"', 'aria-hidden="true" focusable="false" fill="currentColor"'),
+  };
+});
+---
+<ul class="stack" aria-label={label}>{items.map(item => <li>{item.svg && <Fragment set:html={item.svg} />}<span>{item.name}</span></li>)}</ul>

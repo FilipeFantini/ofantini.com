@@ -2,7 +2,7 @@
 title: "Letting AI agents write code behind gates they cannot open"
 summary: "How agents work on the platform repository under one rulebook, in containers with no credentials, with a token that cannot approve its own changes, and how those gates were made leaner."
 project: lagom
-track: security
+group: security
 order: 2
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0013", "0029", "0032", "0035", "0036", "0037", "0038"]
@@ -76,7 +76,7 @@ The roadmap and decision notes record no count of the pull requests agents merge
 
 [Source: the Sonnet decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0037-the-reviewer-runs-on-sonnet.md#L12-L23) · [Source: its consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0037-the-reviewer-runs-on-sonnet.md#L39-L41)
 
-**What the gates do not cover is written down.** The reviewer is a model, so it can be wrong or be steered by text an author wrote to mislead it. The gate depends on the token's permissions, which are set in GitHub's settings; the refusal test shows them once and nothing re-checks them later. No human reads the code: approval rests on a plain-language section, and a summary that is wrong is approved as if it were right. Test code is not guarded either.
+**What the gates do not cover is written down.** The reviewer is a model, so it can be wrong or be steered by text an author wrote to mislead it. The gate depends on the token's permissions, which are set in GitHub's settings; the refusal test shows them once and nothing re-checks them later. No human reads the code, so a summary that is wrong is approved as if it were right. Test code is not guarded either.
 
 [Source: the reviewer decision, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0036-the-reviewer-as-a-required-check.md#L123-L127) · [Source: the token decision, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0035-agents-use-the-operators-scoped-token.md#L182-L200)
 

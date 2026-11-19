@@ -2,13 +2,13 @@
 title: "Postgres first, DuckLake later: a storage decision that is still open"
 summary: "Why every layer of the warehouse started in Postgres, how a measured trigger kept the lakehouse out, and what is decided, proposed and still unmeasured about DuckDB on DuckLake."
 project: lagom
-track: modeling
+group: modeling
 order: 1
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0004", "0005", "0008", "0023", "0026", "0033"]
 ---
 
-Where should a small data platform keep its tables, and what should do the sums? On the first day of Lagom, my open-source data platform for one small machine, I picked one answer. Now I'm testing a different one. The honest account has three parts: what was decided, what is only proposed, and what is already running in production anyway.
+Where should a small data platform keep its tables, and what should do the sums? On the first day of Lagom I picked one answer. Now I'm testing a different one. The honest account has three parts: what was decided, what is only proposed, and what is already running in production anyway.
 
 [Source: roadmap, trigger table](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/roadmap.md#L27-L28)
 

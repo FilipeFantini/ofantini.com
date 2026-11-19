@@ -2,7 +2,8 @@
 title: "Loading an earthquake feed without counting a quake twice"
 summary: "How the USGS earthquake feed is pulled into tested tables, why every revision of every event is kept, and what the first production runs showed."
 project: lagom
-track: etl
+subproject: earthquakes
+kind: pipeline
 order: 1
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0003", "0023", "0026"]

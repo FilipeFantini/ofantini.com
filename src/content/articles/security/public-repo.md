@@ -2,7 +2,7 @@
 title: "The boring checklist I wish I'd had: a public repo with no secrets in it"
 summary: "A starter checklist for anyone who never worked as a software engineer: what to do before the first commit, before going public and on every pull request, and how each item was done cheaply on one machine."
 project: lagom
-track: security
+group: security
 order: 1
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0010", "0017"]
@@ -27,7 +27,7 @@ Here is the checklist. A repository is the folder where Git keeps every version 
 - Scan the whole history automatically, and keep the scan's exceptions as narrow as you can.
 - Put changes to the scan itself behind a person's approval.
 
-None of this is clever. The interesting part is how each item was done, and the gotchas, so here are the four pieces behind that list.
+None of this is clever. Here are the four pieces behind the list.
 
 **Sealed secrets** (the second and third items before the first commit). Sealed Secrets is a small controller in the cluster. It generates a key pair. Anyone with the `kubeseal` tool can encrypt a Secret with the public key, and the result, a `SealedSecret`, is safe to commit. Only the controller holds the private key, and it turns each `SealedSecret` into an ordinary Secret inside the cluster. A sealed secret is bound to its name and namespace by default, so copying it into another namespace makes it unreadable there.
 
@@ -45,7 +45,7 @@ Key renewal is off. By default the controller adds a new key every 30 days, and 
 
 ![Flow of publication: the private repository is archived, and its main becomes a single-commit snapshot that starts the new public repository, which is scanned for secrets on every pull request](/diagrams/security-public-repo-2.svg)
 
-**A scan of the whole history** (every pull request). CI runs gitleaks, a secret scanner, over the whole history on every pull request and every push to `main`. The history, not only the latest commit, because a secret committed and then deleted is still in the history, and so still leaked. The scanner binary is pinned by version and checked against its SHA-256, and `--redact` keeps a finding out of the job log, which anyone with read access can open.
+**A scan of the whole history** (every pull request). CI runs gitleaks, a secret scanner, over the whole history on every pull request and every push to `main`. The history, not only the latest commit: a secret committed and then deleted is still in it, and so still leaked. The scanner binary is pinned by version and checked against its SHA-256, and `--redact` keeps a finding out of the job log, which anyone with read access can open.
 
 [Source: the CI workflow](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L5-L8) · [Source: the secret scan job](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L66-L91)
 

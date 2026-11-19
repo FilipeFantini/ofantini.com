@@ -2,7 +2,7 @@
 title: "Nobody touches the cluster by hand: Git is the only way in"
 summary: "How one repository became the source of truth for a single Kubernetes node: Argo CD managing itself, an app of apps, and images promoted by digest from staging to prod."
 project: lagom
-track: infrastructure
+group: infrastructure
 order: 2
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0009", "0015", "0017", "0021"]
@@ -70,7 +70,7 @@ On 2026-10-28, on an empty cluster, all nine Applications were `Synced` and `Hea
 
 [Source: handing over to Argo CD](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L1058-L1068)
 
-**The promotion order began as a convention.** When digests were chosen, "prod only receives digests staging pinned" was just a convention until a check asserted it. Three days after the decision, `tools/promotion_check.py` made it a CI check: it fails a change whose prod manifests pin an image by tag only, or by a digest staging had not pinned in any earlier commit. It asserts "pinned on `main` first", not "ran successfully", because CI never reaches the cluster. The run is confirmed by hand before the prod pull request opens.
+**The promotion order began as a convention.** When digests were chosen, "prod only receives digests staging pinned" was only a convention. Three days later, `tools/promotion_check.py` made it a CI check: it fails a change whose prod manifests pin an image by tag only, or by a digest staging had not pinned in any earlier commit. It asserts "pinned on `main` first", not "ran successfully", because CI never reaches the cluster. The run is confirmed by hand before the prod pull request opens.
 
 [Source: the registry decision, note of 2026-10-19](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0015-images-on-ghcr.md#L126-L131) · [Source: environments](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L342-L350)
 

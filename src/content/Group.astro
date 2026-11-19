@@ -1,0 +1,13 @@
+---
+import ArticleList from '../components/ArticleList.astro';
+import type { LagomGroup } from '../lib/lagom';
+interface Props { group: LagomGroup }
+const { group } = Astro.props;
+---
+<section class="intro">
+  <nav class="article-trail" aria-label="Section path"><a href="/projects/lagom/">Lagom</a> › Platform › {group.name}</nav>
+  <p class="eyebrow"><span class="roundel" aria-hidden="true"></span> Lagom <span class="divider">/</span> Platform</p>
+  <h1>{group.name}</h1>
+  <div class="intro-bottom"><p>{group.description}</p></div>
+</section>
+<section class="listing"><ArticleList articles={group.articles} summaries /></section>

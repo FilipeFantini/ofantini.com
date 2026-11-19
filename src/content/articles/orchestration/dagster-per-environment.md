@@ -2,13 +2,13 @@
 title: "Two Dagsters, one image, and a change that always visits staging first"
 summary: "Why staging and production each run their own Dagster, how one image reaches production by digest only after staging, and what the first weeks of running it measured."
 project: lagom
-track: orchestration
+group: orchestration
 order: 1
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0007", "0014", "0015", "0026"]
 ---
 
-A pipeline needs someone to schedule it, show what happened and keep its history. The harder question is where a change is tried before it can hurt real data. Trying it in staging first is standard practice; what I wanted to see is whether two full environments fit on one small machine. This is how Lagom, my open-source data platform for one small machine, schedules its pipeline with Dagster, and how a change gets from a laptop to production without skipping staging.
+A pipeline needs someone to schedule it, show what happened and keep its history. The harder question is where a change is tried before it can hurt real data. Trying it in staging first is standard practice; what I wanted to see is whether two full environments fit on one small machine. This is how Lagom schedules its pipeline with Dagster, and how a change gets from a laptop to production without skipping staging.
 
 ## What was built
 
@@ -36,7 +36,7 @@ Three Pods stay up. (A Pod is the smallest thing Kubernetes runs: one or more co
 
 [Source: the environments decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0007-three-environments.md#L22-L24) · [Source: the environments decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0007-three-environments.md#L65-L82) · [Source: the environments decision, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0007-three-environments.md#L97-L103)
 
-A later decision reversed that part once the node had 8 GB, because the memory reason no longer held. I weighed two alternatives. One Dagster for both would save about 550 MiB, but each run is a Pod that writes events straight to Dagster's metadata database. The metadata would either sit in prod's Postgres, forcing its NetworkPolicy to open to staging, or in a third Postgres that a staging run could still use to write into prod's history. Dagster in prod only would let upgrades and asset changes reach prod untested. The price of my choice is about 550 MiB of resident requests per environment. That is what it costs to rehearse properly on a small machine.
+A later decision reversed that part once the node had 8 GB, because the memory reason no longer held. I weighed two alternatives. One Dagster for both would save about 550 MiB, but each run is a Pod that writes events straight to Dagster's metadata database. The metadata would either sit in prod's Postgres, forcing its NetworkPolicy to open to staging, or in a third Postgres that a staging run could still use to write into prod's history. Dagster in prod only would let upgrades and asset changes reach prod untested. The price of my choice is about 550 MiB of resident requests per environment.
 
 [Source: the Dagster decision, header](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0026-dagster-one-instance-per-environment.md#L10-L12) · [Source: the Dagster decision, alternatives](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0026-dagster-one-instance-per-environment.md#L28-L43) · [Source: the Dagster decision, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0026-dagster-one-instance-per-environment.md#L85-L90)
 

@@ -1,0 +1,11 @@
+{
+  "dlt": { "name": "dlt", "icon": "dlthub" },
+  "duckdb": { "name": "DuckDB", "icon": "duckdb" },
+  "dbt": { "name": "dbt" },
+  "dagster": { "name": "Dagster" },
+  "k3s": { "name": "k3s", "icon": "k3s" },
+  "argo-cd": { "name": "Argo CD", "icon": "argo" },
+  "postgresql": { "name": "PostgreSQL", "icon": "postgresql" },
+  "cloudflare": { "name": "Cloudflare", "icon": "cloudflare" },
+  "tailscale": { "name": "Tailscale", "icon": "tailscale" }
+}

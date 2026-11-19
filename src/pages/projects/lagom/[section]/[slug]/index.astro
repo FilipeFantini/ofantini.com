@@ -4,8 +4,8 @@ import Article from '../../../../../layouts/Article.astro';
 import { loadLagom } from '../../../../../lib/lagom';
 
 export async function getStaticPaths() {
-  const { tracks } = await loadLagom();
-  return tracks.flatMap(track => track.articles.map(article => ({ params: { track: track.id, slug: article.slug }, props: { article } })));
+  const { sections } = await loadLagom();
+  return sections.flatMap(section => section.articles.map(article => ({ params: { section: section.id, slug: article.slug }, props: { article } })));
 }
 
 const { article } = Astro.props;

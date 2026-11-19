@@ -2,7 +2,7 @@
 title: "The backup was postponed on purpose, then the whole server was rebuilt from a checklist"
 summary: "Why the database backup waited until it protected something, how it was built the next day, and what rebuilding the node from Git taught me."
 project: lagom
-track: infrastructure
+group: infrastructure
 order: 4
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0019", "0025", "0027"]
@@ -28,7 +28,7 @@ The other half of recovery is the checklist. Everything the cluster runs is in G
 
 ## Why this way
 
-The backup was deferred because an audit found nothing in Postgres that existed only on the node. Raw events could be fetched again from USGS. The silver and gold layers are rebuilt from bronze by dbt, the tool that runs the SQL transformations. Roles live in manifests, and credentials are sealed in Git. I rejected building it anyway: even the cheapest form adds an account, a credential and a schedule that cost more than they protect. Waiting for a milestone was ruled out too, since Dagster's run history and a streaming source would then pile up unprotected. Instead, two triggers that anyone can check were set: Postgres holds state no source can rebuild, or someone other than me relies on the data.
+The backup was deferred because an audit found nothing in Postgres that existed only on the node. Raw events could be fetched again from USGS. The silver and gold layers are rebuilt from bronze by dbt, the tool that runs the SQL transformations. Roles live in manifests, and credentials are sealed in Git. I rejected building it anyway: even the cheapest form adds an account, a credential and a schedule that cost more than they protect. Waiting for a milestone was ruled out too, since Dagster's run history would then pile up unprotected. Instead, two triggers that anyone can check were set: Postgres holds state no source can rebuild, or someone other than me relies on the data.
 
 [Source: the deferral](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0019-postgres-backup-deferred.md#L20-L36) · [Source: the deferral](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0019-postgres-backup-deferred.md#L47-L68)
 
@@ -74,6 +74,6 @@ The rebuild ran as a drill on 2026-10-28, moving to a larger node with the old o
 
 ## What's next
 
-The lost hour is accepted for now. It gets revisited when a dataset that can't be re-loaded enters, the streaming-source trigger in the roadmap. Prod's first retention deletion was due around 2026-11-12.
+The lost hour is accepted for now. It gets revisited when a dataset that can't be re-loaded enters. Prod's first retention deletion was due around 2026-11-12.
 
 [Source: the hourly decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0027-hourly-wal-archiving-and-14-day-prod-retention.md#L99-L101) · [Source: backup notes](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0025-postgres-backup-barman-cloud-to-r2.md#L147-L152)

@@ -2,7 +2,7 @@
 title: "A server with no open ports that I can still reach"
 summary: "How the node accepts no inbound connection at all, yet is administered over a private network, with web tools open in a browser behind a login."
 project: lagom
-track: infrastructure
+group: infrastructure
 order: 3
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0021", "0028", "0030"]
@@ -44,7 +44,7 @@ Then I saw it running and changed my mind. A port in the URL is not how the plat
 
 [Source: the tunnel decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0030-operator-uis-behind-cloudflare-access.md#L6-L10) · [Source: the tunnel decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0030-operator-uis-behind-cloudflare-access.md#L72-L77)
 
-The earlier objection was that Access fails open. The new design adds a check that closes that gap: because `cloudflared` checks the signed token itself, a deleted or bypassed Access application leaves the tools failing closed. The tools also share one hostname, with one path per tool, kept apart from the one that serves the public site: a DNS name points at one destination, so putting the tools on the site's own hostname would route the site through the node and take it down with the cluster.
+The new design closes the earlier objection that Access fails open: because `cloudflared` checks the signed token itself, a deleted or bypassed Access application leaves the tools failing closed. The tools also share one hostname, with one path per tool, kept apart from the one that serves the public site: a DNS name points at one destination, so putting the tools on the site's own hostname would route the site through the node and take it down with the cluster.
 
 [Source: the tunnel decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0030-operator-uis-behind-cloudflare-access.md#L88-L98) · [Source: the tunnel decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0030-operator-uis-behind-cloudflare-access.md#L134-L142)
 

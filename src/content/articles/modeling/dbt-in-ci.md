@@ -2,13 +2,13 @@
 title: "Testing every dbt change on twelve made-up rows"
 summary: "How each pull request builds and tests the warehouse models on a throwaway DuckLake, why the first version was red on purpose, and what it still cannot see."
 project: lagom
-track: modeling
+group: modeling
 order: 2
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0018"]
 ---
 
-A change to a data model can be valid SQL and still give wrong numbers. For a while the checks on a pull request (a proposed change) in Lagom, my small open-source data platform, could tell that the models parsed, but not that they produced the right tables. Running tests on every change is standard practice. What I wanted to find out was how cheaply it could be done: the proof before the merge, without credentials, without real data and without a database server.
+A change to a data model can be valid SQL and still give wrong numbers. For a while the checks on a pull request (a proposed change) in Lagom could tell that the models parsed, but not that they produced the right tables. Running tests on every change is standard practice. What I wanted to find out was how cheaply it could be done: the proof before the merge, without credentials, without real data and without a database server.
 
 [Source: the workflow before this change](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L160-L167)
 
@@ -30,7 +30,7 @@ The 12 rows are chosen so that each rule is reached: two revisions of one event,
 
 ## Why this way
 
-I never wrote this decision up on its own, so the reasons here come from the workflow's comments and the warehouse README. The `lake` target is what Dagster runs, so a test on it is a test of what ships. The orchestration project's lockfile is the environment because that is where dbt-duckdb lives and what the image runs. A temporary directory stands in for R2 and Postgres, so the check needs no secret and cannot touch a real environment. That fits the point of the platform: a safety net that runs on GitHub's machines, with no server to keep alive.
+I never wrote this decision up on its own, so the reasons here come from the workflow's comments and the warehouse README. The `lake` target is what Dagster runs, so a test on it is a test of what ships. The orchestration project's lockfile is the environment because that is where dbt-duckdb lives and what the image runs. A temporary directory stands in for R2 and Postgres, so the check needs no secret and cannot touch a real environment.
 
 [Source: the workflow](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/.github/workflows/ci.yml#L175-L184) · [Source: warehouse README, CI](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/platform/warehouse/README.md#L52-L59)
 

@@ -2,7 +2,7 @@
 title: "An alarm for the day the pipeline just stops"
 summary: "How a missing ping turns a silent pipeline into an e-mail, and how Dagster's failure sensor and heartbeat replaced the scheduled jobs that first did the job."
 project: lagom
-track: orchestration
+group: orchestration
 order: 2
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0018", "0033"]
@@ -46,7 +46,7 @@ The second step combines the two approaches rather than choosing one. Dagster's 
 
 [Source: the alerts decision, alternatives](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0033-dagster-alerts-through-healthchecks.md#L50-L69)
 
-The trade-off is accepted in writing. A third party sits in the alert path: if Healthchecks.io is down, alerts stop with it, silently. Its code is open source, so self-hosting it off the node is the exit.
+The accepted trade-off is a third party in the alert path: if Healthchecks.io is down, alerts stop with it, silently. Its code is open source, so self-hosting it off the node is the exit.
 
 [Source: the heartbeat decision, consequences](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0018-pipeline-heartbeat.md#L101-L108)
 

@@ -3,7 +3,7 @@
 // left alone.
 //
 // articleHeadingIds: every heading gets an id prefixed with the article's
-// track and slug ("security-agents--gotchas"). Articles share their section
+// section and slug ("security-agents--gotchas"). Articles share their section
 // headings ("What we built", "Gotchas") and the desktop can show several
 // articles in one page, so plain ids would repeat. Astro's own heading-id
 // pass runs after user plugins and keeps an id that is already set.

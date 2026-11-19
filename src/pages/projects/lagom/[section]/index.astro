@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import Group from '../../../../content/Group.astro';
+import Subproject from '../../../../content/Subproject.astro';
+import { loadLagom } from '../../../../lib/lagom';
+
+// A platform group or a data subproject without articles has no page; the hub
+// shows it as "In works".
+export async function getStaticPaths() {
+  const { groups, subprojects } = await loadLagom();
+  return [
+    ...groups.filter(group => group.articles.length > 0).map(group => ({ params: { section: group.id }, props: { group } })),
+    ...subprojects.filter(subproject => subproject.articles.length > 0).map(subproject => ({ params: { section: subproject.id }, props: { subproject } })),
+  ];
+}
+
+const { group, subproject } = Astro.props;
+const section = group ?? subproject;
+---
+<BaseLayout title={section.name} windowTitle={`projects / lagom / ${section.id}`} up="/projects/lagom/">{group ? <Group group={group} /> : <Subproject subproject={subproject} />}</BaseLayout>

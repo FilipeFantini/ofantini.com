@@ -1,9 +1,10 @@
 ---
-title: "A dashboard rebuilt after every pipeline run"
-summary: "How the earthquake board went from a tool comparison to a static page that Dagster renders, checks against gold and publishes after each run, with credentials that can only read."
+title: "The last 30 days of earthquakes, on a board rebuilt after every run"
+summary: "The live earthquake board and how to read it, then how Dagster renders it, checks it against gold and publishes it after each run, with credentials that can only read."
 project: lagom
-track: visualization
-order: 1
+subproject: earthquakes
+kind: report
+order: 2
 lagom_commit: 40985495267cd7075ad332d1d130b03bd85d1546
 adrs: ["0040", "0042", "0044"]
 ---

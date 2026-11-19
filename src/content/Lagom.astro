@@ -1,15 +1,29 @@
 ---
+import TechStack from '../components/TechStack.astro';
 import { loadLagom } from '../lib/lagom';
-const { tracks } = await loadLagom();
-const published = tracks.filter(track => track.articles.length > 0).length;
+const { project, groups, subprojects } = await loadLagom();
+const published = groups.filter(group => group.articles.length > 0).length;
+const status = { live: 'Live', building: 'Building', planned: 'Planned' };
+const count = (n: number) => `${n} ${n === 1 ? 'article' : 'articles'}`;
 ---
 <section class="intro" aria-labelledby="title">
         <p class="eyebrow"><span class="roundel" aria-hidden="true"></span> Project field notes <span class="divider">/</span> Lagom</p>
         <h1 id="title">A small platform<br /><em>that grows one line at a time.</em></h1>
-        <div class="intro-bottom"><p>Lagom is Swedish for “not too little, not too much, just enough”. Not every company needs a big data platform. Most data fits on one machine, and tools that are light on memory can do real analytics on it. Lagom explores that idea in the open, with a small platform that can grow as needed. Each new source adds a pipeline to the same shared foundation. Sources: <a href="https://github.com/FilipeFantini/lagom/blob/3d6039735d0ffca19553c1669d506f34da241a68/README.md#L5-L17">Lagom README</a> and <a href="https://github.com/FilipeFantini/lagom/blob/3d6039735d0ffca19553c1669d506f34da241a68/README.md#L85-L96">its layout</a>.</p><span class="direction" aria-hidden="true"><small>Follow the lines</small></span></div>
+        <div class="intro-bottom"><p>Lagom is Swedish for “not too little, not too much, just enough”. Not every company needs a big data platform. Most data fits on one machine, and tools that are light on memory can do real analytics on it. Lagom is a batch data platform for small and medium data, built in the open on one small node. It grows by adding a source: each one is a data project on the same shared foundation. Sources: <a href="https://github.com/FilipeFantini/lagom/blob/3d6039735d0ffca19553c1669d506f34da241a68/README.md#L5-L17">Lagom README</a> and <a href="https://github.com/FilipeFantini/lagom/blob/3d6039735d0ffca19553c1669d506f34da241a68/README.md#L85-L96">its layout</a>.</p><span class="direction" aria-hidden="true"><small>Follow the lines</small></span></div>
       </section>
-      <section class="network" aria-labelledby="network-title">
-        <div class="network-heading"><div><p class="eyebrow">The project, in tracks</p><h2 id="network-title">One network.<br /><em>Many ways in.</em></h2></div><p>Each track links to its articles about a part of Lagom. A track without articles is in works.</p></div>
-        <div class="map-wrap"><ol class="map" aria-label="Lagom tracks">{tracks.map(track => <li class:list={['station', track.articles.length ? 'infra' : 'analysis']}><span class="station-mark" aria-hidden="true"></span><span class="station-name">{track.articles.length ? <a href={track.href}>{track.name}</a> : track.name}</span><span class="station-description">{track.description}</span><span class="station-count">{track.articles.length ? `${track.articles.length} ${track.articles.length === 1 ? 'article' : 'articles'}` : 'In works'}</span></li>)}</ol></div>
-        <p class="map-note">A living project <span aria-hidden="true">✳</span> {published} of {tracks.length} tracks have articles.</p>
+      <section class="network" aria-labelledby="platform-title">
+        <div class="network-heading"><div><p class="eyebrow">Part one <span class="divider">/</span> Platform</p><h2 id="platform-title">One foundation.<br /><em>Shared by every source.</em></h2></div><p>The node, its deployment, orchestration, security and the data stack that every data project runs on. I'm an infrastructure enthusiast, and this is the part where AI agents helped most, behind <a href="/projects/lagom/security/agents/">gates they cannot open</a>.</p></div>
+        <div class="map-wrap"><ol class="map" aria-label="Lagom platform groups">{groups.map(group => <li class:list={['station', group.articles.length ? 'infra' : 'analysis']}><span class="station-mark" aria-hidden="true"></span><span class="station-name">{group.articles.length ? <a href={group.href}>{group.name}</a> : group.name}</span><span class="station-description">{group.description}</span><span class="station-count">{group.articles.length ? count(group.articles.length) : 'In works'}</span></li>)}</ol></div>
+        <TechStack stack={project.data.platform.stack} label="Platform technologies" />
+        <p class="map-note">A living project <span aria-hidden="true">✳</span> {published} of {groups.length} platform groups have articles.</p>
+      </section>
+      <section class="data-projects" aria-labelledby="data-title">
+        <div class="network-heading"><div><p class="eyebrow">Part two <span class="divider">/</span> Data projects</p><h2 id="data-title">One project<br /><em>per data source.</em></h2></div><p>Each source gets a project of its own: a pipeline that loads and models its data, and a report that reads it. This is the data work, my own field.</p></div>
+        <ul class="data-grid" aria-label="Lagom data projects">{subprojects.map(subproject => <li class="data-card">
+          <p class="data-meta"><span class:list={['status', subproject.status]}>{status[subproject.status]}</span> Source: {subproject.source}</p>
+          <h3>{subproject.articles.length ? <a href={subproject.href}>{subproject.name}</a> : subproject.name}</h3>
+          <p>{subproject.question}</p>
+          <TechStack stack={subproject.stack} label={`${subproject.name} technologies`} />
+          <p class="data-meta">{subproject.articles.length ? `Pipeline: ${count(subproject.pipeline.length)} · Report: ${count(subproject.report.length)}` : 'In works'}</p>
+        </li>)}</ul>
       </section>

@@ -2,7 +2,7 @@
 title: "I fit a data platform in 4 GB, until it stopped fitting"
 summary: "How memory was measured on a small node, turned into a limit that CI enforces, and how the platform moved to an 8 GB node when the plan no longer fit."
 project: lagom
-track: infrastructure
+group: infrastructure
 order: 1
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0002", "0011", "0016", "0020", "0021", "0024"]
@@ -36,7 +36,7 @@ Then the planned stack was measured on the node. The projection came to about 2.
 
 [Source: the memory decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0011-memory-viability-on-4gb.md#L67-L100)
 
-When the overhead turned out larger, the ceiling came down to match. Three alternatives lost: keep 2.6 GB and trust the node, lower to the full measured room of 2.3 GB with no margin, or move to 8 GB at once. My rule was to move when a component does not fit, not in anticipation. Dagster, the orchestrator, was projected not to fit. The note on the move says it departs from "observed" because the projected gap, about 380 MiB, was too large to tune away. The price was roughly double the monthly cost. Here's the thing: the Dagster step was blocked on a vendor's capacity, not on work.
+When the overhead turned out larger, the ceiling came down to match. Three alternatives lost: keep 2.6 GB and trust the node, lower to the full measured room of 2.3 GB with no margin, or move to 8 GB at once. My rule was to move when a component does not fit, not in anticipation. Dagster, the orchestrator, was projected not to fit. The note on the move says it departs from "observed" because the projected gap, about 380 MiB, was too large to tune away. The price was roughly double the monthly cost. The Dagster step was blocked on a vendor's capacity, not on work.
 
 [Source: the ceiling decision](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0016-ci-ceiling-2-2-gb.md#L30-L62) · [Source: the move to 8 GB](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/adr/0020-move-to-the-8-gb-node.md#L8-L62)
 
@@ -80,6 +80,6 @@ At the pinned commit the total was 5,070 MiB: Dagster in two environments and th
 
 ## What's next
 
-The larger node is room for the planned design, not licence to add to it. The full design adds NATS with Redpanda Connect, Streamlit, Grafana and PgBouncer, which enter by trigger and bring the total to about 4.0 GB of requests, leaving about 1.5 GB within the ceiling.
+The larger node is room for the planned design, not licence to add to it. The full design adds components that enter by trigger, such as Grafana and PgBouncer, and brings the total to about 4.0 GB of requests, leaving about 1.5 GB within the ceiling.
 
 [Source: memory budget](https://github.com/FilipeFantini/lagom/blob/c98710575c9fb5bc76463aa01750df27e9158019/docs/architecture.md#L643-L657)
