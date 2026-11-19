@@ -1,6 +1,6 @@
 import { chromium, firefox, webkit } from 'playwright';
 import { readdir, readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import assert from 'node:assert/strict';
 
 async function routes(dir, route = '/') {
@@ -17,11 +17,34 @@ const all = await routes('dist');
 // every unknown address would answer with the home page and status 200.
 const notFound = await readFile('dist/404.html', 'utf8');
 assert.ok(notFound.includes('Nothing here.') && notFound.includes('href="/"'), '404 page with a link home');
-const tracks = all.filter(route => /^\/projects\/lagom\/[^/]+\/$/.test(route));
+// A section is a platform group or a data subproject, with a page at
+// /projects/lagom/<id>/ once it has articles; its articles sit under it.
+const sections = all.filter(route => /^\/projects\/lagom\/[^/]+\/$/.test(route));
 const articles = all.filter(route => /^\/projects\/lagom\/[^/]+\/[^/]+\/$/.test(route));
 const sources = (await readdir('src/content/articles', { recursive: true })).filter(file => file.endsWith('.md'));
 assert.equal(articles.length, sources.length, 'one page per article file');
-assert.ok(tracks.length > 0 && articles.length >= tracks.length, 'every track page has at least one article page');
+assert.ok(sections.length > 0 && articles.length >= sections.length, 'every section page has at least one article page');
+const lagom = JSON.parse(await readFile('src/content/projects/lagom.json', 'utf8'));
+const groupRoutes = lagom.platform.groups.map(group => `/projects/lagom/${group.id}/`).filter(route => sections.includes(route));
+const subprojectRoutes = lagom.subprojects.map(subproject => `/projects/lagom/${subproject.id}/`).filter(route => sections.includes(route));
+assert.deepEqual([...groupRoutes, ...subprojectRoutes].sort(), [...sections].sort(), 'every section page is a group or a subproject');
+// The kind of each subproject article, read from its frontmatter.
+const kinds = new Map();
+for (const file of sources) {
+  const kind = /^kind:\s*(\w+)/m.exec(await readFile(join('src/content/articles', file), 'utf8'))?.[1];
+  if (kind) kinds.set(`/projects/lagom/${dirname(file)}/${basename(file, '.md')}/`, kind);
+}
+// Pages serves public/_redirects; an old address must not be a page any more,
+// and the address it moves to must be one.
+const redirects = (await readFile('dist/_redirects', 'utf8')).split('\n').filter(line => line.trim() && !line.startsWith('#'));
+assert.ok(redirects.length > 0, 'redirects are published');
+for (const line of redirects) {
+  const [from, to, status, ...rest] = line.trim().split(/\s+/);
+  assert.equal(status, '301', `${line}: permanent redirect`);
+  assert.equal(rest.length, 0, `${line}: three fields`);
+  assert.ok(!all.includes(from.endsWith('/') ? from : `${from}/`), `${from}: redirected but still a page`);
+  assert.ok(all.includes(to), `${from}: redirects to ${to}, which is not a page`);
+}
 const base = process.env.SITE_TEST_URL || 'http://localhost:5000';
 for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
   const browser = await engine.launch();
@@ -41,18 +64,18 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         assert.equal(await page.locator('.win .back[href]').count(), 1, `${route}: back`);
         assert.equal(await page.locator('.win .home[href="/"]').count(), 1, `${route}: home`);
       }
-      if (tracks.includes(route) || articles.includes(route)) {
+      if (sections.includes(route) || articles.includes(route)) {
         assert.equal(await page.locator(`.article-trail a[href="/projects/lagom/"]`).count(), 1, `${route}: Lagom breadcrumb`);
       }
-      if (tracks.includes(route)) {
-        assert.ok(await page.locator('.win .articles a').count() > 0, `${route}: track page lists its articles`);
+      if (sections.includes(route)) {
+        assert.ok(await page.locator('.win .articles a').count() > 0, `${route}: section page lists its articles`);
         const links = await page.locator('.win .articles a').evaluateAll(nodes => nodes.map(node => node.getAttribute('href')));
         for (const link of links) assert.ok(articles.includes(link) && link.startsWith(route), `${route}: lists ${link}`);
       }
       if (articles.includes(route)) {
-        const track = route.split('/').slice(0, 4).join('/') + '/';
+        const section = route.split('/').slice(0, 4).join('/') + '/';
         assert.equal(await page.locator(`.article-links a[href="/projects/lagom/"]`).count(), 1, `${route}: link to Lagom`);
-        assert.equal(await page.locator(`.article-trail a[href="${track}"]`).count(), 1, `${route}: track breadcrumb`);
+        assert.equal(await page.locator(`.article-trail a[href="${section}"]`).count(), 1, `${route}: section breadcrumb`);
         assert.equal(await page.locator('.win .t').textContent().then(text => /^Lagom \/ .+ \/ \d\d$/.test(text)), true, `${route}: window title`);
         assert.equal(await page.locator('.article-pin a[href^="https://github.com/FilipeFantini/lagom/tree/"]').count(), 1, `${route}: pinned commit`);
         assert.ok(await page.locator('.article-content p.sources a[href^="https://github.com/FilipeFantini/lagom/blob/"]').count() > 0, `${route}: source lines marked`);
@@ -60,13 +83,22 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       }
     }
     await page.goto(new URL('/projects/lagom/', base).href);
-    // The hub links to each track page; each track page, the Projects page and
+    // The hub links to each group page from the platform map and to each
+    // subproject page from its card; each section page, the Projects page and
     // the Articles page link to every article.
-    for (const route of tracks) assert.equal(await page.locator(`.win .map a[href="${route}"]`).count(), 1, `hub links to ${route}`);
+    for (const route of groupRoutes) assert.equal(await page.locator(`.win .map a[href="${route}"]`).count(), 1, `hub map links to ${route}`);
+    for (const route of subprojectRoutes) assert.equal(await page.locator(`.win .data-card a[href="${route}"]`).count(), 1, `hub card links to ${route}`);
+    assert.equal(await page.locator('.win .data-card').count(), lagom.subprojects.length, 'hub has one card per subproject');
     for (const route of articles) {
-      const track = route.split('/').slice(0, 4).join('/') + '/';
-      assert.ok(tracks.includes(track), `${route}: its track page exists`);
-      for (const list of ['/projects/', '/articles/', track]) {
+      const section = route.split('/').slice(0, 4).join('/') + '/';
+      assert.ok(sections.includes(section), `${route}: its section page exists`);
+      assert.equal(kinds.has(route), subprojectRoutes.includes(section), `${route}: a kind exactly when it belongs to a subproject`);
+      if (kinds.has(route)) {
+        const id = section.split('/')[3];
+        await page.goto(new URL(section, base).href);
+        assert.equal(await page.locator(`.win section[aria-labelledby="${id}-${kinds.get(route)}"] .articles a[href="${route}"]`).count(), 1, `${section} lists ${route} under ${kinds.get(route)}`);
+      }
+      for (const list of ['/projects/', '/articles/', section]) {
         await page.goto(new URL(list, base).href);
         assert.equal(await page.locator(`.win a[href="${route}"]`).count(), 1, `${list} links to ${route}`);
       }

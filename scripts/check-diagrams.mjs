@@ -1,14 +1,14 @@
-import { createHash } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { readDiagram } from './diagram-icons.mjs';
 
 // Mermaid's SVG carries edge-animation CSS; render-diagrams.mjs adds this rule.
 const stopsAnimation = /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{[^{}]*\{[^{}]*animation:\s*none\s*!important/;
 const sourceDir = process.argv[2] || 'src/content/diagrams';
 const outputDir = process.argv[3] || 'public/diagrams';
 for (const file of (await readdir(sourceDir)).filter(name => name.endsWith('.mmd'))) {
-  const source = await readFile(join(sourceDir, file));
-  const digest = createHash('sha256').update(source).digest('hex');
+  // The digest covers the source and the logos it asks for (diagram-icons.mjs).
+  const { digest } = await readDiagram(join(sourceDir, file));
   const svgPath = join(outputDir, file.replace(/\.mmd$/, '.svg'));
   let svg;
   try { svg = await readFile(svgPath, 'utf8'); }

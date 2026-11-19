@@ -3,11 +3,13 @@
 A static personal site built with Astro. Its home introduces Filipe Fantini. The
 about page, opened from the `me.txt` desktop icon at `/about/`, describes his data work,
 infrastructure hobby and outdoor interests, with a skills radar.
-Projects presents Lagom with its tracks and articles, and Articles lists every article
-by project and track. The Lagom hub explains the small and medium data thesis and maps
-its tracks; each track has a page, and each article its own page under it. The ETL
-article records one USGS production run; its figures are pinned to a Lagom commit in
-`src/data/figures.json`.
+Projects presents Lagom with its articles, and Articles lists every article by
+project and section. The Lagom hub explains the small and medium data thesis in two
+parts ([ADR-0003](docs/adr/0003-lagom-platform-and-data-projects.md)): the platform,
+a map of its groups of articles, and the data projects, one card per data source.
+Each group and each data project has a page, and each article its own page under it.
+The USGS pipeline article records one production run; its figures are pinned to a
+Lagom commit in `src/data/figures.json`.
 
 ## Build and preview
 
@@ -25,7 +27,8 @@ cookies, external scripts or browser downloads run in the site. An article may f
 page of the operator's own projects, sandboxed to scripts
 ([ADR-0002](docs/adr/0002-frames-of-our-own-projects.md)). Fonts and diagrams
 are served from the site itself. The build checks figure links, skill scores,
-article project references, diagram hashes, frames, copy and the 5 KiB gzip budget for JavaScript.
+article project references, technologies and their icons, diagram hashes, frames, copy
+and the 5 KiB gzip budget for JavaScript.
 
 Run `node tests/navigation.mjs`, `node tests/radar.mjs`, `node tests/desktop.mjs`,
 `node tests/accessibility.mjs` and `node tests/contract.mjs` against the preview.
@@ -66,20 +69,46 @@ tab in Cloudflare can also roll back to an earlier deployment at once.
 
 Keep public professional information abstract: no employer, dates, location,
 contact details or institutions. Write clear English without em or en dashes.
-The project and its tracks live in `src/content/projects/lagom.json`: a title, a
-summary and the track list, in the order shown on the site. A track with no articles
-shows as "In works" and has no page.
+The project lives in `src/content/projects/lagom.json`: a title, a summary, the
+`platform` (its stack and its `groups` of articles) and the `subprojects`, one per data
+source, each with a `source`, the `question` its data answers, a `status` (`live`,
+`building` or `planned`), a `stack` and an optional pipeline `diagram`. Groups and
+subprojects show in the order of the file. One without articles shows as "In works"
+and has no page. Group and subproject ids share the address `/projects/lagom/<id>/`,
+so no id may be used twice.
 
-To add an article, create `src/content/articles/<track>/<slug>.md`, where `<track>` is
-a track id of the project and `<slug>` becomes the last part of its URL. Its frontmatter
-is `title`, `summary` (one sentence, shown in lists), `project: lagom`, `track`, `order`
-(a positive integer, its position within the track, unique per track), `lagom_commit`
-(40 hex characters; the page links to it) and `adrs`. Nothing else needs editing: the
-hub, the track page, Projects and Articles are generated from the collections. The
-Astro content schema validates the fields, and the build check exits with an error if
-an article names a project or track that does not exist, sits outside its track's
-directory, or shares an `order` with another article of its track. Figures must cite
-lines in a fixed Lagom commit.
+To add an article, create `src/content/articles/<section>/<slug>.md`, where
+`<section>` is a group or subproject id and `<slug>` becomes the last part of its URL.
+Its frontmatter is `title`, `summary` (one sentence, shown in lists), `project: lagom`,
+either `group` or `subproject` with `kind` (`pipeline` for loading, modelling and
+publishing, `report` for what the data shows), `order` (a positive integer, its position
+within the section, unique per section), `lagom_commit` (40 hex characters; the page
+links to it) and `adrs`. Nothing else needs editing: the hub, the section page, Projects
+and Articles are generated from the collections. The Astro content schema validates the
+fields, and `scripts/check-projects.mjs` exits with an error if an article names a
+project, group or subproject that does not exist, lacks a kind in a subproject, sits
+outside its section's directory, or shares an `order` with another article of its
+section. Figures must cite lines in a fixed Lagom commit.
+
+A stack lists technology ids from `src/data/technologies.json`, the one registry of
+technologies: each has a `name` and may have a logo in `src/icons/` (`icon`), with the
+logo's `iconSource` and `iconLicence`. `src/components/TechStack.astro` draws a stack as
+a row of tags, each logo inlined beside its name in the text colour; it opens every
+project and data project presentation (Projects, the Lagom hub, each card and each data
+project page), and a new project only lists ids. The build fails on an unknown
+technology, a missing logo, a logo no technology uses, or a logo without its source or
+licence.
+
+A diagram may show a technology's logo on a node that names it: add a line
+`%% icon <node id> <technology id>` to its Mermaid source, which Mermaid ignores. `npm
+run diagrams` (or `npm run diagrams -- <name>` for one diagram) then draws the logo as a
+small badge on the node's top-left corner, inside the SVG, so the image still makes no
+request (`scripts/diagram-icons.mjs`). Only rectangle and cylinder nodes of a flowchart
+without subgraphs take a badge; anything else fails the render. The hash in each SVG
+covers the source and the logos it uses, so changing a logo makes the diagram stale.
+When an address moves, add a line to `public/_redirects` (`/old/ /new/ 301`, with and
+without the final slash); Cloudflare Pages serves it as a permanent redirect, and
+`tests/contract.mjs` checks that every old address is gone and every new one exists.
 
 Mermaid sources live in `src/content/diagrams/`; their SVG images live in
 `public/diagrams/`. When a diagram changes, run `npm run diagrams` locally and
@@ -115,4 +144,10 @@ with four required checks; the rules for agents and humans are in
 
 Code is licensed under MIT ([`LICENSE`](LICENSE)). Original editorial content in
 `src/content/` is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Source excerpts and linked projects keep their own
-licenses.
+licenses. The logos in `src/icons/` are trademarks of their owners, shown only to name
+each technology (nominative use). The source file and licence of each are recorded with
+its technology in `src/data/technologies.json`: seven come unchanged from
+[Simple Icons](https://simpleicons.org) 16.38.0 under CC0 1.0, and the dbt and Dagster
+marks come from their projects' own repositories under the Apache License 2.0, reduced to
+one colour without redrawing the shape. Those two files say in a comment at their top
+what was changed, as that licence asks.

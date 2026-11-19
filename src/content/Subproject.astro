@@ -1,0 +1,27 @@
+---
+import ArticleList from '../components/ArticleList.astro';
+import TechStack from '../components/TechStack.astro';
+import type { LagomSubproject } from '../lib/lagom';
+interface Props { subproject: LagomSubproject }
+const { subproject } = Astro.props;
+const status = { live: 'Live', building: 'Building', planned: 'Planned' };
+---
+<section class="intro">
+  <nav class="article-trail" aria-label="Section path"><a href="/projects/lagom/">Lagom</a> › Data projects › {subproject.name}</nav>
+  <p class="eyebrow"><span class="roundel" aria-hidden="true"></span> Lagom <span class="divider">/</span> Data project</p>
+  <h1>{subproject.name}</h1>
+  <div class="intro-bottom"><p>{subproject.question}</p></div>
+  <p class="data-meta"><span class:list={['status', subproject.status]}>{status[subproject.status]}</span> Source: {subproject.source}</p>
+  <TechStack stack={subproject.stack} label={`${subproject.name} technologies`} />
+</section>
+<section class="listing" aria-labelledby={`${subproject.id}-pipeline`}>
+  <h2 id={`${subproject.id}-pipeline`}>Pipeline</h2>
+  <p>How the data is loaded, modelled and published.</p>
+  {subproject.diagram && <img class="pipeline-diagram" src={subproject.diagram.src} alt={subproject.diagram.alt} />}
+  <ArticleList articles={subproject.pipeline} summaries />
+</section>
+<section class="listing" aria-labelledby={`${subproject.id}-report`}>
+  <h2 id={`${subproject.id}-report`}>Report</h2>
+  <p>What the data shows.</p>
+  <ArticleList articles={subproject.report} summaries />
+</section>

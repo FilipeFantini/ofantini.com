@@ -1,0 +1,12 @@
+# Cloudflare Pages reads this file and answers each listed address with a
+# permanent redirect (docs/adr/0003-lagom-platform-and-data-projects.md).
+# Each old address is listed with and without its final slash.
+# tests/contract.mjs checks that no source is a page and every target is.
+/projects/lagom/etl/ /projects/lagom/earthquakes/ 301
+/projects/lagom/etl /projects/lagom/earthquakes/ 301
+/projects/lagom/etl/usgs-pipeline/ /projects/lagom/earthquakes/usgs-pipeline/ 301
+/projects/lagom/etl/usgs-pipeline /projects/lagom/earthquakes/usgs-pipeline/ 301
+/projects/lagom/visualization/ /projects/lagom/earthquakes/ 301
+/projects/lagom/visualization /projects/lagom/earthquakes/ 301
+/projects/lagom/visualization/dashboards-after-every-run/ /projects/lagom/earthquakes/dashboards-after-every-run/ 301
+/projects/lagom/visualization/dashboards-after-every-run /projects/lagom/earthquakes/dashboards-after-every-run/ 301

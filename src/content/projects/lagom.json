@@ -1,12 +1,27 @@
 {
   "title": "Lagom",
-  "summary": "A small data platform that grows by composition, built and run in the open: each new source is one more pipeline on the same shared foundation.",
-  "tracks": [
-    { "id": "infrastructure", "name": "Infrastructure", "description": "A small node, a deliberate budget." },
-    { "id": "etl", "name": "ETL", "description": "Following earthquake events into the platform." },
-    { "id": "modeling", "name": "Modeling", "description": "How data becomes useful tables." },
-    { "id": "orchestration", "name": "Orchestration", "description": "Coordinating the work." },
-    { "id": "security", "name": "Security", "description": "Boundaries for agents and credentials." },
-    { "id": "visualization", "name": "Data visualization", "description": "Showing what the tables say." }
+  "summary": "A small batch data platform that grows by composition, built and run in the open: each new data source is one more project on the same shared foundation.",
+  "platform": {
+    "stack": ["k3s", "argo-cd", "postgresql", "cloudflare", "tailscale"],
+    "groups": [
+      { "id": "infrastructure", "name": "Infrastructure", "description": "A small node, a deliberate budget." },
+      { "id": "orchestration", "name": "Orchestration", "description": "Coordinating the work." },
+      { "id": "security", "name": "Security", "description": "Boundaries for agents and credentials." },
+      { "id": "modeling", "name": "Data stack", "description": "Where the tables live, and how a change to them is tested." }
+    ]
+  },
+  "subprojects": [
+    {
+      "id": "earthquakes",
+      "name": "Earthquakes",
+      "source": "USGS",
+      "question": "Where, how deep and how strong were the earthquakes of the last 30 days?",
+      "status": "live",
+      "diagram": {
+        "src": "/diagrams/etl-usgs-pipeline.svg",
+        "alt": "Flowchart: the USGS web service feeds dlt, which writes bronze Parquet files to R2 and records them in a Postgres catalog; dbt then builds silver and gold from them. A Dagster schedule starts both steps every 30 minutes."
+      },
+      "stack": ["dlt", "duckdb", "dbt", "dagster", "postgresql"]
+    }
   ]
 }

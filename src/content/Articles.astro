@@ -1,10 +1,17 @@
 ---
 import ArticleList from '../components/ArticleList.astro';
 import { loadLagom } from '../lib/lagom';
-const { project, tracks } = await loadLagom();
+const { project, groups, subprojects } = await loadLagom();
+const parts = [
+  { name: 'Platform', sections: groups },
+  { name: 'Data projects', sections: subprojects },
+];
 ---
-<section class="intro"><p class="eyebrow">Articles from the work</p><h1>Articles</h1><div class="intro-bottom"><p>These articles follow the decisions and work behind <a href="/projects/lagom/">Lagom</a>, an open-source data platform.</p></div></section>
+<section class="intro"><p class="eyebrow">Articles from the work</p><h1>Articles</h1><div class="intro-bottom"><p>These articles follow the decisions and work behind <a href="/projects/lagom/">Lagom</a>, an open-source batch data platform: first its shared platform, then one data project per source.</p></div></section>
 <section class="listing">
   <h2>{project.data.title}</h2>
-  {tracks.filter(track => track.articles.length > 0).map(track => <div class="track"><h3><a href={track.href}>{track.name}</a></h3><ArticleList articles={track.articles} summaries /></div>)}
+  {parts.map(part => <>
+    <h3 class="part">{part.name}</h3>
+    {part.sections.filter(section => section.articles.length > 0).map(section => <div class="track"><h4><a href={section.href}>{section.name}</a></h4><ArticleList articles={section.articles} summaries /></div>)}
+  </>)}
 </section>

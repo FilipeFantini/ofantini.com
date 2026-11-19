@@ -1,6 +1,6 @@
 ---
-import type { TrackArticle } from '../lib/lagom';
-interface Props { articles: TrackArticle[]; summaries?: boolean }
+import type { SectionArticle } from '../lib/lagom';
+interface Props { articles: SectionArticle[]; summaries?: boolean }
 const { articles, summaries = false } = Astro.props;
 ---
 {articles.length === 0

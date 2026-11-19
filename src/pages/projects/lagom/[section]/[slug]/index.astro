@@ -1,0 +1,14 @@
+---
+import { render } from 'astro:content';
+import Article from '../../../../../layouts/Article.astro';
+import { loadLagom } from '../../../../../lib/lagom';
+
+export async function getStaticPaths() {
+  const { sections } = await loadLagom();
+  return sections.flatMap(section => section.articles.map(article => ({ params: { section: section.id, slug: article.slug }, props: { article } })));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article.entry);
+---
+<Article article={article}><Content /></Article>
