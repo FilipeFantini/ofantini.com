@@ -1,6 +1,6 @@
 ---
-// A row of technologies, each named in text. Where Simple Icons has a logo
-// for it (src/icons/, CC0, see the README), the logo is inlined beside the
+// A row of technologies, each named in text. Where a logo exists in
+// src/icons/ (sources and licences in the README), it is inlined beside the
 // name: it takes the text colour, needs no request, and is hidden from screen
 // readers, which read the name.
 import technologies from '../data/technologies.json';
@@ -16,7 +16,8 @@ const items = stack.map(id => {
   if (!svg) throw new Error(`Missing icon src/icons/${technology.icon}.svg for ${id}`);
   return {
     name: technology.name,
-    svg: svg.replace(/<title>[^<]*<\/title>/, '').replace('role="img"', 'aria-hidden="true" focusable="false" fill="currentColor"'),
+    svg: svg.replace(/<!--[\s\S]*?-->\s*/g, '').replace(/<title>[^<]*<\/title>/, '').replace(' role="img"', '')
+      .replace('<svg ', '<svg aria-hidden="true" focusable="false" fill="currentColor" '),
   };
 });
 ---

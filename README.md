@@ -131,6 +131,13 @@ with four required checks; the rules for agents and humans are in
 
 Code is licensed under MIT ([`LICENSE`](LICENSE)). Original editorial content in
 `src/content/` is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Source excerpts and linked projects keep their own
-licenses. The logos in `src/icons/` are copied unchanged from [Simple Icons](https://simpleicons.org)
-16.38.0, released under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/); the
-brands they show are trademarks of their owners.
+licenses. The logos in `src/icons/` name the technologies a stack uses. They are trademarks
+of their owners, shown only to name each technology (nominative use), and come from:
+
+| Logos | Source | Licence of the file |
+|---|---|---|
+| `argo`, `cloudflare`, `dlthub`, `duckdb`, `k3s`, `postgresql`, `tailscale` | [Simple Icons](https://simpleicons.org) 16.38.0, copied unchanged | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |
+| `dbt` | the mark in [`etc/dbt-core.svg`](https://github.com/dbt-labs/dbt-core/blob/c23db31c0d1489bd188a60d046b336487d1a8b66/etc/dbt-core.svg) of dbt Labs' `dbt-core` repository; only the mark's path is kept, in one colour | [Apache License 2.0](https://github.com/dbt-labs/dbt-core/blob/c23db31c0d1489bd188a60d046b336487d1a8b66/License.md) |
+| `dagster` | [`dagster_solid.svg`](https://github.com/dagster-io/dagster/blob/0ad8b455fc4f9e4b90b6ef0582cc145b24fe1b1b/js_modules/ui-components/src/icon-svgs/dagster_solid.svg) of the `dagster` repository, its one-colour mark; only the fixed size and fill are removed | [Apache License 2.0](https://github.com/dagster-io/dagster/blob/0ad8b455fc4f9e4b90b6ef0582cc145b24fe1b1b/LICENSE) |
+
+The two changed files say so in a comment at their top, as the Apache License asks.

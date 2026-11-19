@@ -1,8 +1,8 @@
 {
   "dlt": { "name": "dlt", "icon": "dlthub" },
   "duckdb": { "name": "DuckDB", "icon": "duckdb" },
-  "dbt": { "name": "dbt" },
-  "dagster": { "name": "Dagster" },
+  "dbt": { "name": "dbt", "icon": "dbt" },
+  "dagster": { "name": "Dagster", "icon": "dagster" },
   "k3s": { "name": "k3s", "icon": "k3s" },
   "argo-cd": { "name": "Argo CD", "icon": "argo" },
   "postgresql": { "name": "PostgreSQL", "icon": "postgresql" },

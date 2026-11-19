@@ -21,7 +21,7 @@
         "src": "/diagrams/etl-usgs-pipeline.svg",
         "alt": "Flowchart: the USGS web service feeds dlt, which writes bronze Parquet files to R2 and records them in a Postgres catalog; dbt then builds silver and gold from them. A Dagster schedule starts both steps every 30 minutes."
       },
-      "stack": ["dlt", "duckdb", "dbt", "dagster"]
+      "stack": ["dlt", "duckdb", "dbt", "dagster", "postgresql"]
     }
   ]
 }

@@ -48,11 +48,13 @@ tracks as the first.
    serves as permanent redirects, maps each old address to its new one, and
    `tests/contract.mjs` checks that every old address is no longer a page and
    every new one is.
-5. **Logos come from Simple Icons, inlined.** The SVG files are copied into
-   `src/icons/` and inlined in the page at build time, so they take the text
-   colour and cost no request. A technology without a Simple Icons logo, such
-   as dbt or Dagster, is shown by name alone, never with a logo from another
-   source. Every logo sits beside its name, which is what screen readers read.
+5. **Logos come from Simple Icons or from the project itself, inlined.** The
+   SVG files are copied into `src/icons/` and inlined in the page at build
+   time, so they take the text colour and cost no request. Simple Icons comes
+   first. A technology it lacks, such as dbt or Dagster, uses the mark from its
+   own repository, reduced to one colour without redrawing the shape; with no
+   first-party file it is shown by name alone, never with a lookalike. Every
+   logo sits beside its name, which is what screen readers read.
 
 ## Consequences
 
@@ -64,8 +66,9 @@ technology, icon or diagram.
 **Negative.** The redirects run only on Cloudflare Pages: `npm run preview`
 does not serve them, so the test checks the file, not the redirect itself.
 Heading anchors inside the two moved articles changed with their directory.
-The logos are brand marks: Simple Icons releases its files under CC0, but the
-brands remain their owners' trademarks.
+The logos are brand marks: Simple Icons releases its files under CC0 and the
+dbt and Dagster files come under the Apache License 2.0, but the brands remain
+their owners' trademarks, used here only to name each technology.
 
 ## Reversal
 
