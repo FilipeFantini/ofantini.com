@@ -21,7 +21,8 @@ npm run build
 npm run preview -- --port 5000
 ```
 
-The build writes only static HTML, CSS, JavaScript, fonts and SVG images to `dist/`.
+The build writes only static HTML, CSS, JavaScript, fonts, SVG images and the
+portrait as WebP to `dist/`.
 Astro and every package version are fixed in `package-lock.json`. No analytics,
 cookies, external scripts or browser downloads run in the site. An article may frame a
 page of the operator's own projects, sandboxed to scripts
@@ -68,7 +69,13 @@ tab in Cloudflare can also roll back to an earlier deployment at once.
 ## Content and diagrams
 
 Keep public professional information abstract: no employer, dates, location,
-contact details or institutions. Write clear English without em or en dashes.
+contact details or institutions. The site shows the operator's name, a portrait and
+links to the GitHub and LinkedIn profiles, at the end of the About page. The LinkedIn
+profile does show an employer, dates and a location; that is accepted, and none of it
+is copied onto the site. The portrait lives in `src/images/portrait.png`, 288 px square
+and stripped of metadata; Astro's image service (sharp) turns it into the 72 px and
+144 px WebP files the page uses; the site does not serve the PNG itself. Write clear
+English without em or en dashes.
 The project lives in `src/content/projects/lagom.json`: a title, a summary, its
 `links` (a label and an `https` address each, shown under the summary on the
 Projects page), the `platform` (its stack and its `groups` of articles) and the `subprojects`, one per data

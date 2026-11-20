@@ -1,6 +1,8 @@
 ---
 import RadarPlot from '../components/RadarPlot.astro';
 import skillData from '../data/skills.json';
+import { Image } from 'astro:assets';
+import portrait from '../images/portrait.png';
 
 const skills = skillData.areas;
 ---
@@ -20,3 +22,10 @@ const skills = skillData.areas;
     <ul class="sr-only">{skills.map(({ label, score }) => <li>{label}: {score} out of 7</li>)}</ul>
   </div>
 </div>
+<footer class="signature">
+  <Image src={portrait} alt="" width={72} height={72} densities={[1, 2]} format="webp" loading="lazy" />
+  <div>
+    <p class="name">Filipe Fantini</p>
+    <p class="links"><a href="https://www.linkedin.com/in/filipe-fantini/">LinkedIn</a> · <a href="https://github.com/FilipeFantini">GitHub</a></p>
+  </div>
+</footer>
