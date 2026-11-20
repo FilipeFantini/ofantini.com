@@ -28,7 +28,8 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     assert.equal(cascade[1].y - cascade[0].y, 32, `${name}: second window y cascade`);
     assert.equal(cascade[2].x - cascade[1].x, 32, `${name}: third window x cascade`);
     assert.equal(cascade[2].y - cascade[1].y, 32, `${name}: third window y cascade`);
-    assert.ok(cascade[1].width < cascade[0].width && cascade[1].height < cascade[0].height, `${name}: new windows are smaller`);
+    assert.ok(cascade[0].width <= 720 && cascade[0].height <= 480, `${name}: home window is compact`);
+    assert.ok(cascade[1].width > cascade[0].width && cascade[2].width > cascade[0].width, `${name}: content windows are wider than home`);
     for (const url of ['/projects/', '/about/', '/']) {
       await page.locator(`.win[data-url="${url}"] .t`).click();
       assert.equal(await page.locator(`.win[data-url="${url}"]`).evaluate(node => node.style.zIndex),

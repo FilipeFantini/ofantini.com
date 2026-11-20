@@ -133,8 +133,10 @@ Cloudflare Pages does not need a browser for diagrams.
 ## Interaction and accessibility
 
 On screens at least 701 px wide and 560 px high, local JavaScript opens linked
-pages as movable, resizable windows on one desktop. New windows start at up to
-720 by 480 px and cascade by 32 px, leaving earlier title bars reachable. The
+pages as movable, resizable windows on one desktop. The home window is compact, up
+to 720 by 480 px, because it holds only an introduction. Other pages hold more text:
+loaded directly they fill the desktop up to 1100 px wide; opened from the desktop they
+start at up to 960 by 600 px. New windows cascade by 32 px, leaving earlier title bars reachable. The
 address bar records the front window only. Reloading or sharing that address opens that page by itself.
 Every window is also a real page with its own URL; with JavaScript disabled,
 ordinary links still work. Smaller screens use normal page scrolling. Reduced
