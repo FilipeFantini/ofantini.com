@@ -58,8 +58,9 @@ function adopt(win: HTMLElement, title: string, opener: HTMLElement | null, prio
 }
 function place(win: HTMLElement, from: HTMLElement | null): void {
   const last = front(), step = 32;
-  const width = Math.min(720, area.clientWidth - 200);
-  const height = Math.min(480, area.clientHeight - 80);
+  const home = win.classList.contains('home-panel');
+  const width = Math.min(home ? 720 : 960, area.clientWidth - 200);
+  const height = home ? Math.min(480, area.clientHeight - 80) : Math.min(600, area.clientHeight - 120);
   let x = last ? last.offsetLeft + step : 160;
   let y = last ? last.offsetTop + step : 24;
   area.append(win);

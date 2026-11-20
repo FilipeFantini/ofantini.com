@@ -47,6 +47,7 @@ html,body{margin:0;min-width:0;color:#182b27;background:#b7c7bc}
  .win{position:absolute;left:160px;top:20px;margin:0;width:min(1100px,calc(100% - 180px));height:calc(100% - 40px);display:flex;flex-direction:column;max-height:100%;overflow:hidden}
  .win .body{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;background:var(--birch)}
  .win .bar{cursor:grab;touch-action:none}
+ .win.home-panel{width:min(720px,calc(100% - 200px));height:min(480px,calc(100% - 40px))}
  .win.maximized{inset:0!important;width:auto!important;height:auto!important}
  .grip{position:absolute;right:0;bottom:0;width:22px;height:22px;background:var(--falu);border:2px solid var(--birch);cursor:nwse-resize;touch-action:none}
  .maximized .grip{display:none}
