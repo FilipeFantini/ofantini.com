@@ -1,6 +1,10 @@
 {
   "title": "Lagom",
   "summary": "A small batch data platform that grows by composition, built and run in the open: each new data source is one more project on the same shared foundation.",
+  "links": [
+    { "label": "Data documentation", "href": "https://lagom.ofantini.com/" },
+    { "label": "Source code", "href": "https://github.com/FilipeFantini/lagom" }
+  ],
   "platform": {
     "stack": ["k3s", "argo-cd", "postgresql", "cloudflare", "tailscale"],
     "groups": [

@@ -14,4 +14,4 @@ a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.18em}nav{fo
 .listing h3.part{font:800 clamp(1.4rem,2.2vw,1.9rem) 'Archivo Variable',sans-serif;text-transform:none;letter-spacing:-.01em;margin:2.5rem 0 0;padding-top:1rem;border-top:2px solid #20352f}.listing h4{font:.8rem 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin:2rem 0 .75rem;padding-top:.75rem;border-top:1px solid #20352f}.listing h2+p{margin-bottom:1rem}
 @media(max-width:700px){.data-projects{padding:4rem 6vw}}
 .pipeline-diagram{display:block;max-width:100%;height:auto;margin:1.5rem 0 2rem;background:#f8f1dd;border:1px solid #20352f}
-.project-card>.stack{margin:1rem 0 0}.track .stack{margin:0 0 .75rem}
+.project-links{list-style:none;display:flex;flex-wrap:wrap;gap:.5rem;margin:0;padding:0}.project-links a{display:inline-block;padding:.35rem .7rem;background:#20352f;color:#f4edd9;font:.75rem 'IBM Plex Mono',monospace;letter-spacing:.04em;text-decoration:none}.project-links a:hover,.project-links a:focus-visible{background:#96372c}.project-card>.stack{margin:1rem 0 0}.track .stack{margin:0 0 .75rem}

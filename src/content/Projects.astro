@@ -8,6 +8,7 @@ const { project, groups, subprojects } = await loadLagom();
 <section class="listing project-card">
   <h2><a href="/projects/lagom/">{project.data.title}</a></h2>
   <p>{project.data.summary}</p>
+  <ul class="project-links" aria-label={`${project.data.title} links`}>{project.data.links.map(link => <li><a href={link.href}>{link.label}<span aria-hidden="true"> ↗</span></a></li>)}</ul>
   <TechStack stack={project.data.platform.stack} label={`${project.data.title} platform technologies`} />
   <h3 class="part">Platform</h3>
   {groups.map(group => <div class="track"><h4>{group.articles.length ? <a href={group.href}>{group.name}</a> : group.name}</h4><ArticleList articles={group.articles} /></div>)}
