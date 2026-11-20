@@ -88,6 +88,20 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
       assert.equal(await page.locator(`.win .project-links a[href="${href}"]`).count(), 1, `/projects/ links to ${href}`);
       assert.match(await page.locator(`.win .project-links a[href="${href}"]`).textContent(), new RegExp(`^${label}`), `/projects/: ${href} labelled ${label}`);
     }
+    // The About page ends with the operator's portrait, served by the site
+    // itself, and links to LinkedIn and GitHub.
+    await page.goto(new URL('/about/', base).href);
+    const portrait = page.locator('.win .signature img');
+    await portrait.scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => document.querySelector('.win .signature img')?.complete);
+    const image = await portrait.evaluate(node => ({ src: node.currentSrc, width: node.naturalWidth, alt: node.getAttribute('alt') }));
+    assert.equal(new URL(image.src).origin, new URL(base).origin, '/about/: portrait served by the site');
+    assert.match(new URL(image.src).pathname, /\.webp$/, '/about/: portrait is WebP');
+    assert.ok(image.width >= 72, '/about/: portrait loads');
+    assert.equal(image.alt, '', '/about/: portrait is decorative beside the name');
+    assert.equal(await page.locator('.win .signature .name').textContent(), 'Filipe Fantini', '/about/: name beside the portrait');
+    assert.equal(await page.locator('.win .signature a[href="https://www.linkedin.com/in/filipe-fantini/"]').count(), 1, '/about/: LinkedIn link');
+    assert.equal(await page.locator('.win .signature a[href="https://github.com/FilipeFantini"]').count(), 1, '/about/: GitHub link');
     await page.goto(new URL('/projects/lagom/', base).href);
     // The hub links to each group page from the platform map and to each
     // subproject page from its card; each section page, the Projects page and
