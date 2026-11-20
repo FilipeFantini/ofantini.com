@@ -49,9 +49,10 @@ Two goals rank above shipping pages:
   repository, a cluster, or a data source at build time; a project is linked
   by URL (ADR-0039, Decision 4).
 - **Identity, and nothing else.** The site names the operator by design: the
-  operator's name and the GitHub account are public. No e-mail, phone, employer, dates,
-  location or institutions, and nothing that addresses infrastructure: no IP
-  address, user name or host name other than `ofantini.com`. The copy rules
+  operator's name, a portrait, and the GitHub and LinkedIn accounts are
+  public. No e-mail, phone, employer, dates, location or institutions, and
+  nothing that addresses infrastructure: no IP address, user name or host
+  name other than `ofantini.com`. The copy rules
   are in the [README](README.md#content-and-diagrams). Commit with the GitHub
   noreply address, never a personal one.
 - **No tracking.** No analytics, cookies, external scripts, or requests to a
