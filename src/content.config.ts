@@ -14,6 +14,9 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     summary: z.string(),
+    // Where to see the project itself, shown under its summary on the
+    // Projects page: absolute https addresses of the operator's own pages.
+    links: z.array(z.object({ label: z.string(), href: z.string().regex(/^https:\/\/[^\s]+$/) })).min(1),
     platform: z.object({
       stack,
       groups: z.array(z.object({ id, name: z.string(), description: z.string() })).min(1),

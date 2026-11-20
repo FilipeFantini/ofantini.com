@@ -69,8 +69,9 @@ tab in Cloudflare can also roll back to an earlier deployment at once.
 
 Keep public professional information abstract: no employer, dates, location,
 contact details or institutions. Write clear English without em or en dashes.
-The project lives in `src/content/projects/lagom.json`: a title, a summary, the
-`platform` (its stack and its `groups` of articles) and the `subprojects`, one per data
+The project lives in `src/content/projects/lagom.json`: a title, a summary, its
+`links` (a label and an `https` address each, shown under the summary on the
+Projects page), the `platform` (its stack and its `groups` of articles) and the `subprojects`, one per data
 source, each with a `source`, the `question` its data answers, a `status` (`live`,
 `building` or `planned`), a `stack` and an optional pipeline `diagram`. Groups and
 subprojects show in the order of the file. One without articles shows as "In works"

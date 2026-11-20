@@ -82,6 +82,12 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         assert.equal(await page.locator('.article-content p:not(.sources) > a:first-child:only-child[href*="/lagom/blob/"]').count(), 0, `${route}: no unmarked source line`);
       }
     }
+    // The Projects page shows the project's own links under its summary.
+    await page.goto(new URL('/projects/', base).href);
+    for (const { label, href } of lagom.links) {
+      assert.equal(await page.locator(`.win .project-links a[href="${href}"]`).count(), 1, `/projects/ links to ${href}`);
+      assert.match(await page.locator(`.win .project-links a[href="${href}"]`).textContent(), new RegExp(`^${label}`), `/projects/: ${href} labelled ${label}`);
+    }
     await page.goto(new URL('/projects/lagom/', base).href);
     // The hub links to each group page from the platform map and to each
     // subproject page from its card; each section page, the Projects page and
