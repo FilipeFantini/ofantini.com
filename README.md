@@ -79,7 +79,11 @@ profile does show an employer, dates and a location; that is accepted, and none 
 is copied onto the site. The portrait lives in `src/images/portrait.png`, 288 px square
 and stripped of metadata; Astro's image service (sharp) turns it into the 72 px and
 144 px WebP files the page uses; the site does not serve the PNG itself. Write clear
-English without em or en dashes.
+English without em or en dashes. Articles record decisions, mechanisms and evidence: the
+operator's actions are in the passive voice ("backups were postponed"), with no first
+person and no claim of personal learning, while software keeps the active voice ("Argo CD
+polls Git"). A title names its subject literally, without metaphor, and the text says each
+thing once.
 A project is a file in `src/content/projects/` with a `kind` ([ADR-0005](docs/adr/0005-practice-projects.md)).
 Lagom, `src/content/projects/lagom.json`, is a `platform` project: a title, a summary, its
 `links` (a label and an `https` address each, shown under the summary on the
