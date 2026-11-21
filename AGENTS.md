@@ -154,13 +154,20 @@ hidden and never blamed on the current change.
 
 Only Claude Code reads the deny rules in
 [`.claude/settings.json`](.claude/settings.json): they block the git commands
-that discard work or rewrite shared history, and pushes to `main`. An agent on
-another harness runs inside that harness's sandbox with network access off for
-its commands — for Codex, `workspace-write` — so it edits files in its
-checkout and cannot commit. A session outside the sandbox reads the diff,
-commits, pushes, and opens the pull request. A harness with no sandbox is not
-used here. Never turn the sandbox off or hand an agent a credential to get
-around it — ask the operator instead.
+that discard work or rewrite shared history, and pushes to `main`. No agent
+here uses a network-off sandbox any more. A handoff to another provider runs
+through T3 Code on the operator's computer, one agent at a time, each under the
+operator's own account
+([Lagom's ADR-0051](https://github.com/FilipeFantini/lagom/blob/main/docs/adr/0051-handoff-to-another-provider-through-t3-code.md)).
+Such an agent works as the architect session does: in a worktree, it commits
+with its own `Co-Authored-By` line, pushes its branch and opens the pull
+request, and its reviewer is never the session that wrote the change. It
+follows the deny list even where its harness does not read it, never changes a
+ruleset or an environment, and never approves `guardrail`. The repository is
+the handoff: the open pull request says what is done and what is next, so the
+next agent starts from it, not from a copy of the chat. Never turn off a
+sandbox or hand an agent a credential to get around a rule; ask the operator
+instead.
 
 **An agent runner** puts each agent's commands in a container with network but
 no credential, on its own clone of this public repository. Its work leaves as
