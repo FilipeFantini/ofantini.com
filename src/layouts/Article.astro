@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import ArticleDates from '../components/ArticleDates.astro';
 import { loadLagom, type SectionArticle } from '../lib/lagom';
 interface Props { article: SectionArticle }
 const { article: { entry } } = Astro.props;
@@ -23,6 +24,7 @@ const eyebrow = { pipeline: 'Pipeline', report: 'Report' }[entry.data.kind ?? ''
     <p class="eyebrow">{eyebrow}</p>
     <h1>{entry.data.title}</h1>
     <p class="article-pin">A dated account, pinned to Lagom commit <a href={`https://github.com/FilipeFantini/lagom/tree/${commit}`}>{commit.slice(0, 7)}</a></p>
+    <ArticleDates entry={entry} />
     <div class="article-content"><slot /></div>
     <nav class="article-links" aria-label="Article navigation">
       <a href="/projects/lagom/">Back to Lagom</a>

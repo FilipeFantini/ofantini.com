@@ -4,6 +4,8 @@ summary: "Why the database backup waited until it protected something, how it wa
 project: lagom
 group: infrastructure
 order: 4
+published: 2026-11-09
+updated: 2026-11-21
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0019", "0025", "0027"]
 ---

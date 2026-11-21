@@ -14,3 +14,4 @@ ADR-0022 and ADR-0039 in particular.
 | [0003](0003-lagom-platform-and-data-projects.md) | Lagom in two parts: platform groups and one data project per source, with redirects and inlined Simple Icons logos | Accepted |
 | [0004](0004-projects-as-packages.md) | The Projects page shows each project as one card, and Lagom's data projects are called sources | Accepted |
 | [0005](0005-practice-projects.md) | A second kind of project, a practice applied across repositories, starting with Agentic Development Patterns | Accepted |
+| [0006](0006-published-and-updated-dates.md) | Articles carry a published and an updated day in their frontmatter; pages, lists and project cards show them | Accepted |

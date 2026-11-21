@@ -5,6 +5,8 @@ project: lagom
 subproject: earthquakes
 kind: pipeline
 order: 1
+published: 2026-11-09
+updated: 2026-11-21
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0003", "0023", "0026"]
 ---

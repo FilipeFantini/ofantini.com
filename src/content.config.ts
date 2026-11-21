@@ -66,12 +66,19 @@ const articles = defineCollection({
     subproject: id.optional(),
     kind: z.enum(['pipeline', 'report']).optional(),
     order: z.number().int().positive(),
+    // The day the article was first published on the site, and the day its
+    // text last changed in substance, if after that (ADR-0006).
+    published: z.coerce.date(),
+    updated: z.coerce.date().optional(),
     lagom_commit: commit.optional(),
     pins: z.array(z.object({ repo: z.enum(['lagom', 'ofantini.com']), commit })).min(1).optional(),
     adrs: z.array(z.string()),
   }).refine(
     data => data.group ? !data.subproject && !data.kind : !data.subproject === !data.kind,
     { message: 'An article names a group, or a subproject and a kind, or neither' },
+  ).refine(
+    data => !data.updated || data.updated > data.published,
+    { message: 'An article is updated after it is published' },
   ).refine(
     data => (data.group || data.subproject) ? Boolean(data.lagom_commit) && !data.pins : Boolean(data.pins) && !data.lagom_commit,
     { message: 'An article in a section is pinned with lagom_commit; an article of a practice project with pins' },

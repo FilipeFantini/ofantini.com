@@ -4,6 +4,8 @@ summary: "How agents work on the platform repository under one rulebook, in cont
 project: lagom
 group: security
 order: 2
+published: 2026-11-09
+updated: 2026-11-21
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0013", "0029", "0032", "0035", "0036", "0037", "0038"]
 ---

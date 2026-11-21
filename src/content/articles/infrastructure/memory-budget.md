@@ -4,6 +4,8 @@ summary: "How memory was measured on a small node, turned into a limit that CI e
 project: lagom
 group: infrastructure
 order: 1
+published: 2026-11-09
+updated: 2026-11-21
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0002", "0011", "0016", "0020", "0021", "0024"]
 ---
