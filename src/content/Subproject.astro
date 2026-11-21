@@ -7,8 +7,8 @@ const { subproject } = Astro.props;
 const status = { live: 'Live', building: 'Building', planned: 'Planned' };
 ---
 <section class="intro">
-  <nav class="article-trail" aria-label="Section path"><a href="/projects/lagom/">Lagom</a> › Data projects › {subproject.name}</nav>
-  <p class="eyebrow"><span class="roundel" aria-hidden="true"></span> Lagom <span class="divider">/</span> Data project</p>
+  <nav class="article-trail" aria-label="Section path"><a href="/projects/lagom/">Lagom</a> › Sources › {subproject.name}</nav>
+  <p class="eyebrow"><span class="roundel" aria-hidden="true"></span> Lagom <span class="divider">/</span> Source</p>
   <h1>{subproject.name}</h1>
   <div class="intro-bottom"><p>{subproject.question}</p></div>
   <p class="data-meta"><span class:list={['status', subproject.status]}>{status[subproject.status]}</span> Source: {subproject.source}</p>

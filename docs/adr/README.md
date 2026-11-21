@@ -12,3 +12,4 @@ ADR-0022 and ADR-0039 in particular.
 | [0001](0001-how-a-change-reaches-main.md) | How a change reaches `main`: the ruleset, the checks, the review and the operator's approval | Accepted |
 | [0002](0002-frames-of-our-own-projects.md) | A page may frame a page of our own projects, sandboxed to scripts, from listed hosts | Accepted |
 | [0003](0003-lagom-platform-and-data-projects.md) | Lagom in two parts: platform groups and one data project per source, with redirects and inlined Simple Icons logos | Accepted |
+| [0004](0004-projects-as-packages.md) | The Projects page shows each project as one card, and Lagom's data projects are called sources | Accepted |

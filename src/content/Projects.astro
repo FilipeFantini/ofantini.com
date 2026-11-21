@@ -1,17 +1,21 @@
 ---
-import ArticleList from '../components/ArticleList.astro';
 import TechStack from '../components/TechStack.astro';
 import { loadLagom } from '../lib/lagom';
-const { project, groups, subprojects } = await loadLagom();
+const { project, groups, subprojects, sections } = await loadLagom();
+// The card shows what the project is made of, not its articles: every
+// technology of the platform and of its sources, once each, in that order.
+const stack = [...new Set([project.data.platform.stack, ...subprojects.map(subproject => subproject.stack)].flat())];
+const articles = sections.reduce((total, section) => total + section.articles.length, 0);
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 ---
-<section class="intro"><p class="eyebrow">Independent work</p><h1>Projects</h1><div class="intro-bottom"><p>Lagom is the first project here, and more will follow. Every article is also listed on the <a href="/articles/">Articles page</a>.</p></div></section>
-<section class="listing project-card">
-  <h2><a href="/projects/lagom/">{project.data.title}</a></h2>
-  <p>{project.data.summary}</p>
-  <ul class="project-links" aria-label={`${project.data.title} links`}>{project.data.links.map(link => <li><a href={link.href}>{link.label}<span aria-hidden="true"> ↗</span></a></li>)}</ul>
-  <TechStack stack={project.data.platform.stack} label={`${project.data.title} platform technologies`} />
-  <h3 class="part">Platform</h3>
-  {groups.map(group => <div class="track"><h4>{group.articles.length ? <a href={group.href}>{group.name}</a> : group.name}</h4><ArticleList articles={group.articles} /></div>)}
-  <h3 class="part">Data projects</h3>
-  {subprojects.map(subproject => <div class="track"><h4>{subproject.articles.length ? <a href={subproject.href}>{subproject.name}</a> : subproject.name}</h4><TechStack stack={subproject.stack} label={`${subproject.name} technologies`} /><ArticleList articles={subproject.articles} /></div>)}
+<section class="intro"><p class="eyebrow">Independent work</p><h1>Projects</h1><div class="intro-bottom"><p>Each project has its own page, with its parts and its articles in order. Every article is also listed on the <a href="/articles/">Articles page</a>.</p></div></section>
+<section class="listing">
+  <article class="project-card" aria-labelledby="project-lagom">
+    <h2 id="project-lagom"><a href="/projects/lagom/">{project.data.title}</a></h2>
+    <p>{project.data.summary}</p>
+    <ul class="project-links" aria-label={`${project.data.title} links`}>{project.data.links.map(link => <li><a href={link.href}>{link.label}<span aria-hidden="true"> ↗</span></a></li>)}</ul>
+    <TechStack stack={stack} label={`${project.data.title} technologies`} />
+    <p class="data-meta project-parts"><span>Platform: {plural(groups.length, 'group')}</span><span>Sources: {subprojects.map(subproject => subproject.name).join(', ')}</span><span>{plural(articles, 'article')}</span></p>
+    <p class="project-open"><a href="/projects/lagom/">Open {project.data.title} →</a></p>
+  </article>
 </section>
