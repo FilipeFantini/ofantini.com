@@ -11,7 +11,10 @@ parts ([ADR-0003](docs/adr/0003-lagom-platform-and-data-projects.md)): the platf
 a map of its groups of articles, and its sources, one card per data source. The word
 "project" names only the top level; inside Lagom a data source is a source
 (`subprojects` in the project file). Each group and each source has a page, and each
-article its own page under it.
+article its own page under it. Agentic Development Patterns is a second kind of project,
+a practice applied across repositories, with one list of articles
+([ADR-0005](docs/adr/0005-practice-projects.md)). Every article shows the day it was
+published and, if later, updated ([ADR-0006](docs/adr/0006-published-and-updated-dates.md)).
 The USGS pipeline article records one production run; its figures are pinned to a
 Lagom commit in `src/data/figures.json`.
 
@@ -32,7 +35,7 @@ cookies, external scripts or browser downloads run in the site. An article may f
 page of the operator's own projects, sandboxed to scripts
 ([ADR-0002](docs/adr/0002-frames-of-our-own-projects.md)). Fonts and diagrams
 are served from the site itself. The build checks figure links, skill scores,
-article project references, technologies and their icons, diagram hashes, frames, copy
+article project references and dates, technologies and their icons, diagram hashes, frames, copy
 and the 5 KiB gzip budget for JavaScript.
 
 Run `node tests/navigation.mjs`, `node tests/radar.mjs`, `node tests/desktop.mjs`,
@@ -72,8 +75,9 @@ tab in Cloudflare can also roll back to an earlier deployment at once.
 
 ## Content and diagrams
 
-Keep public professional information abstract: no employer, dates, location,
-contact details or institutions. The site shows the operator's name, a portrait and
+Keep public professional information abstract: no employer, employment or other personal
+dates, location, contact details or institutions. An article's published and updated days
+are content, not personal data. The site shows the operator's name, a portrait and
 links to the GitHub and LinkedIn profiles, at the end of the About page. The LinkedIn
 profile does show an employer, dates and a location; that is accepted, and none of it
 is copied onto the site. The portrait lives in `src/images/portrait.png`, 288 px square
@@ -116,18 +120,20 @@ the latest change among its articles ([ADR-0006](docs/adr/0006-published-and-upd
 and Articles are generated from the collections. The Astro content schema validates the
 fields, and `scripts/check-projects.mjs` exits with an error if an article names a
 project, group or subproject that does not exist, lacks a kind in a subproject, sits
-outside its section's directory, or shares an `order` with another article of its
-section. Figures must cite lines in a fixed Lagom commit.
+outside its section's directory, shares an `order` with another article of its
+section, lacks a real `published` day, or has an `updated` day that is not after it. Figures must cite lines in a fixed Lagom commit.
 
 An article of a practice project lives in `src/content/articles/<project>/<slug>.md`
 and names neither a group nor a subproject; its other fields are those of any article.
+The check refuses a practice article that names a group, subproject or kind, and a
+practice id equal to a section id.
 
 A stack lists technology ids from `src/data/technologies.json`, the one registry of
 technologies: each has a `name` and may have a logo in `src/icons/` (`icon`), with the
 logo's `iconSource` and `iconLicence`. `src/components/TechStack.astro` draws a stack as
 a row of tags, each logo inlined beside its name in the text colour; it opens every
-project and source presentation (the project card, the Lagom hub, each source card and
-each source page), and a new project only lists ids. The project card joins the stacks
+project and source presentation (the project cards, the Lagom hub, each source card,
+each source page and the practice page), and a new project only lists ids. The project card joins the stacks
 of the platform and of every source, each technology once. The build fails on an unknown
 technology, a missing logo, a logo no technology uses, or a logo without its source or
 licence.
@@ -181,7 +187,7 @@ Code is licensed under MIT ([`LICENSE`](LICENSE)). Original editorial content in
 `src/content/` is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Source excerpts and linked projects keep their own
 licenses. The logos in `src/icons/` are trademarks of their owners, shown only to name
 each technology (nominative use). The source file and licence of each are recorded with
-its technology in `src/data/technologies.json`: seven come unchanged from
+its technology in `src/data/technologies.json`: nine come unchanged from
 [Simple Icons](https://simpleicons.org) 16.38.0 under CC0 1.0, and the dbt and Dagster
 marks come from their projects' own repositories under the Apache License 2.0, reduced to
 one colour without redrawing the shape. Those two files say in a comment at their top

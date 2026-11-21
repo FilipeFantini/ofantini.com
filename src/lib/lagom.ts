@@ -9,7 +9,7 @@ export interface SectionArticle {
 // The Lagom project in two parts: the platform groups and the data
 // subprojects, each in project order and each holding its articles in article
 // order. A group or a subproject is a section: it has a page at
-// /projects/lagom/<id>/ once it has an article. Every list on the site is
+// /projects/lagom/<id>/ once it has an article. Every Lagom list on the site is
 // built from this one result.
 export async function loadLagom() {
   const project = await getEntry('projects', 'lagom');
