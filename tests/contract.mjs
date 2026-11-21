@@ -82,8 +82,14 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         assert.equal(await page.locator('.article-content p:not(.sources) > a:first-child:only-child[href*="/lagom/blob/"]').count(), 0, `${route}: no unmarked source line`);
       }
     }
-    // The Projects page shows the project's own links under its summary.
+    // The Projects page shows each project as a card: its own links under its
+    // summary, every technology of its platform and sources once, and a link to
+    // its page, but none of its articles, which live on that page.
     await page.goto(new URL('/projects/', base).href);
+    assert.equal(await page.locator('.win .project-card h2 a[href="/projects/lagom/"]').count(), 1, '/projects/: Lagom card links to its page');
+    const stack = [...new Set([lagom.platform.stack, ...lagom.subprojects.map(subproject => subproject.stack)].flat())];
+    assert.equal(await page.locator('.win .project-card .stack li').count(), stack.length, '/projects/: card lists every technology once');
+    for (const route of articles) assert.equal(await page.locator(`.win a[href="${route}"]`).count(), 0, `/projects/ does not list ${route}`);
     for (const { label, href } of lagom.links) {
       assert.equal(await page.locator(`.win .project-links a[href="${href}"]`).count(), 1, `/projects/ links to ${href}`);
       assert.match(await page.locator(`.win .project-links a[href="${href}"]`).textContent(), new RegExp(`^${label}`), `/projects/: ${href} labelled ${label}`);
@@ -104,8 +110,8 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     assert.equal(await page.locator('.win .signature a[href="https://github.com/FilipeFantini"]').count(), 1, '/about/: GitHub link');
     await page.goto(new URL('/projects/lagom/', base).href);
     // The hub links to each group page from the platform map and to each
-    // subproject page from its card; each section page, the Projects page and
-    // the Articles page link to every article.
+    // subproject page from its card; each section page and the Articles page
+    // link to every article.
     for (const route of groupRoutes) assert.equal(await page.locator(`.win .map a[href="${route}"]`).count(), 1, `hub map links to ${route}`);
     for (const route of subprojectRoutes) assert.equal(await page.locator(`.win .data-card a[href="${route}"]`).count(), 1, `hub card links to ${route}`);
     assert.equal(await page.locator('.win .data-card').count(), lagom.subprojects.length, 'hub has one card per subproject');
@@ -118,7 +124,7 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         await page.goto(new URL(section, base).href);
         assert.equal(await page.locator(`.win section[aria-labelledby="${id}-${kinds.get(route)}"] .articles a[href="${route}"]`).count(), 1, `${section} lists ${route} under ${kinds.get(route)}`);
       }
-      for (const list of ['/projects/', '/articles/', section]) {
+      for (const list of ['/articles/', section]) {
         await page.goto(new URL(list, base).href);
         assert.equal(await page.locator(`.win a[href="${route}"]`).count(), 1, `${list} links to ${route}`);
       }

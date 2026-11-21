@@ -3,11 +3,15 @@
 A static personal site built with Astro. Its home introduces Filipe Fantini. The
 about page, opened from the `me.txt` desktop icon at `/about/`, describes his data work,
 infrastructure hobby and outdoor interests, with a skills radar.
-Projects presents Lagom with its articles, and Articles lists every article by
+Projects shows one card per project: its summary, links, every technology of its
+parts and a count of those parts, but not its articles
+([ADR-0004](docs/adr/0004-projects-as-packages.md)). Articles lists every article by
 project and section. The Lagom hub explains the small and medium data thesis in two
 parts ([ADR-0003](docs/adr/0003-lagom-platform-and-data-projects.md)): the platform,
-a map of its groups of articles, and the data projects, one card per data source.
-Each group and each data project has a page, and each article its own page under it.
+a map of its groups of articles, and its sources, one card per data source. The word
+"project" names only the top level; inside Lagom a data source is a source
+(`subprojects` in the project file). Each group and each source has a page, and each
+article its own page under it.
 The USGS pipeline article records one production run; its figures are pinned to a
 Lagom commit in `src/data/figures.json`.
 
@@ -102,8 +106,9 @@ A stack lists technology ids from `src/data/technologies.json`, the one registry
 technologies: each has a `name` and may have a logo in `src/icons/` (`icon`), with the
 logo's `iconSource` and `iconLicence`. `src/components/TechStack.astro` draws a stack as
 a row of tags, each logo inlined beside its name in the text colour; it opens every
-project and data project presentation (Projects, the Lagom hub, each card and each data
-project page), and a new project only lists ids. The build fails on an unknown
+project and source presentation (the project card, the Lagom hub, each source card and
+each source page), and a new project only lists ids. The project card joins the stacks
+of the platform and of every source, each technology once. The build fails on an unknown
 technology, a missing logo, a logo no technology uses, or a logo without its source or
 licence.
 

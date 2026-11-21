@@ -13,7 +13,7 @@ const next = section.articles[position + 1];
 const nextSection = sections.slice(sectionIndex + 1).find(item => item.articles.length > 0);
 const number = String(entry.data.order).padStart(2, '0');
 const commit = entry.data.lagom_commit;
-const part = entry.data.group ? 'Platform' : 'Data projects';
+const part = entry.data.group ? 'Platform' : 'Sources';
 const eyebrow = { pipeline: 'Pipeline', report: 'Report' }[entry.data.kind ?? ''] ?? 'A decision in context';
 ---
 <BaseLayout title={entry.data.title} windowTitle={`Lagom / ${section.name} / ${number}`} up={section.href} kind="article-window">

@@ -4,10 +4,10 @@ import { loadLagom } from '../lib/lagom';
 const { project, groups, subprojects } = await loadLagom();
 const parts = [
   { name: 'Platform', sections: groups },
-  { name: 'Data projects', sections: subprojects },
+  { name: 'Sources', sections: subprojects },
 ];
 ---
-<section class="intro"><p class="eyebrow">Articles from the work</p><h1>Articles</h1><div class="intro-bottom"><p>These articles follow the decisions and work behind <a href="/projects/lagom/">Lagom</a>, an open-source batch data platform: first its shared platform, then one data project per source.</p></div></section>
+<section class="intro"><p class="eyebrow">Articles from the work</p><h1>Articles</h1><div class="intro-bottom"><p>These articles follow the decisions and work behind <a href="/projects/lagom/">Lagom</a>, an open-source batch data platform: first its shared platform, then each of its data sources.</p></div></section>
 <section class="listing">
   <h2>{project.data.title}</h2>
   {parts.map(part => <>
