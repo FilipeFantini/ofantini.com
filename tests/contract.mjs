@@ -22,7 +22,17 @@ assert.ok(notFound.includes('Nothing here.') && notFound.includes('href="/"'), '
 const sections = all.filter(route => /^\/projects\/lagom\/[^/]+\/$/.test(route));
 const articles = all.filter(route => /^\/projects\/lagom\/[^/]+\/[^/]+\/$/.test(route));
 const sources = (await readdir('src/content/articles', { recursive: true })).filter(file => file.endsWith('.md'));
-assert.equal(articles.length, sources.length, 'one page per article file');
+// A practice project (ADR-0005) has a page at /projects/<id>/ and its
+// articles under it; its article files live in src/content/articles/<id>/.
+const practices = [];
+for (const file of (await readdir('src/content/projects')).filter(file => file.endsWith('.json'))) {
+  const project = JSON.parse(await readFile(join('src/content/projects', file), 'utf8'));
+  if (project.kind === 'practice') practices.push({ id: basename(file, '.json'), ...project, page: `/projects/${basename(file, '.json')}/` });
+}
+const practicePages = practices.map(practice => practice.page);
+const practiceArticles = all.filter(route => practices.some(practice => route.startsWith(practice.page) && route !== practice.page));
+for (const page of practicePages) assert.ok(all.includes(page), `${page}: practice page built`);
+assert.equal(articles.length + practiceArticles.length, sources.length, 'one page per article file');
 assert.ok(sections.length > 0 && articles.length >= sections.length, 'every section page has at least one article page');
 const lagom = JSON.parse(await readFile('src/content/projects/lagom.json', 'utf8'));
 const groupRoutes = lagom.platform.groups.map(group => `/projects/lagom/${group.id}/`).filter(route => sections.includes(route));
@@ -81,6 +91,20 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         assert.ok(await page.locator('.article-content p.sources a[href^="https://github.com/FilipeFantini/lagom/blob/"]').count() > 0, `${route}: source lines marked`);
         assert.equal(await page.locator('.article-content p:not(.sources) > a:first-child:only-child[href*="/lagom/blob/"]').count(), 0, `${route}: no unmarked source line`);
       }
+      if (practicePages.includes(route)) {
+        assert.ok(await page.locator('.win .articles a').count() > 0, `${route}: practice page lists its articles`);
+        const links = await page.locator('.win .articles a').evaluateAll(nodes => nodes.map(node => node.getAttribute('href')));
+        for (const link of links) assert.ok(practiceArticles.includes(link) && link.startsWith(route), `${route}: lists ${link}`);
+      }
+      if (practiceArticles.includes(route)) {
+        const practice = practices.find(item => route.startsWith(item.page));
+        assert.equal(await page.locator(`.article-trail a[href="${practice.page}"]`).count(), 1, `${route}: practice breadcrumb`);
+        assert.equal(await page.locator(`.article-links a[href="${practice.page}"]`).count(), 1, `${route}: link to its practice`);
+        assert.ok(await page.locator('.win .t').textContent().then(text => text.startsWith(`${practice.title} / `) && /\/ \d\d$/.test(text)), `${route}: window title`);
+        assert.ok(await page.locator('.article-pin a[href^="https://github.com/FilipeFantini/"][href*="/tree/"]').count() > 0, `${route}: pinned commits`);
+        assert.ok(await page.locator('.article-content p.sources a[href^="https://github.com/FilipeFantini/"][href*="/blob/"]').count() > 0, `${route}: source lines marked`);
+        assert.equal(await page.locator('.article-content p:not(.sources) > a:first-child:only-child[href*="/blob/"]').count(), 0, `${route}: no unmarked source line`);
+      }
     }
     // The Projects page shows each project as a card: its own links under its
     // summary, every technology of its platform and sources once, and a link to
@@ -88,8 +112,9 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     await page.goto(new URL('/projects/', base).href);
     assert.equal(await page.locator('.win .project-card h2 a[href="/projects/lagom/"]').count(), 1, '/projects/: Lagom card links to its page');
     const stack = [...new Set([lagom.platform.stack, ...lagom.subprojects.map(subproject => subproject.stack)].flat())];
-    assert.equal(await page.locator('.win .project-card .stack li').count(), stack.length, '/projects/: card lists every technology once');
-    for (const route of articles) assert.equal(await page.locator(`.win a[href="${route}"]`).count(), 0, `/projects/ does not list ${route}`);
+    assert.equal(await page.locator('.win .project-card[aria-labelledby="project-lagom"] .stack li').count(), stack.length, '/projects/: card lists every technology once');
+    for (const route of [...articles, ...practiceArticles]) assert.equal(await page.locator(`.win a[href="${route}"]`).count(), 0, `/projects/ does not list ${route}`);
+    for (const practice of practices) assert.equal(await page.locator(`.win .project-card h2 a[href="${practice.page}"]`).count(), 1, `/projects/: card links to ${practice.page}`);
     for (const { label, href } of lagom.links) {
       assert.equal(await page.locator(`.win .project-links a[href="${href}"]`).count(), 1, `/projects/ links to ${href}`);
       assert.match(await page.locator(`.win .project-links a[href="${href}"]`).textContent(), new RegExp(`^${label}`), `/projects/: ${href} labelled ${label}`);
@@ -129,18 +154,25 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         assert.equal(await page.locator(`.win a[href="${route}"]`).count(), 1, `${list} links to ${route}`);
       }
     }
+    for (const route of practiceArticles) {
+      const practice = practices.find(item => route.startsWith(item.page));
+      for (const list of ['/articles/', practice.page]) {
+        await page.goto(new URL(list, base).href);
+        assert.equal(await page.locator(`.win a[href="${route}"]`).count(), 1, `${list} links to ${route}`);
+      }
+    }
     await page.goto(base);
-    for (const route of articles) {
+    for (const route of [...articles, ...practiceArticles]) {
       await page.locator('.icons a[href="/articles/"]').click();
       await page.locator(`.win[data-url="/articles/"] a[href="${route}"]`).click();
       await page.locator(`.win[data-url="${route}"]`).waitFor();
     }
-    assert.equal(await page.locator('.win[data-url^="/projects/lagom/"]').count(), articles.length);
+    assert.equal(await page.locator('.win[data-url^="/projects/"]').count(), articles.length + practiceArticles.length);
     const duplicates = await page.evaluate(() => {
       const ids = [...document.querySelectorAll('[id]')].map(node => node.id);
       return ids.filter((id, index) => ids.indexOf(id) !== index);
     });
     assert.deepEqual(duplicates, [], `${name}: unique IDs with every article open`);
-    console.log(`${name}: ${all.length} page contracts and ${articles.length} simultaneous articles passed`);
+    console.log(`${name}: ${all.length} page contracts and ${articles.length + practiceArticles.length} simultaneous articles passed`);
   } finally { await browser.close(); }
 }

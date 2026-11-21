@@ -14,6 +14,7 @@ const cases = [
   { script: 'check-projects', good: [], bad: [[`${fixtures}/invalid-kind/articles`, `${fixtures}/invalid-reference/projects`], /of subproject earthquakes has no kind pipeline or report/] },
   { script: 'check-projects', good: [], bad: [[`${fixtures}/invalid-directory/articles`, `${fixtures}/invalid-reference/projects`], /not in the directory of its section modeling/] },
   { script: 'check-projects', good: [], bad: [[`${fixtures}/invalid-order/articles`, `${fixtures}/invalid-reference/projects`], /Duplicate order 1 in section earthquakes of project lagom/] },
+  { script: 'check-projects', good: [], bad: [[`${fixtures}/invalid-practice/articles`, `${fixtures}/invalid-practice/projects`], /Article patterns\/sample.md of practice patterns names a group, subproject or kind/] },
   { script: 'check-projects', good: [], bad: [['src/content/articles', `${fixtures}/invalid-stack/projects`], /Unknown technology nonexistent in subproject earthquakes/] },
   { script: 'check-projects', good: [], bad: [['src/content/articles', `${fixtures}/invalid-diagram/projects`], /names the missing diagram \/diagrams\/missing.svg/] },
   { script: 'check-projects', good: [], bad: [['src/content/articles', 'src/content/projects', `${fixtures}/invalid-icon/technologies.json`], /names the missing icon src\/icons\/missing.svg/] },

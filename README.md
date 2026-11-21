@@ -80,7 +80,8 @@ is copied onto the site. The portrait lives in `src/images/portrait.png`, 288 px
 and stripped of metadata; Astro's image service (sharp) turns it into the 72 px and
 144 px WebP files the page uses; the site does not serve the PNG itself. Write clear
 English without em or en dashes.
-The project lives in `src/content/projects/lagom.json`: a title, a summary, its
+A project is a file in `src/content/projects/` with a `kind` ([ADR-0005](docs/adr/0005-practice-projects.md)).
+Lagom, `src/content/projects/lagom.json`, is a `platform` project: a title, a summary, its
 `links` (a label and an `https` address each, shown under the summary on the
 Projects page), the `platform` (its stack and its `groups` of articles) and the `subprojects`, one per data
 source, each with a `source`, the `question` its data answers, a `status` (`live`,
@@ -88,6 +89,13 @@ source, each with a `source`, the `question` its data answers, a `status` (`live
 subprojects show in the order of the file. One without articles shows as "In works"
 and has no page. Group and subproject ids share the address `/projects/lagom/<id>/`,
 so no id may be used twice.
+
+A `practice` project is a way of working applied across repositories, such as
+`src/content/projects/agentic-patterns.json`: a title, a summary, an `intro` (one
+string per paragraph), a `stack` and `appliedIn` (a label and an `https` address of each
+repository's rulebook). It has a page at `/projects/<id>/` and one ordered list of
+articles, each at `/projects/<id>/<slug>/`. Its id must not be a group or subproject id,
+because both own a directory of articles.
 
 To add an article, create `src/content/articles/<section>/<slug>.md`, where
 `<section>` is a group or subproject id and `<slug>` becomes the last part of its URL.
@@ -101,6 +109,11 @@ fields, and `scripts/check-projects.mjs` exits with an error if an article names
 project, group or subproject that does not exist, lacks a kind in a subproject, sits
 outside its section's directory, or shares an `order` with another article of its
 section. Figures must cite lines in a fixed Lagom commit.
+
+An article of a practice project lives in `src/content/articles/<project>/<slug>.md`
+and names neither a group nor a subproject. Instead of `lagom_commit` it has `pins`, one
+`repo` (`lagom` or `ofantini.com`) and 40-character `commit` per repository it cites;
+the page links to each.
 
 A stack lists technology ids from `src/data/technologies.json`, the one registry of
 technologies: each has a `name` and may have a logo in `src/icons/` (`icon`), with the

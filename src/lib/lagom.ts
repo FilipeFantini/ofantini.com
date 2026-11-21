@@ -14,9 +14,11 @@ export interface SectionArticle {
 export async function loadLagom() {
   const project = await getEntry('projects', 'lagom');
   if (!project) throw new Error('Project lagom is missing from the projects collection');
+  if (project.data.kind !== 'platform') throw new Error('Project lagom must be a platform project');
+  const data = project.data;
   const entries = (await getCollection('articles')).filter(entry => entry.data.project.id === 'lagom');
-  const groupIds = new Set(project.data.platform.groups.map(group => group.id));
-  const subprojectIds = new Set(project.data.subprojects.map(subproject => subproject.id));
+  const groupIds = new Set(data.platform.groups.map(group => group.id));
+  const subprojectIds = new Set(data.subprojects.map(subproject => subproject.id));
   for (const { id, data } of entries) {
     if (data.group && !groupIds.has(data.group)) throw new Error(`Article ${id} names the unknown group ${data.group}`);
     if (data.subproject && !subprojectIds.has(data.subproject)) throw new Error(`Article ${id} names the unknown subproject ${data.subproject}`);
@@ -28,12 +30,12 @@ export async function loadLagom() {
       const slug = entry.id.split('/').at(-1)!;
       return { entry, slug, href: `/projects/lagom/${section}/${slug}/` };
     });
-  const groups = project.data.platform.groups.map(group => ({
+  const groups = data.platform.groups.map(group => ({
     ...group,
     href: `/projects/lagom/${group.id}/`,
     articles: articlesOf(group.id),
   }));
-  const subprojects = project.data.subprojects.map(subproject => {
+  const subprojects = data.subprojects.map(subproject => {
     const articles = articlesOf(subproject.id);
     return {
       ...subproject,
@@ -43,7 +45,7 @@ export async function loadLagom() {
       report: articles.filter(article => article.entry.data.kind === 'report'),
     };
   });
-  return { project, groups, subprojects, sections: [...groups, ...subprojects] };
+  return { project: { ...project, data }, groups, subprojects, sections: [...groups, ...subprojects] };
 }
 
 type Lagom = Awaited<ReturnType<typeof loadLagom>>;

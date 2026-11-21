@@ -1,0 +1,14 @@
+{
+  "kind": "practice",
+  "title": "Agentic Development Patterns",
+  "summary": "The rules, roles and gates that let AI agents write most of the code in a repository while a person keeps control of what it does and why. Written for Lagom, applied to this site, and meant to be copied.",
+  "intro": [
+    "Everything is agentic now: the browser, the spreadsheet, the toaster's firmware roadmap. This project uses the word too, mostly because every other word for it was taken by a slide deck. Behind the label is something plainer and less exciting: a written rulebook, a reviewer that never wrote the change, checks no agent can skip, and an approval only the operator can give.",
+    "None of it is tied to one codebase. The patterns were written for Lagom, copied into this site's repository, and are meant to be copied again. Each article records one part with the decision behind it, cited by permalink, and says what it does not guarantee."
+  ],
+  "stack": ["claude-code", "codex", "antigravity", "t3-code", "github-actions", "gitleaks"],
+  "appliedIn": [
+    { "label": "Lagom", "href": "https://github.com/FilipeFantini/lagom/blob/main/AGENTS.md" },
+    { "label": "ofantini.com", "href": "https://github.com/FilipeFantini/ofantini.com/blob/main/AGENTS.md" }
+  ]
+}

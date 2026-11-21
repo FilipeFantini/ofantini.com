@@ -7,5 +7,11 @@
   "argo-cd": {"name": "Argo CD", "icon": "argo", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/argo.svg", "iconLicence": "CC0-1.0"},
   "postgresql": {"name": "PostgreSQL", "icon": "postgresql", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/postgresql.svg", "iconLicence": "CC0-1.0"},
   "cloudflare": {"name": "Cloudflare", "icon": "cloudflare", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/cloudflare.svg", "iconLicence": "CC0-1.0"},
-  "tailscale": {"name": "Tailscale", "icon": "tailscale", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/tailscale.svg", "iconLicence": "CC0-1.0"}
+  "tailscale": {"name": "Tailscale", "icon": "tailscale", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/tailscale.svg", "iconLicence": "CC0-1.0"},
+  "claude-code": {"name": "Claude Code", "icon": "claudecode", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/claudecode.svg", "iconLicence": "CC0-1.0"},
+  "codex": {"name": "Codex"},
+  "antigravity": {"name": "Antigravity"},
+  "t3-code": {"name": "T3 Code"},
+  "github-actions": {"name": "GitHub Actions", "icon": "githubactions", "iconSource": "https://github.com/simple-icons/simple-icons/blob/16.38.0/icons/githubactions.svg", "iconLicence": "CC0-1.0"},
+  "gitleaks": {"name": "gitleaks"}
 }

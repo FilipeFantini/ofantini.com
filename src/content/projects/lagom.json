@@ -1,4 +1,5 @@
 {
+  "kind": "platform",
   "title": "Lagom",
   "summary": "A small batch data platform that grows by composition, built and run in the open: each new data source adds a pipeline and a report on the same shared foundation.",
   "links": [

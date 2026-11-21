@@ -1,0 +1,19 @@
+---
+import ArticleList from '../components/ArticleList.astro';
+import TechStack from '../components/TechStack.astro';
+import type { Practice } from '../lib/practices';
+interface Props { practice: Practice }
+const { practice } = Astro.props;
+---
+<section class="intro">
+  <p class="eyebrow">Project <span class="divider">/</span> A practice across repositories</p>
+  <h1>{practice.data.title}</h1>
+  <div class="intro-bottom">{practice.data.intro.map(paragraph => <p>{paragraph}</p>)}</div>
+  <h2 class="applied-in" id={`${practice.id}-applied`}>Applied in</h2>
+  <ul class="project-links" aria-labelledby={`${practice.id}-applied`}>{practice.data.appliedIn.map(link => <li><a href={link.href}>{link.label} rulebook<span aria-hidden="true"> ↗</span></a></li>)}</ul>
+  <TechStack stack={practice.data.stack} label={`${practice.data.title} technologies`} />
+</section>
+<section class="listing" aria-labelledby={`${practice.id}-articles`}>
+  <h2 id={`${practice.id}-articles`}>Articles</h2>
+  <ArticleList articles={practice.articles} summaries />
+</section>

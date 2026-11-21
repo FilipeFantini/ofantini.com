@@ -1,7 +1,9 @@
 ---
 import TechStack from '../components/TechStack.astro';
 import { loadLagom } from '../lib/lagom';
+import { loadPractices } from '../lib/practices';
 const { project, groups, subprojects, sections } = await loadLagom();
+const practices = await loadPractices();
 // The card shows what the project is made of, not its articles: every
 // technology of the platform and of its sources, once each, in that order.
 const stack = [...new Set([project.data.platform.stack, ...subprojects.map(subproject => subproject.stack)].flat())];
@@ -18,4 +20,12 @@ const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
     <p class="data-meta project-parts"><span>Platform: {plural(groups.length, 'group')}</span><span>Sources: {subprojects.map(subproject => subproject.name).join(', ')}</span><span>{plural(articles, 'article')}</span></p>
     <p class="project-open"><a href="/projects/lagom/">Open {project.data.title} →</a></p>
   </article>
+  {practices.map(practice => <article class="project-card" aria-labelledby={`project-${practice.id}`}>
+    <h2 id={`project-${practice.id}`}><a href={practice.href}>{practice.data.title}</a></h2>
+    <p>{practice.data.summary}</p>
+    <ul class="project-links" aria-label={`${practice.data.title}: applied in`}>{practice.data.appliedIn.map(link => <li><a href={link.href}>{link.label} rulebook<span aria-hidden="true"> ↗</span></a></li>)}</ul>
+    <TechStack stack={practice.data.stack} label={`${practice.data.title} technologies`} />
+    <p class="data-meta project-parts"><span>Applied in: {practice.data.appliedIn.map(link => link.label).join(', ')}</span><span>{plural(practice.articles.length, 'article')}</span></p>
+    <p class="project-open"><a href={practice.href}>Open {practice.data.title} →</a></p>
+  </article>)}
 </section>
