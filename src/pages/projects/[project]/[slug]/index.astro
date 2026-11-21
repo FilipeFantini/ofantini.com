@@ -1,0 +1,13 @@
+---
+import { render } from 'astro:content';
+import PracticeArticle from '../../../../layouts/PracticeArticle.astro';
+import { loadPractices } from '../../../../lib/practices';
+
+export async function getStaticPaths() {
+  return (await loadPractices()).flatMap(practice => practice.articles.map(article => ({ params: { project: practice.id, slug: article.slug }, props: { practice, article } })));
+}
+
+const { practice, article } = Astro.props;
+const { Content } = await render(article.entry);
+---
+<PracticeArticle practice={practice} article={article}><Content /></PracticeArticle>

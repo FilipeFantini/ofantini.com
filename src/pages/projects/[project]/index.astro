@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Content from '../../../content/Practice.astro';
+import { loadPractices } from '../../../lib/practices';
+
+// One page per practice project; Lagom has its own route, /projects/lagom/.
+export async function getStaticPaths() {
+  return (await loadPractices()).map(practice => ({ params: { project: practice.id }, props: { practice } }));
+}
+
+const { practice } = Astro.props;
+---
+<BaseLayout title={practice.data.title} windowTitle={`projects / ${practice.id}`} up="/projects/"><Content practice={practice} /></BaseLayout>
