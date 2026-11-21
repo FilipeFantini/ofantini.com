@@ -15,3 +15,4 @@ ADR-0022 and ADR-0039 in particular.
 | [0004](0004-projects-as-packages.md) | The Projects page shows each project as one card, and Lagom's data projects are called sources | Accepted |
 | [0005](0005-practice-projects.md) | A second kind of project, a practice applied across repositories, starting with Agentic Development Patterns | Accepted |
 | [0006](0006-published-and-updated-dates.md) | Articles carry a published and an updated day in their frontmatter; pages, lists and project cards show them | Accepted |
+| [0007](0007-no-commit-line-on-articles.md) | Article pages drop the line naming a pinned commit, and articles drop `lagom_commit` and `pins` | Accepted |

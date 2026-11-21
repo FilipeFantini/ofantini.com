@@ -6,7 +6,6 @@ group: infrastructure
 order: 3
 published: 2026-11-09
 updated: 2026-11-21
-lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0021", "0028", "0030"]
 ---
 

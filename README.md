@@ -108,8 +108,9 @@ either `group` or `subproject` with `kind` (`pipeline` for loading, modelling an
 publishing, `report` for what the data shows), `order` (a positive integer, its position
 within the section, unique per section), `published` (the day it first went live, as
 `YYYY-MM-DD`), an optional `updated` (the day its text last changed in substance, after
-`published`; set it when an article is rewritten or a fact changes, not for a typo),
-`lagom_commit` (40 hex characters; the page links to it) and `adrs`. Each article page
+`published`; set it when an article is rewritten or a fact changes, not for a typo)
+and `adrs`. Each source line links to a fixed commit, so an article carries no commit of
+its own ([ADR-0007](docs/adr/0007-no-commit-line-on-articles.md)). Each article page
 shows both days, each list shows the latest beside the title, and a project card shows
 the latest change among its articles ([ADR-0006](docs/adr/0006-published-and-updated-dates.md)). Nothing else needs editing: the hub, the section page, Projects
 and Articles are generated from the collections. The Astro content schema validates the
@@ -119,9 +120,7 @@ outside its section's directory, or shares an `order` with another article of it
 section. Figures must cite lines in a fixed Lagom commit.
 
 An article of a practice project lives in `src/content/articles/<project>/<slug>.md`
-and names neither a group nor a subproject. Instead of `lagom_commit` it has `pins`, one
-`repo` (`lagom` or `ofantini.com`) and 40-character `commit` per repository it cites;
-the page links to each.
+and names neither a group nor a subproject; its other fields are those of any article.
 
 A stack lists technology ids from `src/data/technologies.json`, the one registry of
 technologies: each has a `name` and may have a logo in `src/icons/` (`icon`), with the

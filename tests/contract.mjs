@@ -40,7 +40,9 @@ for (const file of sources) {
   const text = await readFile(join('src/content/articles', file), 'utf8');
   const [dir, slug] = [dirname(file), basename(file, '.md')];
   const route = practices.some(practice => practice.id === dir) ? `/projects/${dir}/${slug}/` : `/projects/lagom/${dir}/${slug}/`;
-  dates.set(route, { published: /^published:\s*(\S+)/m.exec(text)?.[1], updated: /^updated:\s*(\S+)/m.exec(text)?.[1] });
+  // A day may be written with or without quotes, as the project check allows.
+  const day = name => new RegExp(`^${name}:\\s*["']?([0-9]{4}-[0-9]{2}-[0-9]{2})["']?`, 'm').exec(text)?.[1];
+  dates.set(route, { published: day('published'), updated: day('updated') });
 }
 const latestOf = routes => routes.map(route => dates.get(route).updated ?? dates.get(route).published).sort().at(-1);
 assert.ok(sections.length > 0 && articles.length >= sections.length, 'every section page has at least one article page');
@@ -97,7 +99,6 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         assert.equal(await page.locator(`.article-links a[href="/projects/lagom/"]`).count(), 1, `${route}: link to Lagom`);
         assert.equal(await page.locator(`.article-trail a[href="${section}"]`).count(), 1, `${route}: section breadcrumb`);
         assert.equal(await page.locator('.win .t').textContent().then(text => /^Lagom \/ .+ \/ \d\d$/.test(text)), true, `${route}: window title`);
-        assert.equal(await page.locator('.article-pin a[href^="https://github.com/FilipeFantini/lagom/tree/"]').count(), 1, `${route}: pinned commit`);
         assert.ok(await page.locator('.article-content p.sources a[href^="https://github.com/FilipeFantini/lagom/blob/"]').count() > 0, `${route}: source lines marked`);
         assert.equal(await page.locator('.article-content p:not(.sources) > a:first-child:only-child[href*="/lagom/blob/"]').count(), 0, `${route}: no unmarked source line`);
       }
@@ -116,7 +117,6 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         assert.equal(await page.locator(`.article-trail a[href="${practice.page}"]`).count(), 1, `${route}: practice breadcrumb`);
         assert.equal(await page.locator(`.article-links a[href="${practice.page}"]`).count(), 1, `${route}: link to its practice`);
         assert.ok(await page.locator('.win .t').textContent().then(text => text.startsWith(`${practice.title} / `) && /\/ \d\d$/.test(text)), `${route}: window title`);
-        assert.ok(await page.locator('.article-pin a[href^="https://github.com/FilipeFantini/"][href*="/tree/"]').count() > 0, `${route}: pinned commits`);
         assert.ok(await page.locator('.article-content p.sources a[href^="https://github.com/FilipeFantini/"][href*="/blob/"]').count() > 0, `${route}: source lines marked`);
         assert.equal(await page.locator('.article-content p:not(.sources) > a:first-child:only-child[href*="/blob/"]').count(), 0, `${route}: no unmarked source line`);
       }
