@@ -28,7 +28,8 @@ Only defects that would make the site wrong, unsafe, fragile, or misleading:
    link or route, a window or keyboard path that stops working, a build check
    that no longer fails when it should.
 2. **Security and privacy** — a secret or credential; personal data beyond the
-   operator's name (e-mail, phone, employer, dates, location, institutions);
+   operator's name (e-mail, phone, employer, personal or employment dates,
+   location, institutions; an article's published and updated days are content);
    anything that addresses infrastructure (an IP address, a user name, a host
    other than `ofantini.com`); a tracker, cookie, external script, or runtime
    request to a third party; an unpinned npm package or GitHub Action; broader

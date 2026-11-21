@@ -50,7 +50,8 @@ Two goals rank above shipping pages:
   by URL (ADR-0039, Decision 4).
 - **Identity, and nothing else.** The site names the operator by design: the
   operator's name, a portrait, and the GitHub and LinkedIn accounts are
-  public. No e-mail, phone, employer, dates, location or institutions, and
+  public. No e-mail, phone, employer, personal or employment dates, location
+  or institutions (an article's published and updated days are content), and
   nothing that addresses infrastructure: no IP address, user name or host
   name other than `ofantini.com`. The copy rules
   are in the [README](README.md#content-and-diagrams). Commit with the GitHub
