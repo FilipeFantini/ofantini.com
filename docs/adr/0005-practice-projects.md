@@ -7,6 +7,8 @@
   applied in several repositories and meant to be reused in others. Its page
   says where it is applied, and its introduction may laugh a little at the
   word "agentic".
+- **Amended by:** [ADR-0007](0007-no-commit-line-on-articles.md): Decision 3
+  is withdrawn; a practice article has no `pins`.
 - **Builds on:** [ADR-0004](0004-projects-as-packages.md), which made each
   project one card on the Projects page.
 

@@ -9,10 +9,6 @@ const position = practice.articles.findIndex(item => item.entry.id === entry.id)
 const previous = practice.articles[position - 1];
 const next = practice.articles[position + 1];
 const number = String(entry.data.order).padStart(2, '0');
-// A practice article cites more than one repository, so it is pinned to one
-// commit in each, named in the order of its frontmatter.
-const names = { lagom: 'Lagom', 'ofantini.com': 'ofantini.com' };
-const pins = (entry.data.pins ?? []).map(pin => ({ name: names[pin.repo], href: `https://github.com/FilipeFantini/${pin.repo}/tree/${pin.commit}`, short: pin.commit.slice(0, 7) }));
 ---
 <BaseLayout title={entry.data.title} windowTitle={`${practice.data.title} / ${number}`} up={practice.href} kind="article-window">
   <article class="article">
@@ -20,7 +16,6 @@ const pins = (entry.data.pins ?? []).map(pin => ({ name: names[pin.repo], href: 
     <div class="article-label">{practice.data.title.toUpperCase()} <span>FIELD NOTES</span></div>
     <p class="eyebrow">A pattern in context</p>
     <h1>{entry.data.title}</h1>
-    <p class="article-pin">A dated account, pinned to {pins.map((pin, index) => <>{index > 0 && (index === pins.length - 1 ? ' and ' : ', ')}{pin.name} commit <a href={pin.href}>{pin.short}</a></>)}</p>
     <ArticleDates entry={entry} />
     <div class="article-content"><slot /></div>
     <nav class="article-links" aria-label="Article navigation">

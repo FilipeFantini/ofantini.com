@@ -4,11 +4,6 @@ summary: "How AI agents write most of the code in Lagom and in this site while t
 project: agentic-patterns
 order: 1
 published: 2026-11-21
-pins:
-  - repo: lagom
-    commit: 56507046c6b6d65acdfbfbb2dab7bea530075adf
-  - repo: ofantini.com
-    commit: cf6bc5d99de9720908ba254548667beb27f22c15
 adrs: ["0013", "0029", "0035", "0036", "0037", "0038", "0051", "0054"]
 ---
 

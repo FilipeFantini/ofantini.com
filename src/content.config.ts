@@ -6,7 +6,6 @@ const id = z.string().regex(/^[a-z][a-z0-9-]*$/);
 const stack = z.array(z.enum(Object.keys(technologies) as [string, ...string[]])).min(1);
 
 const link = z.object({ label: z.string(), href: z.string().regex(/^https:\/\/[^\s]+$/) });
-const commit = z.string().regex(/^[0-9a-f]{40}$/);
 
 // A project is one of two kinds (ADR-0005). A platform project, Lagom, has a
 // shared platform, in groups of articles, and data subprojects, one per data
@@ -54,8 +53,9 @@ const projects = defineCollection({
 });
 
 // An article of a platform project names a group, or a subproject with a
-// kind, and is pinned to a Lagom commit. An article of a practice project
-// names neither and is pinned to one commit per repository it cites.
+// kind; an article of a practice project names neither. Each source line in an
+// article is a permalink at a fixed commit, so the article needs no commit of
+// its own (ADR-0007).
 const articles = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/articles' }),
   schema: z.object({
@@ -70,8 +70,6 @@ const articles = defineCollection({
     // text last changed in substance, if after that (ADR-0006).
     published: z.coerce.date(),
     updated: z.coerce.date().optional(),
-    lagom_commit: commit.optional(),
-    pins: z.array(z.object({ repo: z.enum(['lagom', 'ofantini.com']), commit })).min(1).optional(),
     adrs: z.array(z.string()),
   }).refine(
     data => data.group ? !data.subproject && !data.kind : !data.subproject === !data.kind,
@@ -79,9 +77,6 @@ const articles = defineCollection({
   ).refine(
     data => !data.updated || data.updated > data.published,
     { message: 'An article is updated after it is published' },
-  ).refine(
-    data => (data.group || data.subproject) ? Boolean(data.lagom_commit) && !data.pins : Boolean(data.pins) && !data.lagom_commit,
-    { message: 'An article in a section is pinned with lagom_commit; an article of a practice project with pins' },
   ),
 });
 

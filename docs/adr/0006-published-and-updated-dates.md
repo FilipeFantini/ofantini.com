@@ -2,6 +2,8 @@
 
 - **Status:** Accepted, by the operator approving the pull request that adds it
 - **Date:** 2026-11-21
+- **Amended by:** [ADR-0007](0007-no-commit-line-on-articles.md): the dates
+  now sit under the title, since the commit line above them is gone.
 - **Decided by:** the operator, on 2026-11-21: each project and article should
   show when it was published or updated, so a visitor can tell what is new.
 
