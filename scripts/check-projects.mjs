@@ -130,7 +130,16 @@ for await (const path of markdown(articleDir)) {
   const key = `${project}/${section}/${order}`;
   if (orders.has(key)) throw new Error(`Duplicate order ${order} in section ${section} of project ${project}: ${orders.get(key)} and ${file}`);
   orders.set(key, file);
+  // Dates are calendar days (ADR-0006): a real day, and an update after the
+  // publication. ISO days compare correctly as strings.
+  const isDay = value => Boolean(value) && new Date(`${value}T00:00:00Z`).toISOString().slice(0, 10) === value;
+  const published = field(frontmatter, 'published', '[0-9]{4}-[0-9]{2}-[0-9]{2}');
+  if (!isDay(published)) throw new Error(`Missing or invalid published date in ${file}`);
+  if (present(frontmatter, 'updated')) {
+    const updated = field(frontmatter, 'updated', '[0-9]{4}-[0-9]{2}-[0-9]{2}');
+    if (!isDay(updated) || updated <= published) throw new Error(`Article ${file} has an updated date that is not a day after its publication on ${published}`);
+  }
   count++;
 }
 if (count === 0) throw new Error('No articles found');
-console.log(`Checked ${count} articles: project, section, kind, directory and order; ${Object.keys(technologies).length} technologies and ${icons.size} icons`);
+console.log(`Checked ${count} articles: project, section, kind, directory, order and dates; ${Object.keys(technologies).length} technologies and ${icons.size} icons`);

@@ -4,6 +4,8 @@ summary: "How a missing ping turns a silent pipeline into an e-mail, and how Dag
 project: lagom
 group: orchestration
 order: 2
+published: 2026-11-09
+updated: 2026-11-21
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0018", "0033"]
 ---

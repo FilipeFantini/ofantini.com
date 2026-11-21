@@ -1,0 +1,9 @@
+---
+// An article's dates: the day it was published and, when its text changed in
+// substance later, the day of that update (ADR-0006).
+import type { CollectionEntry } from 'astro:content';
+import { day } from '../lib/dates';
+interface Props { entry: CollectionEntry<'articles'> }
+const { published, updated } = Astro.props.entry.data;
+---
+<p class="article-dates">Published <time datetime={day(published)}>{day(published)}</time>{updated && <> · Updated <time datetime={day(updated)}>{day(updated)}</time></>}</p>

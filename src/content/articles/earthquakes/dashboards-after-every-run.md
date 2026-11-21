@@ -5,6 +5,8 @@ project: lagom
 subproject: earthquakes
 kind: report
 order: 2
+published: 2026-11-15
+updated: 2026-11-21
 lagom_commit: 40985495267cd7075ad332d1d130b03bd85d1546
 adrs: ["0040", "0042", "0044"]
 ---

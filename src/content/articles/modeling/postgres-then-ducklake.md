@@ -4,6 +4,8 @@ summary: "Why every layer of the warehouse started in Postgres, how a measured t
 project: lagom
 group: modeling
 order: 1
+published: 2026-11-09
+updated: 2026-11-21
 lagom_commit: c98710575c9fb5bc76463aa01750df27e9158019
 adrs: ["0004", "0005", "0008", "0023", "0026", "0033"]
 ---

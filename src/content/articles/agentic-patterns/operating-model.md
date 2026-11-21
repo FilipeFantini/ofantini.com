@@ -3,6 +3,7 @@ title: "An operating model for AI agents: roles, a rulebook and layered gates"
 summary: "How AI agents write most of the code in Lagom and in this site while the operator keeps control: the guardrail layers, one rulebook for every harness, the roles, the handoff between providers, and what none of it guarantees."
 project: agentic-patterns
 order: 1
+published: 2026-11-21
 pins:
   - repo: lagom
     commit: 56507046c6b6d65acdfbfbb2dab7bea530075adf

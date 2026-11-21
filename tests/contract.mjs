@@ -33,6 +33,16 @@ const practicePages = practices.map(practice => practice.page);
 const practiceArticles = all.filter(route => practices.some(practice => route.startsWith(practice.page) && route !== practice.page));
 for (const page of practicePages) assert.ok(all.includes(page), `${page}: practice page built`);
 assert.equal(articles.length + practiceArticles.length, sources.length, 'one page per article file');
+// Each article's dates from its frontmatter, by route (ADR-0006), and the
+// latest change of each project's articles, which its card shows.
+const dates = new Map();
+for (const file of sources) {
+  const text = await readFile(join('src/content/articles', file), 'utf8');
+  const [dir, slug] = [dirname(file), basename(file, '.md')];
+  const route = practices.some(practice => practice.id === dir) ? `/projects/${dir}/${slug}/` : `/projects/lagom/${dir}/${slug}/`;
+  dates.set(route, { published: /^published:\s*(\S+)/m.exec(text)?.[1], updated: /^updated:\s*(\S+)/m.exec(text)?.[1] });
+}
+const latestOf = routes => routes.map(route => dates.get(route).updated ?? dates.get(route).published).sort().at(-1);
 assert.ok(sections.length > 0 && articles.length >= sections.length, 'every section page has at least one article page');
 const lagom = JSON.parse(await readFile('src/content/projects/lagom.json', 'utf8'));
 const groupRoutes = lagom.platform.groups.map(group => `/projects/lagom/${group.id}/`).filter(route => sections.includes(route));
@@ -91,6 +101,11 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         assert.ok(await page.locator('.article-content p.sources a[href^="https://github.com/FilipeFantini/lagom/blob/"]').count() > 0, `${route}: source lines marked`);
         assert.equal(await page.locator('.article-content p:not(.sources) > a:first-child:only-child[href*="/lagom/blob/"]').count(), 0, `${route}: no unmarked source line`);
       }
+      if (dates.has(route)) {
+        const { published, updated } = dates.get(route);
+        const shown = await page.locator('.article-dates time').evaluateAll(nodes => nodes.map(node => node.getAttribute('datetime')));
+        assert.deepEqual(shown, updated ? [published, updated] : [published], `${route}: published and updated dates`);
+      }
       if (practicePages.includes(route)) {
         assert.ok(await page.locator('.win .articles a').count() > 0, `${route}: practice page lists its articles`);
         const links = await page.locator('.win .articles a').evaluateAll(nodes => nodes.map(node => node.getAttribute('href')));
@@ -115,6 +130,14 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
     assert.equal(await page.locator('.win .project-card[aria-labelledby="project-lagom"] .stack li').count(), stack.length, '/projects/: card lists every technology once');
     for (const route of [...articles, ...practiceArticles]) assert.equal(await page.locator(`.win a[href="${route}"]`).count(), 0, `/projects/ does not list ${route}`);
     for (const practice of practices) assert.equal(await page.locator(`.win .project-card h2 a[href="${practice.page}"]`).count(), 1, `/projects/: card links to ${practice.page}`);
+    assert.equal(await page.locator('.win .project-card[aria-labelledby="project-lagom"] .project-parts time').getAttribute('datetime'), latestOf(articles), '/projects/: Lagom card shows its latest change');
+    for (const practice of practices) {
+      const own = practiceArticles.filter(route => route.startsWith(practice.page));
+      assert.equal(await page.locator(`.win .project-card[aria-labelledby="project-${practice.id}"] .project-parts time`).getAttribute('datetime'), latestOf(own), `/projects/: ${practice.id} card shows its latest change`);
+    }
+    await page.goto(new URL('/articles/', base).href);
+    assert.equal(await page.locator('.win .articles li').count(), await page.locator('.win .articles li .date time[datetime]').count(), '/articles/: every listed article shows a date');
+    await page.goto(new URL('/projects/', base).href);
     for (const { label, href } of lagom.links) {
       assert.equal(await page.locator(`.win .project-links a[href="${href}"]`).count(), 1, `/projects/ links to ${href}`);
       assert.match(await page.locator(`.win .project-links a[href="${href}"]`).textContent(), new RegExp(`^${label}`), `/projects/: ${href} labelled ${label}`);

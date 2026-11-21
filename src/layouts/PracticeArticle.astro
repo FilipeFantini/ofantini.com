@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import ArticleDates from '../components/ArticleDates.astro';
 import type { SectionArticle } from '../lib/lagom';
 import type { Practice } from '../lib/practices';
 interface Props { practice: Practice; article: SectionArticle }
@@ -20,6 +21,7 @@ const pins = (entry.data.pins ?? []).map(pin => ({ name: names[pin.repo], href: 
     <p class="eyebrow">A pattern in context</p>
     <h1>{entry.data.title}</h1>
     <p class="article-pin">A dated account, pinned to {pins.map((pin, index) => <>{index > 0 && (index === pins.length - 1 ? ' and ' : ', ')}{pin.name} commit <a href={pin.href}>{pin.short}</a></>)}</p>
+    <ArticleDates entry={entry} />
     <div class="article-content"><slot /></div>
     <nav class="article-links" aria-label="Article navigation">
       <a href={practice.href}>Back to {practice.data.title}</a>

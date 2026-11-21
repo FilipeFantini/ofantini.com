@@ -106,8 +106,12 @@ To add an article, create `src/content/articles/<section>/<slug>.md`, where
 Its frontmatter is `title`, `summary` (one sentence, shown in lists), `project: lagom`,
 either `group` or `subproject` with `kind` (`pipeline` for loading, modelling and
 publishing, `report` for what the data shows), `order` (a positive integer, its position
-within the section, unique per section), `lagom_commit` (40 hex characters; the page
-links to it) and `adrs`. Nothing else needs editing: the hub, the section page, Projects
+within the section, unique per section), `published` (the day it first went live, as
+`YYYY-MM-DD`), an optional `updated` (the day its text last changed in substance, after
+`published`; set it when an article is rewritten or a fact changes, not for a typo),
+`lagom_commit` (40 hex characters; the page links to it) and `adrs`. Each article page
+shows both days, each list shows the latest beside the title, and a project card shows
+the latest change among its articles ([ADR-0006](docs/adr/0006-published-and-updated-dates.md)). Nothing else needs editing: the hub, the section page, Projects
 and Articles are generated from the collections. The Astro content schema validates the
 fields, and `scripts/check-projects.mjs` exits with an error if an article names a
 project, group or subproject that does not exist, lacks a kind in a subproject, sits
