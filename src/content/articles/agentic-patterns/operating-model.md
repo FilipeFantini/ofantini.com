@@ -31,6 +31,8 @@ Two rules carry the model. Every escape becomes a gate: a defect found after a m
 
 [Source: the guardrails decision, rules](https://github.com/FilipeFantini/lagom/blob/56507046c6b6d65acdfbfbb2dab7bea530075adf/docs/adr/0013-agent-driven-development-guardrails.md#L82-L101)
 
+![Five guardrail layers in order: permissions limit what an agent may do, deterministic gates what a change may contain, agent review whether it is right where no rule can say, verification after deployment whether it behaved, and the human which way the platform goes; a defect found after a merge returns to the gates as a new check](/diagrams/agentic-patterns-guardrail-layers.svg)
+
 ## One rulebook for every harness
 
 The rules first lived in `CLAUDE.md`, which only Claude Code loads, and the permission for an agent to merge after an approving review lived only in Claude's private memory, which no other agent reads. The rules moved to `AGENTS.md`, which most harnesses read, and `CLAUDE.md` now holds one line that imports it. A rule every agent must follow is never kept in one agent's memory.
@@ -43,6 +45,8 @@ The session the operator talks to is the architect: it designs, writes briefs an
 
 [Source: Lagom's rulebook](https://github.com/FilipeFantini/lagom/blob/56507046c6b6d65acdfbfbb2dab7bea530075adf/AGENTS.md#L99-L111) · [Source: the reviewer decision](https://github.com/FilipeFantini/lagom/blob/56507046c6b6d65acdfbfbb2dab7bea530075adf/docs/adr/0036-the-reviewer-as-a-required-check.md#L69-L73) · [Source: this site's workflow](https://github.com/FilipeFantini/ofantini.com/blob/cf6bc5d99de9720908ba254548667beb27f22c15/AGENTS.md#L129-L138)
 
+![Roles on one change: the operator asks the architect session, which opens a pull request; deterministic checks and a reviewer that never wrote the change, run in CI from main, judge it; a change to a guarded path waits until the operator approves it on a plain-language summary; the merge needs all three](/diagrams/agentic-patterns-roles.svg)
+
 ## Handing off between providers
 
 A second provider exists to keep working when one provider's usage limit is reached, not to run many agents at once. The first design ran the other harness in a sandbox with the network off, so it could not commit or push. When the architect session was the one at its limit, the handoff fell to the operator, who is not a developer, and stalled. That design was dropped.
@@ -52,6 +56,8 @@ A second provider exists to keep working when one provider's usage limit is reac
 The handoff now runs through T3 Code, a desktop app that runs Claude Code, Codex and Antigravity one at a time, each under the operator's own account. The repository is the handoff: the outgoing session leaves the status in the project board, the decision records and the open pull request, and the incoming agent starts from there, not from a copy of the chat. The decision record still reads Proposed, while Lagom's rulebook already applies it.
 
 [Source: the handoff decision](https://github.com/FilipeFantini/lagom/blob/56507046c6b6d65acdfbfbb2dab7bea530075adf/docs/adr/0051-handoff-to-another-provider-through-t3-code.md#L71-L102) · [Source: Lagom's rulebook](https://github.com/FilipeFantini/lagom/blob/56507046c6b6d65acdfbfbb2dab7bea530075adf/AGENTS.md#L139-L149)
+
+![Handoff between providers: the outgoing session, at its usage limit, leaves the status in the repository as an open pull request, decision records and the project board; an agent of another provider, run by T3 Code under the operator's account, reads it first and then commits, pushes and updates the pull request; the chat is not carried over](/diagrams/agentic-patterns-handoff.svg)
 
 ## How the model changed
 
