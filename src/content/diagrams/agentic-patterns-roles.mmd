@@ -1,0 +1,23 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart LR
+    O["Operator: decides macro questions"] e1@-->|"asks"| A["Architect session: designs, writes briefs, decides"]
+    A e2@-->|"branch and pull request"| C["Deterministic checks: build, tests, secret scan"]
+    A e3@-->|"branch and pull request"| R["Reviewer: never the author, run in CI from main"]
+    A e4@-->|"branch and pull request"| D{"Touches a guarded path?"}
+    D -->|"no"| G["guardrail approval passes"]
+    D -->|"yes"| W["Waits in the guardrail environment"]
+    O -.->|"approves on a plain-language summary"| W
+    W --> G
+    C e5@--> M["Merge to main"]
+    R e6@-->|"APPROVE"| M
+    G e7@--> M
+    e1@{ animate: true }
+    e2@{ animate: true }
+    e3@{ animate: true }
+    e4@{ animate: true }
+    e5@{ animate: true }
+    e6@{ animate: true }
+    e7@{ animate: true }
+    %% Logos beside the nodes that name a technology (scripts/diagram-icons.mjs).
+    %% icon C github-actions
+    %% icon R github-actions

@@ -1,0 +1,9 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart LR
+    A["Outgoing session reaches its provider's usage limit"] e1@-->|"leaves the status"| S["Repository: open pull request, decision records, project board"]
+    S e2@-->|"read first"| B["Incoming agent of another provider, run by T3 Code under the operator's account"]
+    B e3@-->|"commits, pushes and updates the pull request"| S
+    X["A copy of the chat"] -.-x|"not carried over"| B
+    e1@{ animate: true }
+    e2@{ animate: true }
+    e3@{ animate: true }

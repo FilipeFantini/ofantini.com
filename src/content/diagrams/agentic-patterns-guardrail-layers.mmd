@@ -1,0 +1,12 @@
+%%{init: {"flowchart": {"htmlLabels": false}}}%%
+flowchart LR
+    P["1. Permissions: what an agent may do at all"] e1@--> G["2. Deterministic gates: what a change may contain"]
+    G e2@--> R["3. Agent review: whether it is right where no rule can say"]
+    R e3@--> V["4. Verification after deployment: whether what reached the cluster behaved"]
+    V e4@--> H["5. The human: which way the platform goes"]
+    V -.->|"an escape"| E["A defect found after a merge"]
+    E -.->|"fixed with the check that would have caught it"| G
+    e1@{ animate: true }
+    e2@{ animate: true }
+    e3@{ animate: true }
+    e4@{ animate: true }
